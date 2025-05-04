@@ -28,13 +28,11 @@
     </div>
 
     <!-- Protected Content Section (hidden by default) -->
-    <div id="protectedSection" class="container" style="display:none;">
-        <h2>Welcome, <span id="userEmail"></span>!</h2>
-        
-        <div class="container py-5">
+        <div id="protectedSection" class="container py-5" style="display:none;">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="prompt-card">
+                     <h2>Welcome, <span id="userEmail"></span>!</h2>
                     <h2 class="text-center">✏️ Comic Panel Prompt Generator</h2>
                     <p class="text-center mb-4">Create detailed comic prompts with panel-by-panel descriptions!</p>
                     
@@ -118,17 +116,16 @@
                                 💬 Share via WhatsApp
                             </button>
                         </div>
+
+                         <div class="protected-content">
+            <p>Your session will expire in <span id="sessionDays"></span> days.</p>
+        </div>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+                        
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-        
-        <div class="protected-content">
-            <p>Your session will expire in <span id="sessionDays"></span> days.</p>
-        </div>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
     </div>
     <script src="script.js"></script>
     <script src="log.js"></script>
