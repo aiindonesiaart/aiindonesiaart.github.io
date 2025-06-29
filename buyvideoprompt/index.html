@@ -197,7 +197,7 @@
     });
 
     function loadProducts() {
-      fetch('prompvideotlist.csv')
+      fetch('promptlist.csv')
         .then(res => res.text())
         .then(csvText => {
           allProducts = parseCSV(csvText);
