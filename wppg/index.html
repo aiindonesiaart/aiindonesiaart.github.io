@@ -184,6 +184,33 @@
           background: #5c4d7d;
           color: white;
         }
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+          max-width: 500px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+          margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -192,28 +219,25 @@
         
         <!-- First Section: Layout Options -->
         <div class="form-section">
-            <h2>Layout Options</h2>
+            <h2>1. Layout Options</h2>
             <div class="option-group">
-                <input type="radio" id="mobile-layout" name="layout" value="mobile" checked>
+                <input type="radio" id="mobile-layout" name="layout" value="mobile">
                 <label for="mobile-layout">Mobile Version</label>
                 
-                <input type="radio" id="desktop-layout" name="layout" value="desktop">
+                <input type="radio" id="desktop-layout" name="layout" value="desktop" checked>
                 <label for="desktop-layout">Desktop Version</label>
             </div>
         </div>
         
         <!-- Second Section: Header -->
         <div class="form-section">
-            <h2>Header Section</h2>
+            <h2>2. Header Section</h2>
             
             <label for="title-text">Title Page Description:</label>
             <textarea id="title-text" rows="2" placeholder="e.g. Bandar Deterjen"></textarea>
             
-            <label for="logo-text">Logo Page Description:</label>
-            <textarea id="logo-text" rows="2" placeholder="Describe your logo"></textarea>
-            
             <!-- Mobile Header Options -->
-            <div id="mobile-header-options">
+            <div id="mobile-header-options" class="hidden">
                 <label>Hamburger Menu Position:</label>
                 <div class="position-options">
                     <div class="position-option selected" data-value="right">Right</div>
@@ -223,7 +247,7 @@
             </div>
             
             <!-- Desktop Header Options -->
-            <div id="desktop-header-options" class="hidden">
+            <div id="desktop-header-options">
                 <button id="add-menu-btn" class="secondary">+ Add Menu Item</button>
                 
                 <div id="menu-items-container" class="dynamic-inputs"></div>
@@ -232,7 +256,7 @@
         
         <!-- Third Section: Hero Image -->
         <div class="form-section">
-            <h2>Hero Image Section</h2>
+            <h2>3. Hero Image Section</h2>
             
             <label for="hero-description">Hero Image Description:</label>
             <textarea id="hero-description" rows="3" placeholder="e.g. a mockup product packaging of plain surface bottle with green sticker..."></textarea>
@@ -252,7 +276,7 @@
         
         <!-- Fourth Section: Headline & Text -->
         <div class="form-section">
-            <h2>Text Content</h2>
+            <h2>4. Text Content</h2>
             <button id="add-text-btn" class="secondary">+ Add Text</button>
             
             <div id="text-content-container" class="dynamic-inputs"></div>
@@ -260,7 +284,7 @@
         
         <!-- Fifth Section: Testimonials -->
         <div class="form-section">
-            <h2>Testimonials</h2>
+            <h2>5. Testimonials</h2>
             <button id="add-testimonial-btn" class="secondary">+ Add Testimonial Section</button>
             
             <div id="testimonial-options" class="hidden entry-block">
@@ -306,7 +330,7 @@
         
         <!-- Sixth Section: FAQ -->
         <div class="form-section">
-            <h2>FAQ Section</h2>
+            <h2>6. FAQ Section</h2>
             <button id="add-faq-btn" class="secondary">+ Add FAQ Section</button>
             
             <div id="faq-options" class="hidden entry-block">
@@ -323,7 +347,7 @@
         
         <!-- Seventh Section: Pricing -->
         <div class="form-section">
-            <h2>Pricing Table</h2>
+            <h2>7. Pricing Table</h2>
             <button id="add-pricing-btn" class="secondary">+ Add Pricing Table</button>
             
             <div id="pricing-options" class="hidden entry-block">
@@ -354,7 +378,7 @@
         
         <!-- Eighth Section: CTA -->
         <div class="form-section">
-            <h2>Call-to-Action</h2>
+            <h2>8. Call-to-Action</h2>
             
             <label for="cta-title">CTA Title:</label>
             <input type="text" id="cta-title" placeholder="e.g., Ready to get started?">
@@ -385,7 +409,7 @@
         
         <!-- Ninth Section: Footer -->
         <div class="form-section">
-            <h2>Footer</h2>
+            <h2>9. Footer</h2>
             
             <label for="footer-links">Footer Links (comma separated):</label>
             <input type="text" id="footer-links" placeholder="e.g., About, Privacy Policy, Contact, Terms">
@@ -417,8 +441,55 @@
         </div>
     </div>
 
+    <!-- Mobile Version Warning Modal -->
+    <div id="mobileWarningModal" class="modal">
+        <div class="modal-content">
+            <h3>Mobile Version Notice</h3>
+            <p>Mobile Version has limited display image capabilities. Only the header section (title and hamburger menu) will be shown in the preview.</p>
+            <div class="modal-actions">
+                <button id="cancelMobileBtn" class="secondary">Cancel</button>
+                <button id="confirmMobileBtn">Continue with Mobile</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Mobile version warning modal
+            const mobileWarningModal = document.getElementById('mobileWarningModal');
+            const mobileLayoutRadio = document.getElementById('mobile-layout');
+            const desktopLayoutRadio = document.getElementById('desktop-layout');
+            const cancelMobileBtn = document.getElementById('cancelMobileBtn');
+            const confirmMobileBtn = document.getElementById('confirmMobileBtn');
+            
+            mobileLayoutRadio.addEventListener('click', function() {
+                if (!this.checked) return;
+                
+                // Show warning modal
+                mobileWarningModal.style.display = 'block';
+            });
+            
+            cancelMobileBtn.addEventListener('click', function() {
+                mobileWarningModal.style.display = 'none';
+                desktopLayoutRadio.checked = true;
+                desktopLayoutRadio.dispatchEvent(new Event('change'));
+            });
+            
+            confirmMobileBtn.addEventListener('click', function() {
+                mobileWarningModal.style.display = 'none';
+                mobileLayoutRadio.checked = true;
+                mobileLayoutRadio.dispatchEvent(new Event('change'));
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === mobileWarningModal) {
+                    mobileWarningModal.style.display = 'none';
+                    desktopLayoutRadio.checked = true;
+                    desktopLayoutRadio.dispatchEvent(new Event('change'));
+                }
+            });
+            
             // Position option selection
             document.querySelectorAll('.position-option').forEach(option => {
                 option.addEventListener('click', function() {
@@ -435,11 +506,15 @@
             });
             
             // Layout options
-            const layoutRadios = document.querySelectorAll('input[name="layout"]');
             const mobileHeaderOptions = document.getElementById('mobile-header-options');
             const desktopHeaderOptions = document.getElementById('desktop-header-options');
             
-            layoutRadios.forEach(radio => {
+            // Set initial state (desktop by default)
+            desktopHeaderOptions.classList.remove('hidden');
+            mobileHeaderOptions.classList.add('hidden');
+            
+            // Handle layout changes
+            document.querySelectorAll('input[name="layout"]').forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (this.value === 'mobile') {
                         mobileHeaderOptions.classList.remove('hidden');
@@ -768,13 +843,13 @@
                 const layout = document.querySelector('input[name="layout"]:checked').value;
                 
                 const titleText = document.getElementById('title-text').value;
-                const logoText = document.getElementById('logo-text').value;
                 
                 // Header options
                 let headerContent = '';
                 if (layout === 'mobile') {
                     const hamburgerPosition = document.getElementById('hamburger-position').value;
-                    headerContent = `Mobile header with hamburger menu icon on the ${hamburgerPosition}, `;
+                    headerContent = `Mobile header with hamburger menu on the ${hamburgerPosition}`;
+                    if (titleText) headerContent += `, page title: "${titleText}"`;
                 } else {
                     const menuItems = [];
                     document.querySelectorAll('.dynamic-input.menu-item').forEach(item => {
@@ -783,12 +858,12 @@
                     });
                     
                     if (menuItems.length > 0) {
-                        headerContent = `Desktop header with top menu bar links items: "${menuItems.join(', ')"}, `;
+                        headerContent = `Desktop header with menu items: ${menuItems.join(', ')}`;
+                        if (titleText) headerContent += `, page title: "${titleText}"`;
+                    } else if (titleText) {
+                        headerContent = `Desktop header with page title: "${titleText}"`;
                     }
                 }
-                
-                if (titleText) headerContent += `in page title name titled "${titleText}", `;
-                if (logoText) headerContent += `with logo labelled "${logoText}"`;
                 
                 // Hero section
                 const heroDescription = document.getElementById('hero-description').value;
@@ -910,46 +985,46 @@
                 
                 // Header
                 if (headerContent) {
-                    prompt += `Featuring`;
-                    prompt += `${headerContent}\n`;
+                    prompt += `HEADER:\n`;
+                    prompt += `- ${headerContent}\n`;
                 }
                 
                 // Hero
-                if (heroDescription) {
-                    prompt += `\nhero section showcases`;
-                    prompt += `${heroDescription},`;
-                    prompt += `in ${heroPosition} position\n`;
+                if (heroDescription && layout !== 'mobile') {
+                    prompt += `\nHERO SECTION:\n`;
+                    prompt += `- Hero Image: ${heroDescription}\n`;
+                    prompt += `- Position: ${heroPosition}\n`;
                 }
                 
                 // Text content
-                if (textContent.length > 0) {
-                    prompt += `\nThis website contents\n`;
+                if (textContent.length > 0 && layout !== 'mobile') {
+                    prompt += `\nTEXT CONTENT:\n`;
                     textContent.forEach(item => {
-                        prompt += `${item.type}: "${item.content}" (${item.position})\n`;
+                        prompt += `- ${item.type}: "${item.content}" (${item.position})\n`;
                     });
                 }
                 
                 // Testimonials
-                if (testimonialContent) {
-                    prompt += `\nCustomer testimonial contents\n`;
+                if (testimonialContent && layout !== 'mobile') {
+                    prompt += `\nTESTIMONIALS:\n`;
                     prompt += `- ${testimonialContent}\n`;
                 }
                 
                 // FAQ
-                if (faqContent) {
-                    prompt += `\nFAQ contents\n`;
+                if (faqContent && layout !== 'mobile') {
+                    prompt += `\nFAQ:\n`;
                     prompt += `- ${faqContent}\n`;
                 }
                 
                 // Pricing
-                if (pricingContent) {
-                    prompt += `\nPricing contents\n`;
+                if (pricingContent && layout !== 'mobile') {
+                    prompt += `\nPRICING:\n`;
                     prompt += `- ${pricingContent}\n`;
                 }
                 
                 // CTA
-                if (ctaTitle || ctaSubtitle || ctaButtonText) {
-                    prompt += `\nCALL-TO-ACTION contents\n`;
+                if ((ctaTitle || ctaSubtitle || ctaButtonText) && layout !== 'mobile') {
+                    prompt += `\nCALL-TO-ACTION:\n`;
                     if (ctaTitle) prompt += `- Title: ${ctaTitle}\n`;
                     if (ctaSubtitle) prompt += `- Subtitle: ${ctaSubtitle}\n`;
                     prompt += `- Background: ${ctaBg}\n`;
@@ -958,8 +1033,8 @@
                 }
                 
                 // Footer
-                if (footerLinks || footerSocial || footerContent || copyrightText) {
-                    prompt += `\nFooter contents\n`;
+                if ((footerLinks || footerSocial || footerContent || copyrightText) && layout !== 'mobile') {
+                    prompt += `\nFOOTER:\n`;
                     if (footerLinks) prompt += `- Links: ${footerLinks}\n`;
                     if (footerSocial) prompt += `- Social Media: ${footerSocial}\n`;
                     if (footerContent) prompt += `- Additional Content: ${footerContent}\n`;
@@ -969,10 +1044,15 @@
                 // General instructions
                 prompt += `\nGENERAL INSTRUCTIONS:\n`;
                 prompt += `- Create a high-quality, realistic preview image\n`;
-                prompt += `- Use a clean, modern design aesthetic\n`;
-                prompt += `- Ensure all text is legible and properly formatted\n`;
-                prompt += `- Maintain visual hierarchy and balance\n`;
-                prompt += `- Focus on UI/UX best practices\n`;
+                if (layout === 'mobile') {
+                    prompt += `- Focus only on the mobile header section (title and hamburger menu)\n`;
+                    prompt += `- Ignore other sections as they won't be displayed\n`;
+                } else {
+                    prompt += `- Use a clean, modern design aesthetic\n`;
+                    prompt += `- Ensure all text is legible and properly formatted\n`;
+                    prompt += `- Maintain visual hierarchy and balance\n`;
+                    prompt += `- Focus on UI/UX best practices\n`;
+                }
                 
                 document.getElementById('resultPrompt').value = prompt;
                 return prompt;
