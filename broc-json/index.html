@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brochure AI Prompt Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .section-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    #outputPrompt {
+      width: 100%;
+      height: 200px;
+      margin-top: 1rem;
+      padding: 1rem;
+      font-family: monospace;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    .button-group button {
+      flex: 1;
+    }
+    #copyJsonBtn {
+      background: #28a745;
+    }
+    #generateJsonBtn {
+      background: #6c757d;
+    }
+
+    /* Toast Notification */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background: #28a745;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 12px;
+      position: fixed;
+      z-index: 9999;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 16px;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📄 Brochure AI Image Generator</h1>
+
+  <!-- Business Type -->
+  <label>Business Type</label>
+  <input type="text" id="businessType" list="businessTypes" placeholder="e.g., Laundry Service" />
+  <datalist id="businessTypes">
+    <option value="Default Business">
+    <option value="Laundry Service">
+    <option value="Cleaning Service">
+    <option value="Food & Beverage">
+    <option value="Fashion Brand">
+    <option value="Medical Clinic">
+    <option value="Real Estate Property">
+    <option value="School">
+  </datalist>
+
+  <!-- Design Style -->
+  <label>Design Style</label>
+  <input type="text" id="designStyle" list="designStyles" placeholder="e.g., Minimalist Chic" />
+  <datalist id="designStyles">
+    <option value="Minimalist Chic">
+    <option value="Bold & Vibrant">
+    <option value="Editorial / Vogue Style">
+    <option value="Digital Glitch / Futuristic">
+  </datalist>
+
+  <!-- Color Scheme -->
+  <label>Color Scheme</label>
+  <input type="text" id="colorScheme" list="colorSchemes" placeholder="e.g., Black, White, Beige" />
+  <datalist id="colorSchemes">
+    <option value="Black, White, Beige">
+    <option value="Hot Pink, Electric Blue, Yellow">
+    <option value="Monochrome + Deep Burgundy">
+    <option value="Neon Green, Purple, Cyberpunk Black">
+  </datalist>
+
+  <!-- Layout -->
+  <label>Layout Format</label>
+  <input type="text" id="layoutFormat" list="layouts" placeholder="e.g., Trifold" />
+  <datalist id="layouts">
+    <option value="Trifold">
+    <option value="Z-Fold">
+    <option value="Bi-Fold">
+    <option value="Booklet">
+    <option value="One-page Flyer">
+  </datalist>
+
+  <!-- Placement -->
+  <label>Placement</label>
+  <input type="text" id="placement" list="placements" placeholder="e.g., Lying on fabric" />
+  <datalist id="placements">
+    <option value="Lying on fabric">
+    <option value="Studio setup">
+    <option value="Wooden Desk">
+    <option value="Marble Table">
+    <option value="Fabric Background">
+    <option value="Office Desk">
+  </datalist>
+
+  <!-- Lighting -->
+  <label>Lighting Style</label>
+  <input type="text" id="lighting" list="lightings" placeholder="e.g., Soft Light" />
+  <datalist id="lightings">
+    <option value="Soft Light">
+    <option value="Studio Light">
+    <option value="Top Light">
+    <option value="Natural Daylight">
+  </datalist>
+
+  <!-- Add Text Section -->
+  <button onclick="addText()">+ Add Text</button>
+  <div id="textSections"></div>
+
+  <!-- Cover Image Description -->
+  <label>Cover Image Description:</label>
+  <textarea id="coverImageDesc" rows="2" placeholder="Describe the hero image..."></textarea>
+
+  <!-- Add Content Section -->
+  <button onclick="addContentSection()">+ Add Content Section</button>
+  <div id="contentSections"></div>
+
+  <!-- Contact Info -->
+  <label>Contact Info Position:</label>
+  <select id="contactPosition">
+    <option value="Top">Top</option>
+    <option value="Bottom">Bottom</option>
+  </select>
+  <button onclick="addContactInfo()">+ Add Contact Info</button>
+  <div id="contactInfos"></div>
+
+  <!-- Generate Button -->
+  <button onclick="generatePrompt()" style="margin-top: 1rem;">Generate Prompt</button>
+
+  <!-- Output Area -->
+  <textarea id="outputPrompt" readonly></textarea>
+  
+  <div class="button-group">
+    <button onclick="copyPrompt()">Copy Prompt</button>
+    <button id="generateJsonBtn" onclick="generateJson()">Generate JSON</button>
+    <button id="copyJsonBtn" onclick="copyJson()">Copy JSON</button>
+  </div>
+
+  <!-- Subtitle -->
+  <p style="margin-top: 1rem; text-align: center; font-size: 0.9rem; color: #666;">Design by Wahyudi</p>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast">Wahyudi says: Prompt copied to clipboard!</div>
+
+<script>
+  let jsonOutput = null;
+
+  function addText() {
+    const container = document.createElement("div");
+    container.className = "section-box";
+    container.innerHTML = `
+      <label>Select Text Type</label>
+      <select>
+        <option value="headline">Headline</option>
+        <option value="highlight">Highlight</option>
+        <option value="tagline">Tagline</option>
+        <option value="body">Body Text</option>
+      </select>
+      <label>Text Content</label>
+      <input type="text" placeholder="Enter text content here" />
+      <label>Text Color</label>
+      <input type="text" placeholder="e.g., #FF0000 or Red" />
+    `;
+    document.getElementById("textSections").appendChild(container);
+  }
+
+  function addContentSection() {
+    const container = document.createElement("div");
+    container.className = "section-box";
+    container.innerHTML = `
+      <label>Title</label>
+      <input type="text" placeholder="e.g., About Us" />
+      <label>Description</label>
+      <textarea placeholder="Write description..."></textarea>
+      <label>Icon Description (optional)</label>
+      <input type="text" placeholder="e.g., Heart icon" />
+    `;
+    document.getElementById("contentSections").appendChild(container);
+  }
+
+  function addContactInfo() {
+    const container = document.createElement("div");
+    container.className = "section-box";
+    container.innerHTML = `
+      <label>Contact Type (e.g., Phone, Email)</label>
+      <input type="text" placeholder="e.g., WhatsApp" />
+      <label>Contact Value</label>
+      <input type="text" placeholder="e.g., +123456789" />
+    `;
+    document.getElementById("contactInfos").appendChild(container);
+  }
+
+  function generatePrompt() {
+    const business = document.getElementById("businessType").value;
+    const style = document.getElementById("designStyle").value;
+    const colors = document.getElementById("colorScheme").value;
+    const layout = document.getElementById("layoutFormat").value;
+    const placement = document.getElementById("placement").value;
+    const lighting = document.getElementById("lighting").value;
+    const cover = document.getElementById("coverImageDesc").value;
+
+    // Process Text Elements
+    const texts = [...document.querySelectorAll("#textSections .section-box")].map(div => {
+      const type = div.querySelector("select").value;
+      const content = div.querySelector("input[type='text']").value;
+      const color = div.querySelectorAll("input")[1]?.value || "";
+      return `${type.charAt(0).toUpperCase() + type.slice(1)}: "${content}" with ${color} color text`;
+    });
+
+    // Process Content Sections
+    const sections = [...document.querySelectorAll("#contentSections .section-box")].map(div => {
+      const title = div.querySelector("input").value;
+      const desc = div.querySelector("textarea").value;
+      const icon = div.querySelectorAll("input")[1]?.value || "";
+      return `${title}: ${desc}${icon ? `, Icon: ${icon}` : ""}`;
+    });
+
+    // Process Contact Info
+    const contactPos = document.getElementById("contactPosition").value;
+    const contacts = [...document.querySelectorAll("#contactInfos .section-box")].map(div => {
+      const type = div.querySelectorAll("input")[0].value;
+      const val = div.querySelectorAll("input")[1].value;
+      return `${type}: ${val}`;
+    });
+
+    const finalPrompt = `Create a ${layout} brochure for a ${business} with design style ${style}, using a color scheme of ${colors}. The brochure contains cover image description as ${cover}, ${texts.join("; ") || "None"}. It has sections: ${sections.join("; ") || "None"}. Contact info in ${contactPos.toLowerCase()} position: ${contacts.join(", ") || "None"}. The brochure placed in ${placement}, ${lighting}, professional design, clean typography, and balanced layout.`;
+
+    document.getElementById("outputPrompt").value = finalPrompt;
+  }
+
+  function generateJson() {
+    const business = document.getElementById("businessType").value;
+    const style = document.getElementById("designStyle").value;
+    const colors = document.getElementById("colorScheme").value;
+    const layout = document.getElementById("layoutFormat").value;
+    const placement = document.getElementById("placement").value;
+    const lighting = document.getElementById("lighting").value;
+    const cover = document.getElementById("coverImageDesc").value;
+
+    // Process Text Elements
+    const texts = [...document.querySelectorAll("#textSections .section-box")].map(div => {
+      const type = div.querySelector("select").value;
+      const content = div.querySelector("input[type='text']").value;
+      const color = div.querySelectorAll("input")[1]?.value || "";
+      return {
+        type: type,
+        content: content,
+        color: color
+      };
+    });
+
+    // Process Content Sections
+    const sections = [...document.querySelectorAll("#contentSections .section-box")].map(div => {
+      const title = div.querySelector("input").value;
+      const desc = div.querySelector("textarea").value;
+      const icon = div.querySelectorAll("input")[1]?.value || "";
+      return {
+        title: title,
+        description: desc,
+        icon: icon
+      };
+    });
+
+    // Process Contact Info
+    const contactPos = document.getElementById("contactPosition").value;
+    const contacts = [...document.querySelectorAll("#contactInfos .section-box")].map(div => {
+      const type = div.querySelectorAll("input")[0].value;
+      const val = div.querySelectorAll("input")[1].value;
+      return {
+        type: type,
+        value: val
+      };
+    });
+
+    const jsonData = {
+      brochureDetails: {
+        businessType: business,
+        designStyle: style,
+        colorScheme: colors,
+        layoutFormat: layout,
+        placement: placement,
+        lighting: lighting,
+        coverImageDescription: cover
+      },
+      textElements: texts,
+      contentSections: sections,
+      contactInfo: {
+        position: contactPos,
+        contacts: contacts
+      }
+    };
+
+    jsonOutput = jsonData;
+    document.getElementById("outputPrompt").value = JSON.stringify(jsonData, null, 2);
+    showToast("JSON generated successfully!");
+  }
+
+  function copyPrompt() {
+    const output = document.getElementById("outputPrompt");
+    output.select();
+    try {
+      document.execCommand('copy');
+      showToast("Prompt copied to clipboard!");
+    } catch (err) {
+      alert('Failed to copy text.');
+    }
+  }
+
+  function copyJson() {
+    if (!jsonOutput) {
+      showToast("Generate JSON first!");
+      return;
+    }
+    
+    const output = document.getElementById("outputPrompt");
+    output.select();
+    try {
+      document.execCommand('copy');
+      showToast("JSON copied to clipboard!");
+    } catch (err) {
+      alert('Failed to copy JSON.');
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = "Wahyudi says: " + message;
+    toast.style.visibility = "visible";
+    setTimeout(() => {
+      toast.style.visibility = "hidden";
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
