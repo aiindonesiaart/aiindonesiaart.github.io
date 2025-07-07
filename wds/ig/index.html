@@ -3,16 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Generator "WadesinG"</title>
+    <title>Image Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .tab-button {
+            @apply px-4 py-2 font-medium text-sm rounded-t-lg border-b-2 border-transparent;
+        }
+        .tab-button.active {
+            @apply border-blue-500 text-blue-600 bg-blue-50;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans p-8 flex justify-center items-start min-h-screen">
 
     <div class="container mx-auto w-full max-w-3xl bg-white rounded-xl shadow-lg p-8">
-        <h1 class="text-center text-3xl md:text-4xl font-bold text-slate-900 mb-8">Image Generator "WadesinG"</h1>
+        <h1 class="text-center text-3xl md:text-4xl font-bold text-slate-900 mb-8">Image Generator</h1>
         <p class="text-center text-lg font-medium text-blue-600 uppercase tracking-widest -mt-4 mb-8">Photo Edition</p>
 
         <div id="prompt-form" class="grid grid-cols-1 gap-6">
@@ -350,28 +358,38 @@
 
         <div class="border-t-2 border-slate-100 my-8"></div>
 
-        <div>
-            <button id="generate-btn" class="w-full flex items-center justify-center gap-2 px-4 py-3 font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                <span>Hasilkan Prompt</span>
+        <div class="flex space-x-4 mb-4">
+            <button id="generate-text-btn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                Generate Text
+            </button>
+            <button id="generate-json-btn" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+                Generate JSON
             </button>
         </div>
 
-        <div class="mt-6">
-            <label for="result-prompt" class="block text-base font-semibold text-slate-800 mb-2">Prompt yang Dihasilkan</label>
-            <div class="relative group">
-                <textarea id="result-prompt" readonly class="block w-full px-4 py-3 text-sm text-slate-800 bg-slate-100 border border-slate-300 rounded-lg shadow-inner h-96 resize-y focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Hasil prompt akan muncul di sini..."></textarea>
-                <button id="copy-btn" class="absolute top-3 right-3 flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-opacity duration-200 opacity-25 group-hover:opacity-100">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    <span>Salin</span>
-                </button>
-                <div id="copy-feedback" class="absolute top-3 right-3 bg-green-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-md opacity-0 transition-opacity duration-300 pointer-events-none">
-                    Berhasil disalin!
-                </div>
+        <div class="flex space-x-4 mb-6">
+            <button id="copy-text-btn" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors hidden">
+                Copy Text
+            </button>
+            <button id="copy-json-btn" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors hidden">
+                Copy JSON
+            </button>
+        </div>
+
+        <div class="tabs mb-4 border-b border-gray-200">
+            <button id="text-tab" class="tab-button active">Text Prompt</button>
+            <button id="json-tab" class="tab-button">JSON Prompt</button>
+        </div>
+
+        <div class="relative group">
+            <div id="text-prompt-container" class="block">
+                <textarea id="text-prompt" readonly class="block w-full px-4 py-3 text-sm text-slate-800 bg-slate-100 border border-slate-300 rounded-lg shadow-inner h-64 resize-y focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Text prompt will appear here..."></textarea>
+            </div>
+            <div id="json-prompt-container" class="hidden">
+                <textarea id="json-prompt" readonly class="block w-full px-4 py-3 font-mono text-sm text-slate-50 bg-slate-800 border border-slate-700 rounded-lg shadow-inner h-64 resize-y focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="JSON prompt will appear here..."></textarea>
+            </div>
+            <div id="copy-feedback" class="absolute top-3 right-3 bg-green-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-md opacity-0 transition-opacity duration-300 pointer-events-none">
+                Berhasil disalin!
             </div>
         </div>
     </div>
@@ -608,10 +626,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- DOM ELEMENTS ---
-            const generateBtn = document.getElementById('generate-btn');
-            const copyBtn = document.getElementById('copy-btn');
-            const resultPrompt = document.getElementById('result-prompt');
+            const generateTextBtn = document.getElementById('generate-text-btn');
+            const generateJsonBtn = document.getElementById('generate-json-btn');
+            const copyTextBtn = document.getElementById('copy-text-btn');
+            const copyJsonBtn = document.getElementById('copy-json-btn');
+            const textPrompt = document.getElementById('text-prompt');
+            const jsonPrompt = document.getElementById('json-prompt');
             const copyFeedback = document.getElementById('copy-feedback');
+            const textTab = document.getElementById('text-tab');
+            const jsonTab = document.getElementById('json-tab');
+            const textPromptContainer = document.getElementById('text-prompt-container');
+            const jsonPromptContainer = document.getElementById('json-prompt-container');
+            
             const japaneseStyleSelect = document.getElementById('japanese-style-select');
             const colorFilmTypeSelect = document.getElementById('color-film-type-select');
             const lightConditionsSelect = document.getElementById('light-conditions-select');
@@ -872,10 +898,23 @@
                 }
             });
 
-            // --- RENDER INITIAL UI ---
+            // Tab switching
+            textTab.addEventListener('click', () => {
+                textTab.classList.add('active');
+                jsonTab.classList.remove('active');
+                textPromptContainer.classList.remove('hidden');
+                jsonPromptContainer.classList.add('hidden');
+            });
 
-            // --- GENERATE PROMPT ---
-            generateBtn.addEventListener('click', () => {
+            jsonTab.addEventListener('click', () => {
+                jsonTab.classList.add('active');
+                textTab.classList.remove('active');
+                jsonPromptContainer.classList.remove('hidden');
+                textPromptContainer.classList.add('hidden');
+            });
+
+            // --- GENERATE TEXT PROMPT ---
+            generateTextBtn.addEventListener('click', () => {
                 const getVal = id => document.getElementById(id).value.trim();
 
                 // Build the prompt text
@@ -1023,20 +1062,178 @@
                     promptText = promptText.charAt(0).toUpperCase() + promptText.slice(1);
                 }
 
-                resultPrompt.value = promptText;
+                textPrompt.value = promptText;
+                copyTextBtn.classList.remove('hidden');
+                
+                // Switch to text tab if not already active
+                if (jsonTab.classList.contains('active')) {
+                    textTab.click();
+                }
             });
 
-            // --- COPY BUTTON ---
-            copyBtn.addEventListener('click', () => {
-                if (resultPrompt.value) {
-                    navigator.clipboard.writeText(resultPrompt.value).then(() => {
-                        copyFeedback.style.opacity = '1';
-                        setTimeout(() => {
-                            copyFeedback.style.opacity = '0';
-                        }, 2000);
+            // --- GENERATE JSON PROMPT ---
+            generateJsonBtn.addEventListener('click', () => {
+                const getVal = id => document.getElementById(id).value.trim();
+
+                const selectedStyleArray = [];
+
+                if (styleSelect.value) {
+                    selectedStyleArray.push(styleSelect.value);
+                }
+
+                const japaneseStyle = japaneseStyleSelect.value;
+                if (japaneseStyle) {
+                    selectedStyleArray.push(`in the style of ${japaneseStyle}`);
+                }
+
+                const colorFilmType = colorFilmTypeSelect.value;
+                if (colorFilmType) {
+                    selectedStyleArray.push(`${colorFilmType}`);
+                }
+
+                const lightConditions = lightConditionsSelect.value;
+                if (lightConditions) {
+                    selectedStyleArray.push(`${lightConditions}`);
+                }
+
+                const colorToneStyle = colorToneSelect.value;
+                if (colorToneStyle) {
+                    selectedStyleArray.push(`${colorToneStyle}`);
+                }
+
+                const angleStyle = getVal('angle-select');
+                if (angleStyle) {
+                    selectedStyleArray.push(`${angleStyle} Shot`);
+                }
+
+                const cameraTypeStyle = getVal('camera-type-select');
+                if (cameraTypeStyle) {
+                    selectedStyleArray.push(`Shot with ${cameraTypeStyle}`);
+                }
+
+                const lensStyle = lensSelect.value;
+                if (lensStyle) {
+                    selectedStyleArray.push(`${lensStyle}`);
+                }
+
+                const depthOfFieldStyle = depthOfFieldSelect.value;
+                if (depthOfFieldStyle) {
+                    let dofValue = depthOfFieldStyle;
+                    if (depthOfFieldDetailInput.value) {
+                        dofValue += ` (${depthOfFieldDetailInput.value})`;
+                    }
+                    selectedStyleArray.push(dofValue);
+                }
+
+                const promptObject = {
+                    visual: {}
+                };
+
+                // --- CLOTHING INTEGRATION ---
+                const clothing = {};
+                if (clothingStyleSelect.value) clothing.style = clothingStyleSelect.value;
+                if (clothingTopSelect.value) {
+                    let topValue = clothingTopSelect.value;
+                    if (clothingTopDetailInput.value) {
+                        topValue += ` (${clothingTopDetailInput.value})`;
+                    }
+                    clothing.top = topValue;
+                }
+                if (clothingBottomSelect.value) {
+                    let bottomValue = clothingBottomSelect.value;
+                    if (clothingBottomDetailInput.value) {
+                        bottomValue += ` (${clothingBottomDetailInput.value})`;
+                    }
+                    clothing.bottom = bottomValue;
+                }
+                if (clothingFootwearSelect.value) {
+                    let footwearValue = clothingFootwearSelect.value;
+                    if (clothingFootwearDetailInput.value) {
+                        footwearValue += ` (${clothingFootwearDetailInput.value})`;
+                    }
+                    clothing.footwear = footwearValue;
+                }
+
+                if (Object.keys(clothing).length > 0) {
+                    promptObject.visual.clothing = clothing;
+                }
+
+                // --- EXPRESSION & EMOTION INTEGRATION ---
+                const expression = {};
+                if (getVal('facial-expression-select')) expression.facial = getVal('facial-expression-select');
+                if (getVal('facial-expression-detail')) expression.facial_detail = getVal('facial-expression-detail');
+                if (getVal('emotion-select')) expression.emotion = getVal('emotion-select');
+                if (getVal('emotion-detail')) expression.emotion_detail = getVal('emotion-detail');
+                if (getVal('emotion-intensity-select')) expression.intensity = getVal('emotion-intensity-select');
+                if (getVal('emotion-intensity-detail')) expression.intensity_detail = getVal('emotion-intensity-detail');
+
+                if (Object.keys(expression).length > 0) {
+                    promptObject.visual.expression = expression;
+                }
+
+                // --- SUBJECT & CHARACTER INTEGRATION ---
+                const selectedCharId = characterSelect.value;
+                if (selectedCharId) {
+                    const char = characters.find(c => c.id === selectedCharId);
+                    if (char) {
+                        try {
+                            const charDetails = JSON.parse(char.details);
+                            const fullSubject = {
+                                "nama_karakter": char.name,
+                                "karakter_konsisten": charDetails
+                            };
+                            promptObject.visual.subject = fullSubject;
+                        } catch (e) {
+                            console.error("Error parsing character JSON:", e);
+                            // Fallback: if JSON is invalid, just use character name as subject
+                            promptObject.visual.subject = char.name;
+                        }
+                    }
+                } else {
+                    // If no character selected, visual.subject will be omitted
+                }
+
+                const visual = promptObject.visual;
+                if (getVal('action')) visual.action = getVal('action');
+                if (getVal('setting')) visual.setting = getVal('setting');
+                if (selectedStyleArray.length > 0) promptObject.style = selectedStyleArray.join(', ');
+
+                // Clean up empty objects
+                if (Object.keys(promptObject.visual).length === 0) delete promptObject.visual;
+                if (!promptObject.style) delete promptObject.style;
+
+                jsonPrompt.value = JSON.stringify(promptObject, null, 2);
+                copyJsonBtn.classList.remove('hidden');
+                
+                // Switch to JSON tab if not already active
+                if (textTab.classList.contains('active')) {
+                    jsonTab.click();
+                }
+            });
+
+            // --- COPY BUTTONS ---
+            copyTextBtn.addEventListener('click', () => {
+                if (textPrompt.value) {
+                    navigator.clipboard.writeText(textPrompt.value).then(() => {
+                        showCopyFeedback();
                     });
                 }
             });
+
+            copyJsonBtn.addEventListener('click', () => {
+                if (jsonPrompt.value) {
+                    navigator.clipboard.writeText(jsonPrompt.value).then(() => {
+                        showCopyFeedback();
+                    });
+                }
+            });
+
+            const showCopyFeedback = () => {
+                copyFeedback.style.opacity = '1';
+                setTimeout(() => {
+                    copyFeedback.style.opacity = '0';
+                }, 2000);
+            };
 
             // --- INITIAL LOAD ---
             renderCharacters();
