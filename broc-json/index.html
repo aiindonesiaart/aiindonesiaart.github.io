@@ -55,13 +55,25 @@
       border: 1px solid #ccc;
       resize: vertical;
     }
-    .button-group {
+    .generate-buttons {
       display: flex;
       gap: 10px;
       margin-top: 1rem;
     }
-    .button-group button {
+    .generate-buttons button {
       flex: 1;
+    }
+    .copy-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    .copy-buttons button {
+      flex: 1;
+      display: none; /* Hidden by default */
+    }
+    #copyPromptBtn {
+      background: #17a2b8;
     }
     #copyJsonBtn {
       background: #28a745;
@@ -192,15 +204,18 @@
   <button onclick="addContactInfo()">+ Add Contact Info</button>
   <div id="contactInfos"></div>
 
-  <!-- Generate Button -->
-  <button onclick="generatePrompt()" style="margin-top: 1rem;">Generate Prompt</button>
+  <!-- Generate Buttons -->
+  <div class="generate-buttons">
+    <button onclick="generatePrompt()">Generate Prompt</button>
+    <button id="generateJsonBtn" onclick="generateJson()">Generate JSON</button>
+  </div>
 
   <!-- Output Area -->
   <textarea id="outputPrompt" readonly></textarea>
   
-  <div class="button-group">
-    <button onclick="copyPrompt()">Copy Prompt</button>
-    <button id="generateJsonBtn" onclick="generateJson()">Generate JSON</button>
+  <!-- Copy Buttons -->
+  <div class="copy-buttons">
+    <button id="copyPromptBtn" onclick="copyPrompt()">Copy Prompt</button>
     <button id="copyJsonBtn" onclick="copyJson()">Copy JSON</button>
   </div>
 
@@ -212,7 +227,7 @@
 <div id="toast">Wahyudi says: Prompt copied to clipboard!</div>
 
 <script>
-  let jsonOutput = null;
+  let currentOutputType = null; // 'prompt' or 'json'
 
   function addText() {
     const container = document.createElement("div");
@@ -292,9 +307,11 @@
       return `${type}: ${val}`;
     });
 
-    const finalPrompt = `Create a ${layout} brochure for a ${business} with design style ${style}, using a color scheme of ${colors}. The brochure contains cover image description as ${cover}, ${texts.join("; ") || "None"}. It has sections: ${sections.join("; ") || "None"}. Contact info in ${contactPos.toLowerCase()} position: ${contacts.join(", ") || "None"}. The brochure placed in ${placement}, ${lighting}, professional design, clean typography, and balanced layout.`;
+    const finalPrompt = `Create a ${layout} brochure mockup for a ${business} with design style ${style}, using a color scheme of ${colors}. The brochure contains cover image description as ${cover}, ${texts.join("; ") || "None"}. It has sections: ${sections.join("; ") || "None"}. Contact info in ${contactPos.toLowerCase()} position: ${contacts.join(", ") || "None"}. The brochure placed in ${placement}, ${lighting}, professional design, clean typography, and balanced layout.`;
 
     document.getElementById("outputPrompt").value = finalPrompt;
+    currentOutputType = 'prompt';
+    updateCopyButtons();
   }
 
   function generateJson() {
@@ -356,12 +373,27 @@
       contactInfo: {
         position: contactPos,
         contacts: contacts
-      }
+      },
+      prompt: `Create a ${layout} brochure mockup for a ${business} with design style ${style}, using a color scheme of ${colors}. The brochure contains cover image description as ${cover}. The brochure placed in ${placement}, ${lighting}, professional design, clean typography, and balanced layout.`
     };
 
-    jsonOutput = jsonData;
     document.getElementById("outputPrompt").value = JSON.stringify(jsonData, null, 2);
-    showToast("JSON generated successfully!");
+    currentOutputType = 'json';
+    updateCopyButtons();
+  }
+
+  function updateCopyButtons() {
+    const copyPromptBtn = document.getElementById("copyPromptBtn");
+    const copyJsonBtn = document.getElementById("copyJsonBtn");
+    
+    copyPromptBtn.style.display = 'none';
+    copyJsonBtn.style.display = 'none';
+    
+    if (currentOutputType === 'prompt') {
+      copyPromptBtn.style.display = 'block';
+    } else if (currentOutputType === 'json') {
+      copyJsonBtn.style.display = 'block';
+    }
   }
 
   function copyPrompt() {
@@ -376,11 +408,6 @@
   }
 
   function copyJson() {
-    if (!jsonOutput) {
-      showToast("Generate JSON first!");
-      return;
-    }
-    
     const output = document.getElementById("outputPrompt");
     output.select();
     try {
