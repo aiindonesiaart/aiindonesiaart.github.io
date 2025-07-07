@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <title>Video Prompt Generator</title>
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+     <meta name="description" content="Generate video prompt JSON for your film projects">
+     <meta name="keywords" content="video, prompt, generator, film, cinematography">
+     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+     <!-- Google Fonts -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+     <!-- Font Awesome -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #f43f5e;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --dark-gray: #64748b;
+            --light-gray: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--primary);
+        }
+
+        /* Layout */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 0 4rem;
+            background: linear-gradient(135deg, var(--darker) 0%, #1e1b4b 100%);
+        }
+
+        .hero-text {
+            max-width: 100%;
+        }
+
+        /* Form Elements */
+        .form-section {
+            background-color: rgba(30, 41, 59, 0.7);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            transition: var(--transition);
+        }
+
+        .form-section:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--light-gray);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            background-color: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            color: var(--light);
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: rgba(30, 41, 59, 0.7);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(30, 41, 59, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #0d9f6e;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        /* Suggestions */
+        .suggestion-text {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        /* Generated Output */
+        #generatedJson, #generatedPrompt {
+            background-color: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: left;
+            white-space: pre-wrap;
+            color: var(--light);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        #generatedPrompt {
+            font-family: 'Inter', sans-serif;
+            white-space: pre-line;
+        }
+
+        /* Dialogue entries */
+        .dialogue-entry {
+            background-color: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .dialogue-entry:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .remove-dialogue-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background-color: transparent;
+            color: var(--gray);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-dialogue-btn:hover {
+            color: var(--danger);
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Checkbox */
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .form-check-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary);
+        }
+
+        .form-check-label {
+            color: var(--light-gray);
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--darker);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-icon {
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        .social-icon {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .social-icon li a {
+            color: var(--gray);
+            font-size: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .social-icon li a:hover {
+            color: var(--primary);
+        }
+
+        .copyright-text {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        /* Utility classes */
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-5 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-5 { margin-bottom: 1.5rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-white { color: white; }
+
+        /* Tabs */
+        .tab-container {
+            margin-top: 1.5rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-button.active {
+            color: var(--primary-light);
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            .hero {
+                padding: 5rem 0 3rem;
+            }
+            
+            .form-section {
+                padding: 1.25rem;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                text-align: left;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .tab-button.active::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .btn {
+                padding: 0.625rem 1.25rem;
+                width: 100%;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+     </style>
+</head>
+
+<body>
+    <noscript>
+      <div style="color: red; text-align: center; padding: 1rem; background: #fee2e2;">
+        This site requires JavaScript to work. Please enable JavaScript.
+      </div>
+    </noscript>
+
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+              <i class="fas fa-video"></i>
+              Video Prompt Generator
+            </a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-text text-center fade-in">
+                <h1 class="text-white">Generate Your Video Prompt</h1>
+                <p class="mb-4">Create detailed video prompts with cinematic specifications for your next project</p>
+
+                <div class="mt-4">
+                    <form id="promptForm">
+                        <!-- Shot Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-camera mr-2"></i>Shot Details</h3>
+                            <div class="form-group">
+                                <label for="shotType">Shot Type (Jenis Bidikan):</label>
+                                <select id="shotType" class="form-control">
+                                    <option value="">-- Select Shot Type --</option>
+                                    <option value="Extreme Wide Shot (EWS)">Extreme Wide Shot (EWS) - Lokasi sangat luas, subjek kecil atau gak kelihatan</option>
+                                    <option value="Wide Shot (WS) / Long Shot (LS)">Wide Shot (WS) / Long Shot (LS) - Seluruh tubuh subjek terlihat dalam satu frame</option>
+                                    <option value="Full Shot (FS)">Full Shot (FS) - Sama kayak WS, tapi lebih fokus ke subjek</option>
+                                    <option value="Medium Long Shot (MLS)">Medium Long Shot (MLS) - Dari lutut ke atas, transisi antara WS & MS</option>
+                                    <option value="Medium Shot (MS)">Medium Shot (MS) - Dari pinggang ke atas, natural buat dialog</option>
+                                    <option value="Medium Close-Up (MCU)" selected>Medium Close-Up (MCU) - Dada ke atas, lebih fokus ke ekspresi wajah</option>
+                                    <option value="Close-Up (CU)">Close-Up (CU) - Fokus ke wajah atau objek kecil</option>
+                                    <option value="Extreme Close-Up (ECU)">Extreme Close-Up (ECU) - Detail sangat dekat (mata, tangan, dll)</option>
+                                    <option value="Over-the-Shoulder (OTS)">Over-the-Shoulder (OTS)</option>
+                                    <option value="Two-Shot (MS/WS)">Two-Shot (MS/WS)</option>
+                                    <option value="Tracking / Dolly">Tracking / Dolly</option>
+                                    <option value="Crane / Drone Shot">Crane / Drone Shot</option>
+                                    <option value="Portrait Shot">Portrait Shot</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="lens">Lens (Lensa):</label>
+                                <select id="lens" class="form-control">
+                                    <option value="">-- Select Lens Type --</option>
+                                    <option value="Wide-Angle Lens (10mm – 35mm)">Wide-Angle Lens (10mm – 35mm) - Ruang kelihatan luas, sedikit distorsi. Buat landscape, establishing, vlog, atau action.</option>
+                                    <option value="Standard Lens (35mm – 70mm)" selected>Standard Lens (35mm – 70mm) - Perspektif natural seperti mata manusia. Cocok buat dialog, dokumenter, dan iklan.</option>
+                                    <option value="Telephoto Lens (70mm – 200mm+)">Telephoto Lens (70mm – 200mm+) - Kompresi gambar, background jadi blur. Cocok buat close-up, wildlife, candid, atau scene emosional.</option>
+                                    <option value="Super Telephoto Lens (300mm ke atas)">Super Telephoto Lens (300mm ke atas) - Extreme close-up jarak jauh. Biasanya buat sport, konser, wildlife.</option>
+                                    <option value="Ultra-Wide Lens (< 16mm)">Ultra-Wide Lens (< 16mm) - Distorsi ekstrem, dipakai buat efek visual kreatif atau ruang sempit.</option>
+                                    <option value="Macro Lens (50mm – 100mm khusus)">Macro Lens (50mm – 100mm khusus) - Fokus ke objek kecil banget. Cocok buat detail produk, makanan, serangga, dll.</option>
+                                </select>
+                                <span id="lensSuggestion" class="suggestion-text"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="aperture">Aperture:</label>
+                                <select id="aperture" class="form-control">
+                                    <option value="f/1.2 – f/1.8">f/1.2 – f/1.8 - Bukaan super besar. Latar blur parah. Bokeh sinematik</option>
+                                    <option value="f/2 – f/2.8" selected>f/2 – f/2.8 - Masih creamy, bagus buat isolasi subjek</option>
+                                    <option value="f/3.5 – f/5.6">f/3.5 – f/5.6 - Depth of field mulai lebar</option>
+                                    <option value="f/6.3 – f/11">f/6.3 – f/11 - Hampir semua dalam fokus, cahaya dikontrol</option>
+                                    <option value="f/16 – f/22">f/16 – f/22 - Super kecil, biasanya buat shot sangat terang</option>
+                                </select>
+                                <span id="apertureSuggestion" class="suggestion-text"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="camera">Camera (Kamera):</label>
+                                <select id="camera" class="form-control">
+                                    <option value="">-- Select Camera --</option>
+                                    <option value="Blackmagic URSA Mini Pro 12K">Blackmagic URSA Mini Pro 12K - Super35</option>
+                                    <option value="Canon C70 / C300 Mark III">Canon C70 / C300 Mark III - Super35</option>
+                                    <option value="Sony FX6 / FX9">Sony FX6 / FX9 - Full Frame</option>
+                                    <option value="RED Komodo / V-Raptor">RED Komodo / V-Raptor - Super35 / Full Frame</option>
+                                    <option value="ARRI Alexa Mini / LF">ARRI Alexa Mini / LF - Super35 / LF</option>
+                                    <option value="Sony Venice" selected>Sony Venice</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="visualEffect">Visual Effect (Efek Visual):</label>
+                                <select id="visualEffect" class="form-control">
+                                    <option value="">-- Select Visual Effect --</option>
+                                    <option value="Portrait DoF">Portrait DoF - Fokus tajam ke wajah, latar blur banget. Buat dialog, emosi.</option>
+                                    <option value="Foreground Blur">Foreground Blur - Objek depan blur, fokus di subjek di tengah/frame. Bikin depth kuat.</option>
+                                    <option value="Background Blur (Bokeh)">Background Blur (Bokeh) - Subjek fokus, latar belakang creamy bokeh. Isolasi objek utama.</option>
+                                    <option value="Focus Pull / Rack Focus">Focus Pull / Rack Focus - Ganti titik fokus antar dua subjek di layer berbeda. Dramatis.</option>
+                                    <option value="Macro Shallow DoF">Macro Shallow DoF - Fokus super sempit (cm-an), buat detail produk, makanan, serangga.</option>
+                                    <option value="Telephoto Compression DoF">Telephoto Compression DoF - Pakai lensa panjang (85mm–300mm), background mepet & blur total.</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="shotCameraMotion">Camera Motion (Gerakan Kamera):</label>
+                                <select id="shotCameraMotion" class="form-control">
+                                    <option value="">-- Select Camera Motion --</option>
+                                    <option value="Push-in (dolly-in)">Push-in (dolly-in)</option>
+                                    <option value="Static / Slight Pan">Static / Slight Pan</option>
+                                    <option value="Crane up / tilt up">Crane up / tilt up</option>
+                                    <option value="Slow Pan / Drone Forward">Slow Pan / Drone Forward</option>
+                                    <option value="Focus Pull">Focus Pull</option>
+                                    <option value="Steadicam tracking">Steadicam tracking</option>
+                                    <option value="Handheld slight shake" selected>Handheld slight shake</option>
+                                    <option value="Whip Pan / Snap Zoom">Whip Pan / Snap Zoom</option>
+                                    <option value="Static or Focus Shift">Static or Focus Shift</option>
+                                    <option value="Gimbal / Dolly Arc">Gimbal / Dolly Arc</option>
+                                    <option value="Pull-Out / Crane Up">Pull-Out / Crane Up</option>
+                                    <option value="Push-in / Tilt Up">Push-in / Tilt Up</option>
+                                </select>
+                                <span id="cameraMotionSuggestion" class="suggestion-text"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="shotFrameRate">Frame Rate (Kecepatan Bingkai):</label>
+                                <input type="text" id="shotFrameRate" class="form-control" value="24fps">
+                            </div>
+                            <div class="form-group">
+                                <label for="shotFilmGrain">Film Grain (Butiran Film):</label>
+                                <input type="text" id="shotFilmGrain" class="form-control" value="fine-grain film emulation, subtle">
+                            </div>
+                        </div>
+
+                        <!-- Subject Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-user mr-2"></i>Subject Details</h3>
+                            <div class="form-group">
+                                <label for="subjectDescription">Description (Deskripsi):</label>
+                                <textarea id="subjectDescription" class="form-control" rows="4">A 23-year-old Chinese female idol with straight black hair tied in a loose ponytail, delicate features, wearing a light blue and white striped sleeveless summer dress, sitting on the edge of her neatly made bed, visibly frustrated as she struggles to pull a tight yellow ankle sock onto her right foot.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="subjectWardrobe">Wardrobe (Pakaian):</label>
+                                <textarea id="subjectWardrobe" class="form-control" rows="2">light blue and white striped sleeveless summer dress, yellow ankle socks, no shoes, minimalist jewelry</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Scene Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-map-marker-alt mr-2"></i>Scene Details</h3>
+                            <div class="form-group">
+                                <label for="sceneLocation">Location (Lokasi):</label>
+                                <textarea id="sceneLocation" class="form-control" rows="2">her bedroom in a modern city apartment</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="sceneTimeOfDay">Time of Day (Waktu Hari):</label>
+                                <input type="text" id="sceneTimeOfDay" class="form-control" value="evening, artificial room light only">
+                            </div>
+                            <div class="form-group">
+                                <label for="sceneEnvironment">Environment (Lingkungan):</label>
+                                <textarea id="sceneEnvironment" class="form-control" rows="4">lamplight casting moody shadows, potted plants by the window, pastel bedsheets, posters of pop stars, plush toy near the pillow, tidy desk, and some clothes loosely draped on a chair</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Visual Details Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-eye mr-2"></i>Visual Details</h3>
+                            <div class="form-group">
+                                <label for="visualAction">Action (Aksi):</label>
+                                <textarea id="visualAction" class="form-control" rows="4">She sits at the bed's edge, hunched over, brows tightly knit and lips pursed in clear frustration. She struggles with the yellow sock, pulling and adjusting, sighing and pausing, her motions quick and irritated. The other sock lies rumpled beside her.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="visualProps">Props (Properti):</label>
+                                <textarea id="visualProps" class="form-control" rows="2">yellow socks (one in hand, one on bed), desk lamp, potted plant on windowsill, plush toy near pillow, smartphone dimly glowing on the bed</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Cinematography Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-film mr-2"></i>Cinematography Details</h3>
+                            <div class="form-group">
+                                <label for="cineTone">Tone (Nada):</label>
+                                <select id="cineTone" class="form-control">
+                                    <option value="">-- Select Tone --</option>
+                                    <option value="Realistic">Realistic</option>
+                                    <option value="Intimate">Intimate</option>
+                                    <option value="Frustrated">Frustrated</option>
+                                    <option value="Moody">Moody</option>
+                                    <option value="Melancholy">Melancholy</option>
+                                    <option value="Romantic">Romantic</option>
+                                    <option value="Cold / Isolated">Cold / Isolated</option>
+                                    <option value="Dreamy / Fantastical">Dreamy / Fantastical</option>
+                                    <option value="Energetic / Pop">Energetic / Pop</option>
+                                    <option value="Heroic / Epic">Heroic / Epic</option>
+                                    <option value="Mysterious / Noir">Mysterious / Noir</option>
+                                    <option value="Surreal / Absurd">Surreal / Absurd</option>
+                                    <option value="Tense / Horror">Tense / Horror</option>
+                                    <option value="Clean / Minimalist">Clean / Minimalist</option>
+                                    <option value="Nostalgic">Nostalgic</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cineLighting">Lighting (Pencahayaan):</label>
+                                <select id="cineLighting" class="form-control">
+                                    <option value="">-- Select Lighting Style --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Audio Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-volume-up mr-2"></i>Audio Details</h3>
+                            <div class="form-group">
+                                <label for="audioAmbient">Ambient (Suara Sekitar):</label>
+                                <textarea id="audioAmbient" class="form-control" rows="2">distant city sounds muffled by window, faint buzz of the desk lamp, rustle of fabric, her short exasperated sighs, silence otherwise</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Color Palette Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-palette mr-2"></i>Color Palette</h3>
+                            <div class="form-group">
+                                <label for="colorPalette">Color Palette (Palet Warna):</label>
+                                <select id="colorPalette" class="form-control">
+                                    <option value="">-- Select Color Palette --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Dialogue Section -->
+                        <div class="form-section text-left">
+                            <h3><i class="fas fa-comments mr-2"></i>Dialogue</h3>
+                            <div id="dialogueEntries">
+                                <!-- Dialogue entries will be added here by JavaScript -->
+                            </div>
+                            <button type="button" class="btn btn-secondary mt-2" id="addDialogueBtn">
+                                <i class="fas fa-plus mr-2"></i>Add Dialogue (Tambah Dialog)
+                            </button>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="dialogueSubtitles">
+                                <label class="form-check-label" for="dialogueSubtitles">Subtitles (Subtitel)</label>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" onclick="generateJson()">
+                                <i class="fas fa-code mr-2"></i>Generate JSON
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="generatePrompt()">
+                                <i class="fas fa-align-left mr-2"></i>Generate Prompt
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="openTab('jsonTab')">JSON Output</button>
+                        <button class="tab-button" onclick="openTab('promptTab')">Text Prompt</button>
+                    </div>
+
+                    <div id="jsonTab" class="tab-content active">
+                        <h2 class="text-white"><i class="fas fa-file-code mr-2"></i>Generated JSON:</h2>
+                        <pre id="generatedJson">Your JSON will appear here...</pre>
+                        <button type="button" class="btn btn-primary" id="copyJsonBtn" onclick="copyJsonToClipboard()">
+                            <i class="far fa-copy mr-2"></i>Copy JSON
+                        </button>
+                    </div>
+
+                    <div id="promptTab" class="tab-content">
+                        <h2 class="text-white"><i class="fas fa-file-alt mr-2"></i>Generated Prompt:</h2>
+                        <div id="generatedPrompt">Your text prompt will appear here...</div>
+                        <button type="button" class="btn btn-success" id="copyPromptBtn" onclick="copyPromptToClipboard()">
+                            <i class="far fa-copy mr-2"></i>Copy Text
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 mx-lg-auto col-md-8 col-10">
+                    <h1 class="text-white">Video Prompt <strong>Generator</strong>.</h1>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-12">
+                    <h4 class="my-4">Contact Info</h4>
+                    <p class="mb-1">
+                        <i class="fa fa-phone footer-icon"></i>
+                        +62xxxxxxxx
+                    </p>
+                    <p>
+                        <a href="#">
+                            <i class="fa fa-envelope footer-icon"></i>
+                            hello@company.com
+                        </a>
+                    </p>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-12">
+                    <h4 class="my-4">Our Studio</h4>
+                    <p class="mb-1">
+                        <i class="fa fa-home footer-icon"></i>
+                        <a href="https://www.facebook.com/groups/aiindonesiaart">AI Indonesia Art</a>
+                    </p>
+                </div>
+
+                <div class="col-lg-4 mx-lg-auto text-center col-md-8 col-12">
+                    <p class="copyright-text">Copyright &copy; 2025 Wadesing</p>
+                </div>
+
+                <div class="col-lg-4 mx-lg-auto col-md-6 col-12">
+                    <ul class="footer-link"></ul>
+                </div>
+
+                <div class="col-lg-3 mx-lg-auto col-md-6 col-12">
+                    <ul class="social-icon">
+                        <li><a href="#" class="fab fa-instagram"></a></li>
+                        <li><a href="#" class="fab fa-twitter"></a></li>
+                        <li><a href="#" class="fab fa-dribbble"></a></li>
+                        <li><a href="#" class="fab fa-behance"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const shotTypeSuggestions = new Map();
+
+        // Data for Camera Motion, Lens, Aperture, and Visual Effect suggestions based on Shot Type
+        shotTypeSuggestions.set("Extreme Wide Shot (EWS)", {
+            cameraMotion: "Slow Pan / Drone Forward",
+            cameraMotionEmotionalImpact: "Isolasi, kebesaran dunia, epik",
+            lens: "Wide-Angle Lens (10mm – 35mm)",
+            aperture: "f/8 – f/11",
+            visualEffect: "Nunjukin skala, lingkungan, lokasi luas, semua fokus"
+        });
+        shotTypeSuggestions.set("Wide Shot (WS) / Long Shot (LS)", {
+            cameraMotion: "Crane up / tilt up",
+            cameraMotionEmotionalImpact: "Bangkit, harapan, kekuatan, reveal dunia karakter",
+            lens: "Wide-Angle Lens (10mm – 35mm)",
+            aperture: "f/5.6 – f/8",
+            visualEffect: "Subjek dan latar kelihatan jelas, establishing shot"
+        });
+        shotTypeSuggestions.set("Full Shot (FS)", {
+            cameraMotion: "Static / Slight Pan",
+            cameraMotionEmotionalImpact: "Netral, dialog natural, nyaman untuk percakapan",
+            lens: "Wide-Angle Lens (10mm – 35mm)",
+            aperture: "f/5.6 – f/8",
+            visualEffect: "Subjek dan latar kelihatan jelas, establishing shot"
+        });
+        shotTypeSuggestions.set("Medium Long Shot (MLS)", {
+            cameraMotion: "Static / Slight Pan",
+            cameraMotionEmotionalImpact: "Netral, dialog natural, nyaman untuk percakapan",
+            lens: "Standard Lens (35mm – 70mm)",
+            aperture: "f/4 – f/5.6",
+            visualEffect: "Subjek mulai jelas, latar masih terbaca"
+        });
+        shotTypeSuggestions.set("Medium Shot (MS)", {
+            cameraMotion: "Static / Slight Pan",
+            cameraMotionEmotionalImpact: "Netral, dialog natural, nyaman untuk percakapan",
+            lens: "Standard Lens (35mm – 70mm)",
+            aperture: "f/2.8 – f/4",
+            visualEffect: "Komunikatif, ideal buat dialog 2 orang"
+        });
+        shotTypeSuggestions.set("Medium Close-Up (MCU)", {
+            cameraMotion: "Whip Pan / Snap Zoom",
+            cameraMotionEmotionalImpact: "Shock, twist, drama intens, energi cepat",
+            lens: "Telephoto Lens (70mm – 200mm+)",
+            aperture: "f/2 – f/2.8",
+            visualEffect: "Fokus ke ekspresi wajah, bokeh mulai kerasa"
+        });
+        shotTypeSuggestions.set("Close-Up (CU)", {
+            cameraMotion: "Push-in (dolly-in)",
+            cameraMotionEmotionalImpact: "Rasa intens, emosi dalam, fokus ke batin karakter",
+            lens: "Telephoto Lens (70mm – 200mm+)",
+            aperture: "f/1.8 – f/2.5",
+            visualEffect: "Emosi kuat, latar blur, subjek terisolasi"
+        });
+        shotTypeSuggestions.set("Extreme Close-Up (ECU)", {
+            cameraMotion: "Static or Focus Shift",
+            cameraMotionEmotionalImpact: "Detail, kelembutan, fokus produk atau perasaan",
+            lens: "Macro Lens (50mm – 100mm khusus)",
+            aperture: "f/2 – f/4",
+            visualEffect: "Detail ekstrem: mata, jari, produk — DoF super tipis"
+        });
+        shotTypeSuggestions.set("Over-the-Shoulder (OTS)", {
+            cameraMotion: "Focus Pull",
+            cameraMotionEmotionalImpact: "Perubahan fokus batin, perspektif ganda",
+            lens: "Standard Lens (35mm – 70mm)",
+            aperture: "f/2.8 – f/4",
+            visualEffect: "Fokus ke dialog, separasi subjek + background"
+        });
+        shotTypeSuggestions.set("Two-Shot (MS/WS)", {
+            cameraMotion: "Steadicam tracking",
+            cameraMotionEmotionalImpact: "Koneksi antar karakter, hubungan dinamis",
+            lens: "Standard Lens (35mm – 70mm)",
+            aperture: "f/2.8 – f/5.6",
+            visualEffect: "Komunikasi antar karakter, tetap kebaca dua orang"
+        });
+        shotTypeSuggestions.set("Tracking / Dolly", {
+            cameraMotion: "Steadicam tracking",
+            cameraMotionEmotionalImpact: "Jaga subjek tetap fokus saat bergerak",
+            lens: "Standard Lens (35mm – 70mm)", // Adjusted to a common range for tracking
+            aperture: "f/2.8 – f/4",
+            visualEffect: "Jaga subjek tetap fokus saat bergerak"
+        });
+        shotTypeSuggestions.set("Crane / Drone Shot", {
+            cameraMotion: "Crane up / tilt up",
+            cameraMotionEmotionalImpact: "Jaga semua fokus dari ketinggian",
+            lens: "Ultra-Wide Lens (< 16mm)", // Adjusted for wide aerial shots
+            aperture: "f/5.6 – f/11",
+            visualEffect: "Jaga semua fokus dari ketinggian"
+        });
+        shotTypeSuggestions.set("Portrait Shot", {
+            cameraMotion: "Static / Slight Pan",
+            cameraMotionEmotionalImpact: "Subjek standout, creamy background, sinematik",
+            lens: "Telephoto Lens (70mm – 200mm+)", // Common for portraits
+            aperture: "f/1.4 – f/2.2",
+            visualEffect: "Portrait DoF"
+        });
+
+        const toneDetails = new Map();
+        toneDetails.set("Realistic", {
+            lighting: "Natural light, soft bounce, motivated practicals",
+            colorPalette: "Earth tones, beige, soft white, light blue, moss green, natural skin tones"
+        });
+        toneDetails.set("Intimate", {
+            lighting: "Soft warm key, subtle fill, shallow DoF",
+            colorPalette: "Warm amber, dusty rose, light brown, honey tone, soft peach, natural skin glow"
+        });
+        toneDetails.set("Frustrated", {
+            lighting: "Hard sidelight/toplight, contrast tinggi",
+            colorPalette: "Steel blue, charcoal gray, dirty green, muted maroon, desaturated skin tones"
+        });
+        toneDetails.set("Moody", {
+            lighting: "Low key, directional soft light, haze",
+            colorPalette: "Deep teal, dark olive, burnt umber, muted cyan, navy, cold amber highlight"
+        });
+        toneDetails.set("Melancholy", {
+            lighting: "Cool soft key, fog, minimal fill",
+            colorPalette: "Desaturated blue-gray, soft lavender, pale cyan, dusty lilac, faded olive"
+        });
+        toneDetails.set("Romantic", {
+            lighting: "Warm soft backlight, diffusion",
+            colorPalette: "Golden peach, blush pink, champagne, soft red-orange, warm sepia, sunset amber"
+        });
+        toneDetails.set("Cold / Isolated", {
+            lighting: "Harsh daylight, no fill, blue gels",
+            colorPalette: "Icy blue, cool gray, pale turquoise, desaturated green, flat white, silver"
+        });
+        toneDetails.set("Dreamy / Fantastical", {
+            lighting: "Soft haze, pastel gels",
+            colorPalette: "Lavender, pastel yellow, soft pink, mint green, light periwinkle, dreamy peach"
+        });
+        toneDetails.set("Energetic / Pop", {
+            lighting: "Neon light, vibrant key",
+            colorPalette: "Electric cyan, hot pink, lime green, punchy orange, ultraviolet, digital purple"
+        });
+        toneDetails.set("Heroic / Epic", {
+            lighting: "Strong key from above, rim light",
+            colorPalette: "Deep gold, royal blue, blood red, charcoal, sharp silver, sunlit bronze"
+        });
+        toneDetails.set("Mysterious / Noir", {
+            lighting: "Hard low key, shadow play",
+            colorPalette: "Jet black, warm gray, dirty white, blood red, faded sepia, monochrome desat"
+        });
+        toneDetails.set("Surreal / Absurd", {
+            lighting: "Unnatural angles, color clash",
+            colorPalette: "Acid green, neon purple, coral red, pale orange, glitch pink, surreal cyan"
+        });
+        toneDetails.set("Tense / Horror", {
+            lighting: "Top light, underfill, flicker",
+            colorPalette: "Sickly green, dirty yellow, cold blue, muted brown, blood tone, black-blue"
+        });
+        toneDetails.set("Clean / Minimalist", {
+            lighting: "High key soft wrap light",
+            colorPalette: "Pure white, soft gray, muted sky blue, modern beige, pastel mint, light chrome"
+        });
+        toneDetails.set("Nostalgic", {
+            lighting: "Golden hour + haze",
+            colorPalette: "Sepia, faded orange, vintage brown, mustard yellow, dusty rose, 90s film tone"
+        });
+
+        function updateToneLightingSuggestion() {
+            const cineToneSelect = document.getElementById('cineTone');
+            const cineLightingSelect = document.getElementById('cineLighting');
+            const colorPaletteSelect = document.getElementById('colorPalette');
+            const selectedTone = cineToneSelect.value;
+
+            // Clear existing options except the default one
+            cineLightingSelect.innerHTML = '<option value="">-- Select Lighting Style --</option>';
+            colorPaletteSelect.innerHTML = '<option value="">-- Select Color Palette --</option>';
+
+            if (toneDetails.has(selectedTone)) {
+                const details = toneDetails.get(selectedTone);
+
+                // Add lighting option
+                const lightingOption = document.createElement('option');
+                lightingOption.value = details.lighting;
+                lightingOption.textContent = details.lighting;
+                cineLightingSelect.appendChild(lightingOption);
+
+                // Add color palette option
+                const colorPaletteOption = document.createElement('option');
+                colorPaletteOption.value = details.colorPalette;
+                colorPaletteOption.textContent = details.colorPalette;
+                colorPaletteSelect.appendChild(colorPaletteOption);
+
+                // Set selected value for lighting and color palette
+                cineLightingSelect.value = details.lighting;
+                colorPaletteSelect.value = details.colorPalette;
+            }
+        }
+
+        function updateShotSuggestions() {
+            const shotTypeSelect = document.getElementById('shotType');
+            const selectedShotType = shotTypeSelect.value;
+
+            const cameraMotionSelect = document.getElementById('shotCameraMotion');
+            const lensSelect = document.getElementById('lens');
+            const apertureSelect = document.getElementById('aperture');
+            const visualEffectSelect = document.getElementById('visualEffect');
+
+            const cameraMotionSuggestionSpan = document.getElementById('cameraMotionSuggestion');
+            const lensSuggestionSpan = document.getElementById('lensSuggestion');
+            const apertureSuggestionSpan = document.getElementById('apertureSuggestion');
+
+            const suggestion = shotTypeSuggestions.get(selectedShotType);
+
+            if (suggestion) {
+                // Update dropdowns with suggested values
+                cameraMotionSelect.value = suggestion.cameraMotion;
+                lensSelect.value = suggestion.lens;
+                apertureSelect.value = suggestion.aperture;
+                visualEffectSelect.value = suggestion.visualEffect;
+
+                // Update suggestion text
+                cameraMotionSuggestionSpan.textContent = `Saran: ${suggestion.cameraMotion}, Kesan Emosional: ${suggestion.cameraMotionEmotionalImpact}`;
+                lensSuggestionSpan.textContent = `Saran: ${suggestion.lens}`;
+                apertureSuggestionSpan.textContent = `Saran: ${suggestion.aperture}`;
+            } else {
+                // Clear dropdowns and suggestions if no match
+                cameraMotionSelect.value = "";
+                lensSelect.value = "";
+                apertureSelect.value = "";
+                visualEffectSelect.value = "";
+
+                cameraMotionSuggestionSpan.textContent = '';
+                lensSuggestionSpan.textContent = '';
+                apertureSuggestionSpan.textContent = '';
+            }
+        }
+
+        function generateJson() {
+            // Construct composition string from individual inputs
+            const shotType = document.getElementById('shotType').value;
+            const lens = document.getElementById('lens').value;
+            const aperture = document.getElementById('aperture').value;
+            const camera = document.getElementById('camera').value;
+            const visualEffect = document.getElementById('visualEffect').value;
+
+            let compositionString = "";
+            if (shotType) compositionString += shotType;
+            if (lens) compositionString += (compositionString ? ", " : "") + lens;
+            if (aperture) compositionString += (compositionString ? ", " : "") + aperture;
+            if (camera) compositionString += (compositionString ? ", " : "") + camera;
+            if (visualEffect) compositionString += (compositionString ? ", " : "") + visualEffect;
+
+            const data = {
+                shot: {
+                    composition: compositionString || null,
+                    camera_motion: document.getElementById('shotCameraMotion').value || null,
+                    frame_rate: document.getElementById('shotFrameRate').value || null,
+                    film_grain: document.getElementById('shotFilmGrain').value || null
+                },
+                subject: {
+                    description: document.getElementById('subjectDescription').value || null,
+                    wardrobe: document.getElementById('subjectWardrobe').value || null
+                },
+                scene: {
+                    location: document.getElementById('sceneLocation').value || null,
+                    time_of_day: document.getElementById('sceneTimeOfDay').value || null,
+                    environment: document.getElementById('sceneEnvironment').value || null
+                },
+                visual_details: {
+                    action: document.getElementById('visualAction').value || null,
+                    props: document.getElementById('visualProps').value || null
+                },
+                cinematography: {
+                    lighting: document.getElementById('cineLighting').value || null,
+                    tone: document.getElementById('cineTone').value || null
+                },
+                audio: {
+                    ambient: document.getElementById('audioAmbient').value || null
+                },
+                color_palette: document.getElementById('colorPalette').value || null,
+                dialogue: {
+                    entries: [], // Initialize as empty array
+                    subtitles: document.getElementById('dialogueSubtitles').checked
+                }
+            };
+
+            // Handle Dialogue entries
+            const dialogueEntries = document.querySelectorAll('.dialogue-entry');
+            dialogueEntries.forEach(entryDiv => {
+                const character = entryDiv.querySelector('.dialogue-character').value.trim();
+                const line = entryDiv.querySelector('.dialogue-line').value.trim();
+                if (character || line) { // Only add if either character or line has content
+                    data.dialogue.entries.push({
+                        character: character || null,
+                        line: line || null
+                    });
+                }
+            });
+
+            // Clean up empty objects/nulls for a cleaner JSON output
+            for (const key in data) {
+                if (typeof data[key] === 'object' && data[key] !== null) {
+                    for (const subKey in data[key]) {
+                        if (data[key][subKey] === null || data[key][subKey] === '') {
+                            delete data[key][subKey];
+                        }
+                    }
+                    if (Object.keys(data[key]).length === 0) {
+                        data[key] = null; // Set parent object to null if all children are empty
+                    }
+                } else if (data[key] === null || data[key] === '') {
+                    data[key] = null;
+                }
+            }
+
+            // Special handling for dialogue.subtitles if entries is empty and subtitles is false
+            if (data.dialogue && data.dialogue.entries.length === 0 && !data.dialogue.subtitles) {
+                data.dialogue = null;
+            }
+
+            document.getElementById('generatedJson').textContent = JSON.stringify(data, null, 2);
+            openTab('jsonTab');
+        }
+
+        function generatePrompt() {
+            // Get all form values
+            const shotType = document.getElementById('shotType').value;
+            const lens = document.getElementById('lens').value;
+            const aperture = document.getElementById('aperture').value;
+            const camera = document.getElementById('camera').value;
+            const visualEffect = document.getElementById('visualEffect').value;
+            const cameraMotion = document.getElementById('shotCameraMotion').value;
+            const frameRate = document.getElementById('shotFrameRate').value;
+            const filmGrain = document.getElementById('shotFilmGrain').value;
+            
+            const subjectDesc = document.getElementById('subjectDescription').value;
+            const wardrobe = document.getElementById('subjectWardrobe').value;
+            
+            const location = document.getElementById('sceneLocation').value;
+            const timeOfDay = document.getElementById('sceneTimeOfDay').value;
+            const environment = document.getElementById('sceneEnvironment').value;
+            
+            const action = document.getElementById('visualAction').value;
+            const props = document.getElementById('visualProps').value;
+            
+            const lighting = document.getElementById('cineLighting').value;
+            const tone = document.getElementById('cineTone').value;
+            
+            const ambient = document.getElementById('audioAmbient').value;
+            const colorPalette = document.getElementById('colorPalette').value;
+            
+            // Handle Dialogue entries
+            let dialogueText = '';
+            const dialogueEntries = document.querySelectorAll('.dialogue-entry');
+            dialogueEntries.forEach(entryDiv => {
+                const character = entryDiv.querySelector('.dialogue-character').value.trim();
+                const line = entryDiv.querySelector('.dialogue-line').value.trim();
+                if (character && line) {
+                    dialogueText += `${character}: "${line}"\n`;
+                } else if (line) {
+                    dialogueText += `"${line}"\n`;
+                }
+            });
+
+            // Build the prompt text
+            let promptText = '';
+
+            // Shot details
+            if (shotType || lens || aperture || camera || visualEffect || cameraMotion || frameRate || filmGrain) {
+                promptText += 'SHOT DETAILS:\n';
+                if (shotType) promptText += `- Shot Type: ${shotType}\n`;
+                if (lens) promptText += `- Lens: ${lens}\n`;
+                if (aperture) promptText += `- Aperture: ${aperture}\n`;
+                if (camera) promptText += `- Camera: ${camera}\n`;
+                if (visualEffect) promptText += `- Visual Effect: ${visualEffect}\n`;
+                if (cameraMotion) promptText += `- Camera Motion: ${cameraMotion}\n`;
+                if (frameRate) promptText += `- Frame Rate: ${frameRate}\n`;
+                if (filmGrain) promptText += `- Film Grain: ${filmGrain}\n`;
+                promptText += '\n';
+            }
+
+            // Subject details
+            if (subjectDesc || wardrobe) {
+                promptText += 'SUBJECT DETAILS:\n';
+                if (subjectDesc) promptText += `- Description: ${subjectDesc}\n`;
+                if (wardrobe) promptText += `- Wardrobe: ${wardrobe}\n`;
+                promptText += '\n';
+            }
+
+            // Scene details
+            if (location || timeOfDay || environment) {
+                promptText += 'SCENE DETAILS:\n';
+                if (location) promptText += `- Location: ${location}\n`;
+                if (timeOfDay) promptText += `- Time of Day: ${timeOfDay}\n`;
+                if (environment) promptText += `- Environment: ${environment}\n`;
+                promptText += '\n';
+            }
+
+            // Visual details
+            if (action || props) {
+                promptText += 'VISUAL DETAILS:\n';
+                if (action) promptText += `- Action: ${action}\n`;
+                if (props) promptText += `- Props: ${props}\n`;
+                promptText += '\n';
+            }
+
+            // Cinematography
+            if (lighting || tone) {
+                promptText += 'CINEMATOGRAPHY:\n';
+                if (lighting) promptText += `- Lighting: ${lighting}\n`;
+                if (tone) promptText += `- Tone: ${tone}\n`;
+                promptText += '\n';
+            }
+
+            // Audio
+            if (ambient) {
+                promptText += 'AUDIO:\n';
+                promptText += `- Ambient: ${ambient}\n`;
+                promptText += '\n';
+            }
+
+            // Color palette
+            if (colorPalette) {
+                promptText += 'COLOR PALETTE:\n';
+                promptText += `- Colors: ${colorPalette}\n`;
+                promptText += '\n';
+            }
+
+            // Dialogue
+            if (dialogueText) {
+                promptText += 'DIALOGUE:\n';
+                promptText += dialogueText;
+            }
+
+            document.getElementById('generatedPrompt').textContent = promptText;
+            openTab('promptTab');
+        }
+
+        async function copyJsonToClipboard() {
+            const jsonText = document.getElementById('generatedJson').textContent;
+            try {
+                await navigator.clipboard.writeText(jsonText);
+                const copyBtn = document.getElementById('copyJsonBtn');
+                copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="far fa-copy mr-2"></i>Copy JSON';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy JSON. Please copy manually.');
+            }
+        }
+
+        async function copyPromptToClipboard() {
+            const promptText = document.getElementById('generatedPrompt').textContent;
+            try {
+                await navigator.clipboard.writeText(promptText);
+                const copyBtn = document.getElementById('copyPromptBtn');
+                copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="far fa-copy mr-2"></i>Copy Text';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy text. Please copy manually.');
+            }
+        }
+
+        function openTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            // Deactivate all tab buttons
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+
+            // Activate the selected tab
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`button[onclick="openTab('${tabId}')"]`).classList.add('active');
+        }
+
+        let dialogueEntryCount = 0; // To keep track of unique IDs
+
+        function addDialogueEntry(character = '', line = '') {
+            const dialogueEntriesDiv = document.getElementById('dialogueEntries');
+            const newEntryDiv = document.createElement('div');
+            newEntryDiv.classList.add('dialogue-entry', 'fade-in');
+
+            const currentId = dialogueEntryCount++;
+
+            newEntryDiv.innerHTML = `
+                <div class="form-group">
+                    <label for="dialogueCharacter_${currentId}">Character (Karakter):</label>
+                    <input type="text" id="dialogueCharacter_${currentId}" class="form-control dialogue-character" value="${character}">
+                </div>
+                <div class="form-group">
+                    <label for="dialogueLine_${currentId}">Line (Baris Dialog):</label>
+                    <textarea id="dialogueLine_${currentId}" class="form-control dialogue-line" rows="2">${line}</textarea>
+                </div>
+                <button type="button" class="remove-dialogue-btn" title="Remove this dialogue">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            dialogueEntriesDiv.appendChild(newEntryDiv);
+
+            // Add event listener for the new remove button
+            newEntryDiv.querySelector('.remove-dialogue-btn').addEventListener('click', function() {
+                newEntryDiv.classList.add('fade-out');
+                setTimeout(() => {
+                    newEntryDiv.remove();
+                }, 300);
+            });
+        }
+
+        // Initial call to add one empty dialogue entry when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const shotTypeSelect = document.getElementById('shotType');
+            shotTypeSelect.addEventListener('change', updateShotSuggestions);
+            document.getElementById('addDialogueBtn').addEventListener('click', () => addDialogueEntry());
+            document.getElementById('cineTone').addEventListener('change', updateToneLightingSuggestion);
+
+            // Set a default tone and update dependent fields on load
+            document.getElementById('cineTone').value = 'Frustrated';
+
+            // Initial update in case a default value is selected
+            updateShotSuggestions();
+            updateToneLightingSuggestion(); // Call this on load to set initial values
+            addDialogueEntry(); // Add the first empty dialogue entry dynamically
+        });
+    </script>
+</body>
+</html>
