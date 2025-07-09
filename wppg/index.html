@@ -77,6 +77,14 @@
         button.generate-btn:hover {
           background: #218838;
         }
+        button.json-btn {
+          background: #17a2b8;
+          font-size: 18px;
+          padding: 15px;
+        }
+        button.json-btn:hover {
+          background: #138496;
+        }
         textarea {
           resize: vertical;
           margin-top: 15px;
@@ -131,7 +139,7 @@
           background: #f8f9fa;
           border-radius: 10px;
         }
-        #resultPrompt {
+        #resultPrompt, #jsonResult {
           font-family: monospace;
           height: 200px;
         }
@@ -210,6 +218,14 @@
           justify-content: flex-end;
           gap: 10px;
           margin-top: 20px;
+        }
+        .button-group {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        .button-group button {
+          flex: 1;
         }
     </style>
 </head>
@@ -424,19 +440,35 @@
             <input type="text" id="copyright-text" placeholder="e.g., © 2023 YourCompany. All rights reserved.">
         </div>
         
-        <!-- Generate Button -->
-        <button id="generate-btn" class="generate-btn">Generate Preview Prompt</button>
+        <!-- Generate Buttons -->
+        <div class="button-group">
+            <button id="generate-btn" class="generate-btn">Generate Prompt</button>
+            <button id="generate-json-btn" class="json-btn">Generate JSON</button>
+        </div>
         
         <!-- Result Section -->
         <div class="preview-container hidden" id="result-container">
             <h2>Your Website Preview Prompt</h2>
-            <div id="empty-prompt-message" class="empty-prompt">Please fill in some options and click "Generate Preview Prompt"</div>
+            <div id="empty-prompt-message" class="empty-prompt">Please fill in some options and click "Generate Prompt"</div>
             <textarea id="resultPrompt" readonly class="hidden"></textarea>
             <button id="copyBtn" class="copy-btn hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                 </svg>
-                Copy to Clipboard
+                Copy Prompt
+            </button>
+        </div>
+        
+        <!-- JSON Result Section -->
+        <div class="preview-container hidden" id="json-container">
+            <h2>Your JSON Prompt</h2>
+            <div id="empty-json-message" class="empty-prompt">Please fill in some options and click "Generate JSON"</div>
+            <textarea id="jsonResult" readonly class="hidden"></textarea>
+            <button id="copyJsonBtn" class="copy-btn hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                Copy JSON
             </button>
         </div>
     </div>
@@ -823,10 +855,53 @@
                 });
             });
             
-            // Copy to clipboard
+            // Generate JSON button
+            document.getElementById('generate-json-btn').addEventListener('click', function() {
+                const jsonPrompt = generateJsonPrompt();
+                
+                // Show/hide JSON result elements
+                const jsonContainer = document.getElementById('json-container');
+                const emptyJson = document.getElementById('empty-json-message');
+                const jsonResult = document.getElementById('jsonResult');
+                const copyJsonBtn = document.getElementById('copyJsonBtn');
+                
+                jsonContainer.classList.remove('hidden');
+                
+                if (jsonPrompt && jsonPrompt.visual && Object.keys(jsonPrompt.visual).length > 0) {
+                    emptyJson.classList.add('hidden');
+                    jsonResult.classList.remove('hidden');
+                    copyJsonBtn.classList.remove('hidden');
+                } else {
+                    emptyJson.classList.remove('hidden');
+                    jsonResult.classList.add('hidden');
+                    copyJsonBtn.classList.add('hidden');
+                }
+                
+                window.scrollTo({
+                    top: jsonContainer.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Copy to clipboard (prompt)
             document.getElementById('copyBtn').addEventListener('click', function() {
                 const resultPrompt = document.getElementById('resultPrompt');
                 resultPrompt.select();
+                document.execCommand('copy');
+                
+                // Change button text temporarily
+                const originalText = this.innerHTML;
+                this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+            
+            // Copy to clipboard (JSON)
+            document.getElementById('copyJsonBtn').addEventListener('click', function() {
+                const jsonResult = document.getElementById('jsonResult');
+                jsonResult.select();
                 document.execCommand('copy');
                 
                 // Change button text temporarily
@@ -981,7 +1056,7 @@
                 const copyrightText = document.getElementById('copyright-text').value;
                 
                 // Build the prompt
-                let prompt = `Generate a clean, modern 2D digital for a ${layout === 'mobile' ? 'mobile' : 'desktop'} landing page website design preview image with the following specifications:\n\n`;
+                let prompt = `Generate a clean, modern 2D digital for a ${layout === 'mobile' ? 'mobile' : 'desktop'} website design preview mockup image with the following specifications:\n\n`;
                 
                 // Header
                 if (headerContent) {
@@ -1056,6 +1131,204 @@
                 
                 document.getElementById('resultPrompt').value = prompt;
                 return prompt;
+            }
+            
+            // Generate JSON prompt
+            function generateJsonPrompt() {
+                const layout = document.querySelector('input[name="layout"]:checked').value;
+                const titleText = document.getElementById('title-text').value;
+                
+                const jsonData = {
+                    visual: {
+                        mockup: "websiteDesign",
+                        layout: layout,
+                        sections: {}
+                    }
+                };
+                
+                // Header
+                if (layout === 'mobile') {
+                    const hamburgerPosition = document.getElementById('hamburger-position').value;
+                    jsonData.visual.sections.header = {
+                        type: "mobile",
+                        hamburgerPosition: hamburgerPosition,
+                        title: titleText || undefined
+                    };
+                } else {
+                    const menuItems = [];
+                    document.querySelectorAll('.dynamic-input.menu-item').forEach(item => {
+                        const title = item.querySelector('.menu-title').value;
+                        if (title) menuItems.push(title);
+                    });
+                    
+                    jsonData.visual.sections.header = {
+                        type: "desktop",
+                        title: titleText || undefined,
+                        menuItems: menuItems.length > 0 ? menuItems : undefined
+                    };
+                }
+                
+                // Hero section
+                if (layout !== 'mobile') {
+                    const heroDescription = document.getElementById('hero-description').value;
+                    if (heroDescription) {
+                        jsonData.visual.sections.hero = {
+                            description: heroDescription,
+                            position: document.querySelector('input[name="hero-position"]:checked').value
+                        };
+                    }
+                }
+                
+                // Text content
+                if (layout !== 'mobile') {
+                    const textContent = [];
+                    document.querySelectorAll('.dynamic-input.text-content').forEach(item => {
+                        const content = item.querySelector('.text-content').value;
+                        if (content) {
+                            textContent.push({
+                                type: item.querySelector('.text-type').value,
+                                content: content,
+                                position: item.querySelector('.text-position').value
+                            });
+                        }
+                    });
+                    
+                    if (textContent.length > 0) {
+                        jsonData.visual.sections.textContent = textContent;
+                    }
+                }
+                
+                // Testimonials
+                if (layout !== 'mobile' && !document.getElementById('testimonial-options').classList.contains('hidden')) {
+                    const testimonials = [];
+                    document.querySelectorAll('.dynamic-input.testimonial').forEach(item => {
+                        const text = item.querySelector('.testimonial-text').value;
+                        if (text) {
+                            const testimonial = {
+                                text: text
+                            };
+                            
+                            if (document.getElementById('include-photos').checked) {
+                                testimonial.photo = item.querySelector('.customer-photo').value || undefined;
+                            }
+                            
+                            if (document.getElementById('include-names').checked) {
+                                testimonial.name = item.querySelector('.customer-name').value || undefined;
+                            }
+                            
+                            if (document.getElementById('include-ratings').checked) {
+                                testimonial.rating = item.querySelector('.star-rating').value || undefined;
+                            }
+                            
+                            testimonials.push(testimonial);
+                        }
+                    });
+                    
+                    if (testimonials.length > 0) {
+                        jsonData.visual.sections.testimonials = {
+                            style: document.getElementById('testimonial-style').value,
+                            background: document.getElementById('testimonial-bg').value,
+                            items: testimonials
+                        };
+                    }
+                }
+                
+                // FAQ
+                if (layout !== 'mobile' && !document.getElementById('faq-options').classList.contains('hidden')) {
+                    const faqItems = [];
+                    document.querySelectorAll('.dynamic-input.faq').forEach(item => {
+                        const question = item.querySelector('.faq-question').value;
+                        const answer = item.querySelector('.faq-answer').value;
+                        
+                        if (question && answer) {
+                            faqItems.push({
+                                question: question,
+                                answer: answer
+                            });
+                        }
+                    });
+                    
+                    if (faqItems.length > 0) {
+                        jsonData.visual.sections.faq = {
+                            items: faqItems
+                        };
+                    }
+                }
+                
+                // Pricing
+                if (layout !== 'mobile' && !document.getElementById('pricing-options').classList.contains('hidden')) {
+                    const plans = [];
+                    document.querySelectorAll('.dynamic-input.pricing').forEach((item, index) => {
+                        const name = item.querySelector('.plan-name').value;
+                        if (name) {
+                            const plan = {
+                                name: name,
+                                price: item.querySelector('.plan-price').value || undefined,
+                                features: item.querySelector('.plan-features').value ? 
+                                    item.querySelector('.plan-features').value.split(',').map(f => f.trim()) : undefined,
+                                cta: item.querySelector('.plan-cta').value || undefined
+                            };
+                            
+                            if (document.getElementById('highlight-plan').checked && 
+                                (index + 1) == document.getElementById('highlight-position').value) {
+                                plan.highlight = document.getElementById('highlight-text').value || "Popular";
+                            }
+                            
+                            plans.push(plan);
+                        }
+                    });
+                    
+                    if (plans.length > 0) {
+                        jsonData.visual.sections.pricing = {
+                            plans: plans
+                        };
+                    }
+                }
+                
+                // CTA
+                if (layout !== 'mobile') {
+                    const ctaTitle = document.getElementById('cta-title').value;
+                    const ctaSubtitle = document.getElementById('cta-subtitle').value;
+                    const ctaButtonText = document.getElementById('cta-button-text').value;
+                    
+                    if (ctaTitle || ctaSubtitle || ctaButtonText) {
+                        jsonData.visual.sections.cta = {
+                            title: ctaTitle || undefined,
+                            subtitle: ctaSubtitle || undefined,
+                            background: document.getElementById('cta-bg').value,
+                            buttonStyle: document.getElementById('cta-button-style').value,
+                            buttonText: ctaButtonText || undefined
+                        };
+                    }
+                }
+                
+                // Footer
+                if (layout !== 'mobile') {
+                    const footerLinks = document.getElementById('footer-links').value;
+                    const footerSocial = document.getElementById('footer-social').value;
+                    const footerContent = document.getElementById('footer-content').value;
+                    const copyrightText = document.getElementById('copyright-text').value;
+                    
+                    if (footerLinks || footerSocial || footerContent || copyrightText) {
+                        jsonData.visual.sections.footer = {
+                            links: footerLinks ? footerLinks.split(',').map(f => f.trim()) : undefined,
+                            social: footerSocial ? footerSocial.split(',').map(f => f.trim()) : undefined,
+                            content: footerContent || undefined,
+                            copyright: copyrightText || undefined
+                        };
+                    }
+                }
+                
+                // General instructions
+                jsonData.visual.instructions = {
+                    quality: "high",
+                    style: "clean modern",
+                    focus: layout === 'mobile' ? "header only" : "full page"
+                };
+                
+                const jsonString = JSON.stringify(jsonData, null, 2);
+                document.getElementById('jsonResult').value = jsonString;
+                return jsonData;
             }
             
             // Initial setup
