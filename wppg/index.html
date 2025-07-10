@@ -485,7 +485,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Mobile version warning modal
             const mobileWarningModal = document.getElementById('mobileWarningModal');
@@ -493,6 +493,18 @@
             const desktopLayoutRadio = document.getElementById('desktop-layout');
             const cancelMobileBtn = document.getElementById('cancelMobileBtn');
             const confirmMobileBtn = document.getElementById('confirmMobileBtn');
+            
+            // Section limit modal
+            const sectionLimitModal = document.getElementById('sectionLimitModal');
+            const cancelHtmlBtn = document.getElementById('cancelHtmlBtn');
+            const confirmHtmlBtn = document.getElementById('confirmHtmlBtn');
+            
+            // Button groups
+            const standardButtons = document.getElementById('standard-buttons');
+            const htmlButtons = document.getElementById('html-buttons');
+            
+            // Track selected sections
+            let selectedSections = new Set();
             
             mobileLayoutRadio.addEventListener('click', function() {
                 if (!this.checked) return;
@@ -511,14 +523,35 @@
                 mobileWarningModal.style.display = 'none';
                 mobileLayoutRadio.checked = true;
                 mobileLayoutRadio.dispatchEvent(new Event('change'));
+                
+                // Set mobile defaults
+                document.getElementById('hero-full').checked = true;
+                document.querySelectorAll('.text-position').forEach(select => {
+                    select.value = 'center';
+                });
             });
             
-            // Close modal when clicking outside
+            // Section limit modal handlers
+            cancelHtmlBtn.addEventListener('click', function() {
+                sectionLimitModal.style.display = 'none';
+            });
+            
+            confirmHtmlBtn.addEventListener('click', function() {
+                sectionLimitModal.style.display = 'none';
+                // Switch to HTML mode
+                standardButtons.classList.add('hidden');
+                htmlButtons.classList.remove('hidden');
+            });
+            
+            // Close modals when clicking outside
             window.addEventListener('click', function(event) {
                 if (event.target === mobileWarningModal) {
                     mobileWarningModal.style.display = 'none';
                     desktopLayoutRadio.checked = true;
                     desktopLayoutRadio.dispatchEvent(new Event('change'));
+                }
+                if (event.target === sectionLimitModal) {
+                    sectionLimitModal.style.display = 'none';
                 }
             });
             
@@ -551,6 +584,14 @@
                     if (this.value === 'mobile') {
                         mobileHeaderOptions.classList.remove('hidden');
                         desktopHeaderOptions.classList.add('hidden');
+                        
+                        // Force full width for hero image in mobile
+                        document.getElementById('hero-full').checked = true;
+                        
+                        // Force center position for all text content in mobile
+                        document.querySelectorAll('.text-position').forEach(select => {
+                            select.value = 'center';
+                        });
                     } else {
                         mobileHeaderOptions.classList.add('hidden');
                         desktopHeaderOptions.classList.remove('hidden');
@@ -558,6 +599,56 @@
                     generatePrompt();
                 });
             });
+            
+            // Track section selection
+            function updateSelectedSections() {
+                selectedSections.clear();
+                
+                // Header is always selected
+                selectedSections.add('header');
+                
+                // Check hero section
+                if (document.getElementById('hero-description').value.trim() !== '') {
+                    selectedSections.add('hero');
+                }
+                
+                // Check text content
+                if (document.querySelectorAll('.dynamic-input.text-content').length > 0) {
+                    selectedSections.add('text');
+                }
+                
+                // Check testimonials
+                if (!document.getElementById('testimonial-options').classList.contains('hidden')) {
+                    selectedSections.add('testimonials');
+                }
+                
+                // Check FAQ
+                if (!document.getElementById('faq-options').classList.contains('hidden')) {
+                    selectedSections.add('faq');
+                }
+                
+                // Check pricing
+                if (!document.getElementById('pricing-options').classList.contains('hidden')) {
+                    selectedSections.add('pricing');
+                }
+                
+                // Check CTA (always count as a section if any field is filled)
+                if (document.getElementById('cta-title').value.trim() !== '' || 
+                    document.getElementById('cta-subtitle').value.trim() !== '' || 
+                    document.getElementById('cta-button-text').value.trim() !== '') {
+                    selectedSections.add('cta');
+                }
+                
+                // Check footer (always count as a section if any field is filled)
+                if (document.getElementById('footer-links').value.trim() !== '' || 
+                    document.getElementById('footer-social').value.trim() !== '' || 
+                    document.getElementById('footer-content').value.trim() !== '' || 
+                    document.getElementById('copyright-text').value.trim() !== '') {
+                    selectedSections.add('footer');
+                }
+                
+                return selectedSections.size;
+            }
             
             // Desktop menu items
             let menuItemCount = 0;
@@ -622,6 +713,11 @@
                 
                 container.appendChild(textDiv);
                 
+                // Set to center if mobile
+                if (document.getElementById('mobile-layout').checked) {
+                    textDiv.querySelector('.text-position').value = 'center';
+                }
+                
                 // Add event listener to remove button
                 textDiv.querySelector('.remove-text-btn').addEventListener('click', function() {
                     container.removeChild(textDiv);
@@ -638,7 +734,15 @@
             
             // Testimonial section
             document.getElementById('add-testimonial-btn').addEventListener('click', function() {
-                document.getElementById('testimonial-options').classList.toggle('hidden');
+                const testimonialOptions = document.getElementById('testimonial-options');
+                testimonialOptions.classList.toggle('hidden');
+                
+                // Check section count
+                const sectionCount = updateSelectedSections();
+                if (sectionCount > 4 && !testimonialOptions.classList.contains('hidden')) {
+                    sectionLimitModal.style.display = 'block';
+                }
+                
                 updateTestimonialFields();
                 generatePrompt();
             });
@@ -717,7 +821,15 @@
             
             // FAQ section
             document.getElementById('add-faq-btn').addEventListener('click', function() {
-                document.getElementById('faq-options').classList.toggle('hidden');
+                const faqOptions = document.getElementById('faq-options');
+                faqOptions.classList.toggle('hidden');
+                
+                // Check section count
+                const sectionCount = updateSelectedSections();
+                if (sectionCount > 4 && !faqOptions.classList.contains('hidden')) {
+                    sectionLimitModal.style.display = 'block';
+                }
+                
                 updateFAQFields();
                 generatePrompt();
             });
@@ -756,7 +868,15 @@
             
             // Pricing section
             document.getElementById('add-pricing-btn').addEventListener('click', function() {
-                document.getElementById('pricing-options').classList.toggle('hidden');
+                const pricingOptions = document.getElementById('pricing-options');
+                pricingOptions.classList.toggle('hidden');
+                
+                // Check section count
+                const sectionCount = updateSelectedSections();
+                if (sectionCount > 4 && !pricingOptions.classList.contains('hidden')) {
+                    sectionLimitModal.style.display = 'block';
+                }
+                
                 updatePricingFields();
                 updateHighlightPositionOptions();
                 generatePrompt();
@@ -883,6 +1003,34 @@
                 });
             });
             
+            // Generate HTML button
+            document.getElementById('generate-html-btn').addEventListener('click', function() {
+                const htmlCode = generateHtmlCode();
+                
+                // Show/hide HTML result elements
+                const htmlContainer = document.getElementById('html-container');
+                const emptyHtml = document.getElementById('empty-html-message');
+                const htmlResult = document.getElementById('htmlResult');
+                const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+                
+                htmlContainer.classList.remove('hidden');
+                
+                if (htmlCode.trim().length > 100) { // Basic check if we have meaningful content
+                    emptyHtml.classList.add('hidden');
+                    htmlResult.classList.remove('hidden');
+                    copyHtmlBtn.classList.remove('hidden');
+                } else {
+                    emptyHtml.classList.remove('hidden');
+                    htmlResult.classList.add('hidden');
+                    copyHtmlBtn.classList.add('hidden');
+                }
+                
+                window.scrollTo({
+                    top: htmlContainer.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            });
+            
             // Copy to clipboard (prompt)
             document.getElementById('copyBtn').addEventListener('click', function() {
                 const resultPrompt = document.getElementById('resultPrompt');
@@ -913,18 +1061,33 @@
                 }, 2000);
             });
             
+            // Copy to clipboard (HTML)
+            document.getElementById('copyHtmlBtn').addEventListener('click', function() {
+                const htmlResult = document.getElementById('htmlResult');
+                htmlResult.select();
+                document.execCommand('copy');
+                
+                // Change button text temporarily
+                const originalText = this.innerHTML;
+                this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+            
             // Generate the AI prompt
             function generatePrompt() {
                 const layout = document.querySelector('input[name="layout"]:checked').value;
-                
                 const titleText = document.getElementById('title-text').value;
                 
                 // Header options
                 let headerContent = '';
                 if (layout === 'mobile') {
                     const hamburgerPosition = document.getElementById('hamburger-position').value;
-                    headerContent = `Mobile header with hamburger menu on the ${hamburgerPosition}`;
-                    if (titleText) headerContent += `, page title: "${titleText}"`;
+                    const titlePosition = hamburgerPosition === 'right' ? 'left' : 'right';
+                    headerContent = `Mobile header with hamburger menu on the ${hamburgerPosition}, title on ${titlePosition}`;
+                    if (titleText) headerContent += `: "${titleText}"`;
                 } else {
                     const menuItems = [];
                     document.querySelectorAll('.dynamic-input.menu-item').forEach(item => {
@@ -942,14 +1105,14 @@
                 
                 // Hero section
                 const heroDescription = document.getElementById('hero-description').value;
-                const heroPosition = document.querySelector('input[name="hero-position"]:checked').value;
+                const heroPosition = layout === 'mobile' ? 'full' : document.querySelector('input[name="hero-position"]:checked').value;
                 
                 // Text content
                 let textContent = [];
                 document.querySelectorAll('.dynamic-input.text-content').forEach((item, index) => {
                     const type = item.querySelector('.text-type').value;
                     const content = item.querySelector('.text-content').value;
-                    const position = item.querySelector('.text-position').value;
+                    const position = layout === 'mobile' ? 'center' : item.querySelector('.text-position').value;
                     
                     if (content) {
                         textContent.push({
@@ -962,7 +1125,7 @@
                 
                 // Testimonials
                 let testimonialContent = '';
-                if (!document.getElementById('testimonial-options').classList.contains('hidden')) {
+                if (layout !== 'mobile' && !document.getElementById('testimonial-options').classList.contains('hidden')) {
                     const testimonialStyle = document.getElementById('testimonial-style').value;
                     const testimonialBg = document.getElementById('testimonial-bg').value;
                     const includePhotos = document.getElementById('include-photos').checked;
@@ -996,7 +1159,7 @@
                 
                 // FAQ
                 let faqContent = '';
-                if (!document.getElementById('faq-options').classList.contains('hidden')) {
+                if (layout !== 'mobile' && !document.getElementById('faq-options').classList.contains('hidden')) {
                     const faqItems = [];
                     document.querySelectorAll('.dynamic-input.faq').forEach(item => {
                         const question = item.querySelector('.faq-question').value;
@@ -1014,7 +1177,7 @@
                 
                 // Pricing
                 let pricingContent = '';
-                if (!document.getElementById('pricing-options').classList.contains('hidden')) {
+                if (layout !== 'mobile' && !document.getElementById('pricing-options').classList.contains('hidden')) {
                     const highlightPlan = document.getElementById('highlight-plan').checked;
                     const highlightText = highlightPlan ? document.getElementById('highlight-text').value : null;
                     const highlightPosition = highlightPlan ? document.getElementById('highlight-position').value : null;
@@ -1022,14 +1185,13 @@
                     const plans = [];
                     document.querySelectorAll('.dynamic-input.pricing').forEach((item, index) => {
                         const name = item.querySelector('.plan-name').value;
-                        const price = item.querySelector('.plan-price').value;
-                        const features = item.querySelector('.plan-features').value;
-                        const cta = item.querySelector('.plan-cta').value;
-                        
                         if (name) {
                             let plan = `${name} plan`;
+                            const price = item.querySelector('.plan-price').value;
                             if (price) plan += ` at ${price}`;
+                            const features = item.querySelector('.plan-features').value;
                             if (features) plan += ` with ${features}`;
+                            const cta = item.querySelector('.plan-cta').value;
                             if (cta) plan += ` [CTA: ${cta}]`;
                             if (highlightPlan && (index + 1) == highlightPosition) plan += ` (${highlightText})`;
                             
@@ -1065,14 +1227,14 @@
                 }
                 
                 // Hero
-                if (heroDescription && layout !== 'mobile') {
+                if (heroDescription) {
                     prompt += `\nHERO SECTION:\n`;
                     prompt += `- Hero Image: ${heroDescription}\n`;
                     prompt += `- Position: ${heroPosition}\n`;
                 }
                 
                 // Text content
-                if (textContent.length > 0 && layout !== 'mobile') {
+                if (textContent.length > 0) {
                     prompt += `\nTEXT CONTENT:\n`;
                     textContent.forEach(item => {
                         prompt += `- ${item.type}: "${item.content}" (${item.position})\n`;
@@ -1080,25 +1242,25 @@
                 }
                 
                 // Testimonials
-                if (testimonialContent && layout !== 'mobile') {
+                if (testimonialContent) {
                     prompt += `\nTESTIMONIALS:\n`;
                     prompt += `- ${testimonialContent}\n`;
                 }
                 
                 // FAQ
-                if (faqContent && layout !== 'mobile') {
+                if (faqContent) {
                     prompt += `\nFAQ:\n`;
                     prompt += `- ${faqContent}\n`;
                 }
                 
                 // Pricing
-                if (pricingContent && layout !== 'mobile') {
+                if (pricingContent) {
                     prompt += `\nPRICING:\n`;
                     prompt += `- ${pricingContent}\n`;
                 }
                 
                 // CTA
-                if ((ctaTitle || ctaSubtitle || ctaButtonText) && layout !== 'mobile') {
+                if (ctaTitle || ctaSubtitle || ctaButtonText) {
                     prompt += `\nCALL-TO-ACTION:\n`;
                     if (ctaTitle) prompt += `- Title: ${ctaTitle}\n`;
                     if (ctaSubtitle) prompt += `- Subtitle: ${ctaSubtitle}\n`;
@@ -1108,7 +1270,7 @@
                 }
                 
                 // Footer
-                if ((footerLinks || footerSocial || footerContent || copyrightText) && layout !== 'mobile') {
+                if (footerLinks || footerSocial || footerContent || copyrightText) {
                     prompt += `\nFOOTER:\n`;
                     if (footerLinks) prompt += `- Links: ${footerLinks}\n`;
                     if (footerSocial) prompt += `- Social Media: ${footerSocial}\n`;
@@ -1120,8 +1282,9 @@
                 prompt += `\nGENERAL INSTRUCTIONS:\n`;
                 prompt += `- Create a high-quality, realistic preview image\n`;
                 if (layout === 'mobile') {
-                    prompt += `- Focus only on the mobile header section (title and hamburger menu)\n`;
-                    prompt += `- Ignore other sections as they won't be displayed\n`;
+                    prompt += `- Hero image should be full width\n`;
+                    prompt += `- All text content should be centered\n`;
+                    prompt += `- Title position should match hamburger menu position (opposite side)\n`;
                 } else {
                     prompt += `- Use a clean, modern design aesthetic\n`;
                     prompt += `- Ensure all text is legible and properly formatted\n`;
@@ -1149,9 +1312,11 @@
                 // Header
                 if (layout === 'mobile') {
                     const hamburgerPosition = document.getElementById('hamburger-position').value;
+                    const titlePosition = hamburgerPosition === 'right' ? 'left' : 'right';
                     jsonData.visual.sections.header = {
                         type: "mobile",
                         hamburgerPosition: hamburgerPosition,
+                        titlePosition: titlePosition,
                         title: titleText || undefined
                     };
                 } else {
@@ -1169,33 +1334,29 @@
                 }
                 
                 // Hero section
-                if (layout !== 'mobile') {
-                    const heroDescription = document.getElementById('hero-description').value;
-                    if (heroDescription) {
-                        jsonData.visual.sections.hero = {
-                            description: heroDescription,
-                            position: document.querySelector('input[name="hero-position"]:checked').value
-                        };
-                    }
+                const heroDescription = document.getElementById('hero-description').value;
+                if (heroDescription) {
+                    jsonData.visual.sections.hero = {
+                        description: heroDescription,
+                        position: layout === 'mobile' ? 'full' : document.querySelector('input[name="hero-position"]:checked').value
+                    };
                 }
                 
                 // Text content
-                if (layout !== 'mobile') {
-                    const textContent = [];
-                    document.querySelectorAll('.dynamic-input.text-content').forEach(item => {
-                        const content = item.querySelector('.text-content').value;
-                        if (content) {
-                            textContent.push({
-                                type: item.querySelector('.text-type').value,
-                                content: content,
-                                position: item.querySelector('.text-position').value
-                            });
-                        }
-                    });
-                    
-                    if (textContent.length > 0) {
-                        jsonData.visual.sections.textContent = textContent;
+                const textContent = [];
+                document.querySelectorAll('.dynamic-input.text-content').forEach(item => {
+                    const content = item.querySelector('.text-content').value;
+                    if (content) {
+                        textContent.push({
+                            type: item.querySelector('.text-type').value,
+                            content: content,
+                            position: layout === 'mobile' ? 'center' : item.querySelector('.text-position').value
+                        });
                     }
+                });
+                
+                if (textContent.length > 0) {
+                    jsonData.visual.sections.textContent = textContent;
                 }
                 
                 // Testimonials
@@ -1286,49 +1447,457 @@
                 }
                 
                 // CTA
-                if (layout !== 'mobile') {
-                    const ctaTitle = document.getElementById('cta-title').value;
-                    const ctaSubtitle = document.getElementById('cta-subtitle').value;
-                    const ctaButtonText = document.getElementById('cta-button-text').value;
-                    
-                    if (ctaTitle || ctaSubtitle || ctaButtonText) {
-                        jsonData.visual.sections.cta = {
-                            title: ctaTitle || undefined,
-                            subtitle: ctaSubtitle || undefined,
-                            background: document.getElementById('cta-bg').value,
-                            buttonStyle: document.getElementById('cta-button-style').value,
-                            buttonText: ctaButtonText || undefined
-                        };
-                    }
+                const ctaTitle = document.getElementById('cta-title').value;
+                const ctaSubtitle = document.getElementById('cta-subtitle').value;
+                const ctaButtonText = document.getElementById('cta-button-text').value;
+                
+                if (ctaTitle || ctaSubtitle || ctaButtonText) {
+                    jsonData.visual.sections.cta = {
+                        title: ctaTitle || undefined,
+                        subtitle: ctaSubtitle || undefined,
+                        background: document.getElementById('cta-bg').value,
+                        buttonStyle: document.getElementById('cta-button-style').value,
+                        buttonText: ctaButtonText || undefined
+                    };
                 }
                 
                 // Footer
-                if (layout !== 'mobile') {
-                    const footerLinks = document.getElementById('footer-links').value;
-                    const footerSocial = document.getElementById('footer-social').value;
-                    const footerContent = document.getElementById('footer-content').value;
-                    const copyrightText = document.getElementById('copyright-text').value;
-                    
-                    if (footerLinks || footerSocial || footerContent || copyrightText) {
-                        jsonData.visual.sections.footer = {
-                            links: footerLinks ? footerLinks.split(',').map(f => f.trim()) : undefined,
-                            social: footerSocial ? footerSocial.split(',').map(f => f.trim()) : undefined,
-                            content: footerContent || undefined,
-                            copyright: copyrightText || undefined
-                        };
-                    }
+                const footerLinks = document.getElementById('footer-links').value;
+                const footerSocial = document.getElementById('footer-social').value;
+                const footerContent = document.getElementById('footer-content').value;
+                const copyrightText = document.getElementById('copyright-text').value;
+                
+                if (footerLinks || footerSocial || footerContent || copyrightText) {
+                    jsonData.visual.sections.footer = {
+                        links: footerLinks ? footerLinks.split(',').map(f => f.trim()) : undefined,
+                        social: footerSocial ? footerSocial.split(',').map(f => f.trim()) : undefined,
+                        content: footerContent || undefined,
+                        copyright: copyrightText || undefined
+                    };
                 }
                 
                 // General instructions
                 jsonData.visual.instructions = {
                     quality: "high",
                     style: "clean modern",
-                    focus: layout === 'mobile' ? "header only" : "full page"
+                    focus: layout === 'mobile' ? "mobile layout" : "full page",
+                    mobileSpecific: layout === 'mobile' ? {
+                        heroFullWidth: true,
+                        textCentered: true,
+                        titleOppositeMenu: true
+                    } : undefined
                 };
                 
                 const jsonString = JSON.stringify(jsonData, null, 2);
                 document.getElementById('jsonResult').value = jsonString;
                 return jsonData;
+            }
+            
+            // Generate HTML code
+            function generateHtmlCode() {
+                const layout = document.querySelector('input[name="layout"]:checked').value;
+                const titleText = document.getElementById('title-text').value;
+                
+                let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${titleText || 'My Website'}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: ${layout === 'mobile' ? '100%' : '1200px'};
+            margin: 0 auto;
+            padding: ${layout === 'mobile' ? '0 15px' : '0 20px'};
+        }
+        
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: ${layout === 'mobile' ? '15px' : '20px 0'};
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: ${layout === 'mobile' ? '1.2rem' : '1.5rem'};
+            font-weight: bold;
+            color: #5c4d7d;
+        }
+        
+        /* Mobile menu styles */
+        .hamburger-menu {
+            display: ${layout === 'mobile' ? 'block' : 'none'};
+            cursor: pointer;
+        }
+        
+        /* Desktop menu styles */
+        .desktop-menu {
+            display: ${layout === 'mobile' ? 'none' : 'flex'};
+            gap: 20px;
+        }
+        
+        .desktop-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: ${layout === 'mobile' ? 'column' : 'row'};
+            align-items: center;
+            padding: ${layout === 'mobile' ? '40px 0' : '60px 0'};
+            gap: ${layout === 'mobile' ? '30px' : '50px'};
+        }
+        
+        .hero-content {
+            flex: ${layout === 'mobile' ? '1' : '1'};
+            text-align: ${layout === 'mobile' ? 'center' : 'left'};
+        }
+        
+        .hero-image {
+            flex: ${layout === 'mobile' ? '1' : '1'};
+            text-align: center;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        /* Text Content */
+        .text-section {
+            padding: 40px 0;
+            text-align: ${layout === 'mobile' ? 'center' : 'left'};
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+        }
+        
+        /* FAQ */
+        .faq-section {
+            padding: 60px 0;
+        }
+        
+        /* Pricing */
+        .pricing {
+            padding: 60px 0;
+        }
+        
+        /* CTA */
+        .cta {
+            padding: 60px 0;
+            text-align: center;
+            background-color: #5c4d7d;
+            color: white;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .hero {
+                flex-direction: ${document.querySelector('input[name="hero-position"]:checked').value === 'full' ? 'column' : 'row'};
+            }
+            
+            .hero-content {
+                text-align: ${document.querySelector('input[name="hero-position"]:checked').value === 'full' ? 'center' : 
+                    (document.querySelector('input[name="hero-position"]:checked').value === 'left' ? 'left' : 'right')};
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="container">
+        <div class="logo">${titleText || 'Logo'}</div>
+        `;
+                
+                if (layout === 'mobile') {
+                    const hamburgerPosition = document.getElementById('hamburger-position').value;
+                    html += `
+        <div class="hamburger-menu" style="order: ${hamburgerPosition === 'right' ? '2' : '1'};">☰</div>
+                    `;
+                } else {
+                    const menuItems = [];
+                    document.querySelectorAll('.dynamic-input.menu-item').forEach(item => {
+                        const title = item.querySelector('.menu-title').value;
+                        if (title) menuItems.push(title);
+                    });
+                    
+                    if (menuItems.length > 0) {
+                        html += `
+        <nav class="desktop-menu">
+                            ${menuItems.map(item => `<a href="#">${item}</a>`).join('\n            ')}
+        </nav>
+                        `;
+                    }
+                }
+                
+                html += `
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero container">
+                `;
+                
+                const heroDescription = document.getElementById('hero-description').value;
+                const heroPosition = document.querySelector('input[name="hero-position"]:checked').value;
+                
+                if (heroPosition === 'right' || (layout === 'mobile' && heroPosition === 'full')) {
+                    html += `
+        <div class="hero-content">
+            <h1>Your Heading Here</h1>
+            <p>Your compelling description goes here.</p>
+            <button>Call to Action</button>
+        </div>
+        <div class="hero-image">
+            <!-- Hero image would go here -->
+            <p>${heroDescription || 'Hero image description'}</p>
+        </div>
+                    `;
+                } else {
+                    html += `
+        <div class="hero-image">
+            <!-- Hero image would go here -->
+            <p>${heroDescription || 'Hero image description'}</p>
+        </div>
+        <div class="hero-content">
+            <h1>Your Heading Here</h1>
+            <p>Your compelling description goes here.</p>
+            <button>Call to Action</button>
+        </div>
+                    `;
+                }
+                
+                html += `
+    </section>
+    
+    <!-- Text Content -->
+                `;
+                
+                // Add text content sections
+                document.querySelectorAll('.dynamic-input.text-content').forEach((item, index) => {
+                    const type = item.querySelector('.text-type').value;
+                    const content = item.querySelector('.text-content').value;
+                    const position = layout === 'mobile' ? 'center' : item.querySelector('.text-position').value;
+                    
+                    if (content) {
+                        html += `
+    <section class="text-section container" style="text-align: ${position}">
+                            ${type === 'heading' ? `<h2>${content}</h2>` : ''}
+                            ${type === 'subheading' ? `<h3>${content}</h3>` : ''}
+                            ${type === 'description' ? `<p>${content}</p>` : ''}
+                            ${type === 'bullet' ? `<ul><li>${content}</li></ul>` : ''}
+    </section>
+                        `;
+                    }
+                });
+                
+                // Add testimonials if enabled
+                if (!document.getElementById('testimonial-options').classList.contains('hidden')) {
+                    html += `
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 style="text-align: center;">Testimonials</h2>
+                    `;
+                    
+                    document.querySelectorAll('.dynamic-input.testimonial').forEach(item => {
+                        const text = item.querySelector('.testimonial-text').value;
+                        if (text) {
+                            html += `
+            <div class="testimonial-item">
+                <p>"${text}"</p>
+                                ${document.getElementById('include-names').checked && item.querySelector('.customer-name').value ? 
+                                    `<p><strong>— ${item.querySelector('.customer-name').value}</strong></p>` : ''}
+            </div>
+                            `;
+                        }
+                    });
+                    
+                    html += `
+        </div>
+    </section>
+                    `;
+                }
+                
+                // Add FAQ if enabled
+                if (!document.getElementById('faq-options').classList.contains('hidden')) {
+                    html += `
+    <!-- FAQ Section -->
+    <section class="faq-section container">
+        <h2 style="text-align: center;">Frequently Asked Questions</h2>
+                    `;
+                    
+                    document.querySelectorAll('.dynamic-input.faq').forEach(item => {
+                        const question = item.querySelector('.faq-question').value;
+                        const answer = item.querySelector('.faq-answer').value;
+                        
+                        if (question && answer) {
+                            html += `
+        <div class="faq-item">
+            <h3>${question}</h3>
+            <p>${answer}</p>
+        </div>
+                            `;
+                        }
+                    });
+                    
+                    html += `
+    </section>
+                    `;
+                }
+                
+                // Add pricing if enabled
+                if (!document.getElementById('pricing-options').classList.contains('hidden')) {
+                    html += `
+    <!-- Pricing Section -->
+    <section class="pricing container">
+        <h2 style="text-align: center;">Pricing Plans</h2>
+        <div class="pricing-plans" style="display: flex; gap: 20px; justify-content: center;">
+                    `;
+                    
+                    document.querySelectorAll('.dynamic-input.pricing').forEach((item, index) => {
+                        const name = item.querySelector('.plan-name').value;
+                        const price = item.querySelector('.plan-price').value;
+                        const features = item.querySelector('.plan-features').value;
+                        const cta = item.querySelector('.plan-cta').value;
+                        const highlightPlan = document.getElementById('highlight-plan').checked;
+                        const highlightPosition = document.getElementById('highlight-position').value;
+                        const highlightText = document.getElementById('highlight-text').value;
+                        
+                        if (name) {
+                            html += `
+            <div class="pricing-plan" style="border: 1px solid #ddd; padding: 20px; border-radius: 8px; 
+                ${highlightPlan && (index + 1) == highlightPosition ? 'border: 2px solid #5c4d7d; background: #f8f7fc;' : ''}">
+                                ${highlightPlan && (index + 1) == highlightPosition ? 
+                                    `<div style="background: #5c4d7d; color: white; padding: 5px; margin: -20px -20px 10px -20px; border-radius: 5px 5px 0 0; text-align: center;">
+                                        ${highlightText || 'Popular'}
+                                    </div>` : ''}
+                <h3>${name}</h3>
+                <p style="font-size: 1.5rem; margin: 10px 0;">${price || '$0.00'}</p>
+                                ${features ? `<ul style="margin: 15px 0; list-style: none;">
+                                    ${features.split(',').map(f => `<li>${f.trim()}</li>`).join('')}
+                                </ul>` : ''}
+                <button style="background: #5c4d7d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    ${cta || 'Get Started'}
+                </button>
+            </div>
+                            `;
+                        }
+                    });
+                    
+                    html += `
+        </div>
+    </section>
+                    `;
+                }
+                
+                // Add CTA
+                const ctaTitle = document.getElementById('cta-title').value;
+                const ctaSubtitle = document.getElementById('cta-subtitle').value;
+                const ctaButtonText = document.getElementById('cta-button-text').value;
+                
+                if (ctaTitle || ctaSubtitle || ctaButtonText) {
+                    const ctaBg = document.getElementById('cta-bg').value;
+                    const bgColor = 
+                        ctaBg === 'brand-color' ? '#5c4d7d' :
+                        ctaBg === 'gradient' ? 'linear-gradient(135deg, #5c4d7d, #8a6cb4)' :
+                        ctaBg === 'red' ? '#dc3545' :
+                        ctaBg === 'blue' ? '#007bff' :
+                        ctaBg === 'dark' ? '#343a40' : '#5c4d7d';
+                    
+                    html += `
+    <!-- CTA Section -->
+    <section class="cta" style="background: ${bgColor}">
+        <div class="container">
+                        ${ctaTitle ? `<h2>${ctaTitle}</h2>` : ''}
+                        ${ctaSubtitle ? `<p style="margin: 15px 0;">${ctaSubtitle}</p>` : ''}
+                        ${ctaButtonText ? `<button style="padding: 12px 30px; font-size: 1.1rem; background: white; color: #5c4d7d; border: none; border-radius: 5px; cursor: pointer;">
+                                ${ctaButtonText}
+                            </button>` : ''}
+        </div>
+    </section>
+                    `;
+                }
+                
+                // Add footer
+                const footerLinks = document.getElementById('footer-links').value;
+                const footerSocial = document.getElementById('footer-social').value;
+                const footerContent = document.getElementById('footer-content').value;
+                const copyrightText = document.getElementById('copyright-text').value;
+                
+                html += `
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+                    ${footerLinks ? `
+            <div class="footer-links" style="margin-bottom: 20px;">
+                            ${footerLinks.split(',').map(link => `<a href="#" style="margin: 0 10px; text-decoration: none; color: #333;">${link.trim()}</a>`).join('')}
+            </div>
+                    ` : ''}
+                    
+                    ${footerSocial ? `
+            <div class="social-links" style="margin-bottom: 20px;">
+                            ${footerSocial.split(',').map(social => `<a href="#" style="margin: 0 10px; text-decoration: none; color: #333;">${social.trim()}</a>`).join('')}
+            </div>
+                    ` : ''}
+                    
+                    ${footerContent ? `
+            <div class="footer-content" style="margin-bottom: 20px;">
+                <p>${footerContent}</p>
+            </div>
+                    ` : ''}
+                    
+                    ${copyrightText ? `
+            <div class="copyright">
+                <p>${copyrightText}</p>
+            </div>
+                    ` : ''}
+        </div>
+    </footer>
+    
+    <script>
+        // Simple mobile menu toggle functionality
+        document.querySelector('.hamburger-menu')?.addEventListener('click', function() {
+            // You would add mobile menu toggle logic here
+            alert('Mobile menu would open here');
+        });
+    </script>
+</body>
+</html>
+                `;
+                
+                document.getElementById('htmlResult').value = html;
+                return html;
             }
             
             // Initial setup
