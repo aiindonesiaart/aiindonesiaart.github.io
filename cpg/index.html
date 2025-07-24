@@ -200,7 +200,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Character AI Image Generator</h1>
+        <h1>Character AI Image Prompt Generator</h1>
         
         <form id="characterForm">
             <!-- View Angle Section -->
@@ -500,58 +500,19 @@
                         <label for="hairStyle">Hair Style</label>
                         <select id="hairStyle">
                             <option value="">Select or type...</option>
-                            <option value='afro'>Afro</option>
-<option value='bob cut'>Bob cut</option>
-<option value='pixie cut'>Pixie cut</option>
-<option value='Pixie bob'>Pixie bob</option>
-<option value='long layer'>Long layer</option>
-<option value='beach waves'>Beach waves</option>
-<option value='bangs'>Bangs</option>
-<option value='braids'>Braids</option>
-<option value='top knot'>Top knot</option>
-<option value='undercut'>Undercut</option>
-<option value='shag cut'>Shag cut</option>
-<option value='layered bob'>Layered bob</option>
-<option value='curly'>Curly hair</option>
-<option value='sleek straight'>Sleek straight</option>
-<option value='side swept bang'>Side swept bang</option>
-<option value='balerina bun'>Balerina bun</option>
-<option value='mehawk'>Mehawk</option>
-<option value='ombre'>Ombre</option>
-<option value='box braids'>Box braids</option>
-<option value='half up half down'>Half up half down</option>
-<option value='high ponytail'>High ponytail</option>
-<option value='messy bun'>Messy bun</option>
-<option value='fishtail braid'>Fishtail braid</option>
-<option value='waterfall braid'>Waterfall braid</option>
-<option value='dreadlocks'>Dreadlocks</option>
-<option value='cornrows'>Cornrows</option>
-<option value='bold shiny'>Spacebun</option>
-<option value='afro'>Bold shiny</option>
-<option value='buzz cut'>Buzz cut</option>
-<option value='crew cut'>Crew cut</option>
-<option value='pompadour'>Pompadour</option>
-<option value='long'>Long</option>
-<option value='flow'>Flow</option>
-<option value='messy'>Messy</option>
-<option value='morissey'>Morissey</option>
-<option value='side parted'>Side parted</option>
-<option value='comma'>Comma</option>
-<option value='shaggy'>Shaggy</option>
-<option value='french'>French</option>
-<option value='comb'>Comb</option>
-<option value='man bun'>Man bun</option>
-<option value='spiky'>Spiky</option>
-<option value='two blocks'>Two blocks</option>
-<option value='quiff'>Quiff</option>
-<option value='fringe'>Fringe</option>
-<option value='crop cut'>Crop cut</option>
-<option value='induction curl'>Induction curl</option>
-<option value='hight and tight cut'>Hight and tight cut</option>
-<option value='curtain haircut'>Curtain haircut</option>
-<option value='slick back'>Slick back</option>
-<option value='medium'>Medium</option>
-<option value='bowl'>Bowl</option>
+                            <option value="afro">Afro</option>
+                            <option value="bob cut">Bob cut</option>
+                            <option value="pixie cut">Pixie cut</option>
+                            <option value="long layer">Long layer</option>
+                            <option value="beach waves">Beach waves</option>
+                            <option value="bangs">Bangs</option>
+                            <option value="braids">Braids</option>
+                            <option value="top knot">Top knot</option>
+                            <option value="undercut">Undercut</option>
+                            <option value="shag cut">Shag cut</option>
+                            <option value="layered bob">Layered bob</option>
+                            <option value="curly hair">Curly hair</option>
+                            <option value="sleek straight">Sleek straight</option>
                         </select>
                     </div>
                     <div>
@@ -627,26 +588,86 @@
                 <textarea id="customDescription" placeholder="Describe your character in detail"></textarea>
             </div>
             
-            <!-- Animal & Fantasy Section -->
+            <!-- Special Elements Section -->
             <div class="form-section">
                 <h2>Special Elements</h2>
                 
-                <label for="animationStyle">Animation Style</label>
-                <input type="text" id="animationStyle" placeholder="e.g. anime, Disney-style, Pixar, stop-motion, cel-shaded, looklike, humanoid, anthropomorphic, robotic, sculpture, elf, dwarf, daemon, goblin, gremlin, kobold, orc">
-                
-                <label for="cartoonCharacter">Cartoon/Film Character</label>
-                <input type="text" id="cartoonCharacter" placeholder="e.g. Superman, Spiderman, Batman, Micky mouse, Donald duck, Garfield, Pinocchio, Cinderella, Peter Pan, Robin hood, Aladdin, Hercules, Tarzan, Dinosaur, Bolt, Winnie the pooh, Toy story, Finding Nemo, Cars, Wall-e, Super Mario, Shrek, Woody, Homer Simpson, Bugs Bunny, Pink Panther, Tom Cat, Snoopy, Mr Krabs, Squidward, Maui, Grumpy, Patrick Star, Mrs Krabs, Spongebob, Plankton, Gary, Fred Flinstone, Captain Hook, Carl Fredricksen, Daffy Duck, Woody, Baloo, Genie, Buzz Lightyear, Jezzica rabbit, Jack Skellington, Maleficent, Lilo Pelekai, Donkey, Mirabel Madrigal, Elsa, Roger Rabit, Thumper, Fiver, Katie Mitchel, Puss in boots, Lumiere, Chihiro Ogino, Master Shifu">
-                
-                <label for="animalCharacteristics">Animal</label>
-                <input type="text" id="animalCharacteristics" placeholder="e.g. Bird, Cat, Dog, Duck, Dragon, Eagle, Frog, Horse, Donkey, Tiger, Lion, Panther, Leopard, Cheetah, Bear, Elephant, Bear, Turtle, Tortoise, Crocodile, Rabbit, Porcupine, Hare, Hen, Pigeon, Dolphine, Whale, Alligator, Eagle, Squirrel, Ostrich, Fox, Goat, Jackal, Emu, Armadillo, Eel, Goose, Wolf, Beagle, Gorilla, Chimpanzee, Monkey, Beaver, Orangutan, Antelope, Bat, Badger, Giraffe, Hermit crab, Panda, Hamster, Cobra, Shark, Camel, Hawk, Deer, Chameleon, Hippopotamus, Jaguar, Chihuahua, Ibex, Lizard, Koala, Kangaroo, Iguana, Llama, Chinchilas, Dodo, Jellyfish, Rhinoceros, Hedgehog, Zebra, Possum, Bison, Bull, Buffalo, Sheep, Meerkat, Vulture, Mouse, Flamingo, Sloth, Racoon, Mole, Swan, Lynx, Elk, Boar, Lemur, Mule, Baboon, Mammoth, Rat, Snake, Peacock">
-                
-                <label for="fantasyRole">Fantasy Role</label>
-                <input type="text" id="fantasyRole" placeholder="e.g. wizard, elf warrior, cyberpunk rogue, steampunk inventor,Alchemist, Assassin, Barbarian, Druid, Hunter, Knight, Mage, Priest, Thief, Warrior, Witch, Wizard, Worker">
-                
-                <div class="toggle-section" data-target="subjectificationBlock">Subjectification</div>
-                <div id="subjectificationBlock" class="entry-block">
-                    <textarea id="subjectificationText" placeholder="Made of glass, Shape of a cat, Created by a dragon fractal, Drawn in the sand, Composed from broken glass, Made up of small brightly colored dots, etc"></textarea>
+                <div class="toggle-section" id="specialElementsToggle">Add Special Elements</div>
+                <div class="entry-block" id="specialElementsOptions">
+                    <label>Select Element Type</label>
+                    <select id="specialElementsType">
+                        <option value="">Select...</option>
+                        <option value="animation">Animation Style</option>
+                        <option value="cartoon">Cartoon/Film Character</option>
+                        <option value="animal">Animal Characteristics</option>
+                        <option value="fantasy">Fantasy Role</option>
+                    </select>
+                    
+                    <div id="animationOptions" class="hidden">
+                        <label for="animationItems">Animation Style</label>
+                        <input type="text" id="animationItems" placeholder="e.g. looklike, humanoid, anthropomorphic, robotic, sculpture, elf, dwarf, daemon, goblin, gremlin, kobold, orc">
+                    </div>
+                    
+                    <div id="cartoonOptions" class="hidden">
+                        <label for="cartoonItems">Cartoon/Film Character</label>
+                        <input type="text" id="cartoonItems" placeholder="e.g. Superman, Spiderman, Batman, Micky mouse, Donald duck, Garfield, Pinocchio, etc">
+                    </div>
+                    
+                    <div id="animalOptions" class="hidden">
+                        <label for="animalItems">Animal Characteristics</label>
+                        <input type="text" id="animalItems" placeholder="e.g. Bird, Cat, Dog, Duck, Dragon, Eagle, Frog, Horse, etc">
+                    </div>
+                    
+                    <div id="fantasyOptions" class="hidden">
+                        <label for="fantasyItems">Fantasy Role</label>
+                        <input type="text" id="fantasyItems" placeholder="e.g. Alchemist, Assassin, Barbarian, Druid, Hunter, Knight, etc">
+                    </div>
+                    
+                    <button type="button" id="saveSpecialElementsBtn" class="info">Save Element</button>
                 </div>
+                
+                <div class="item-container" id="specialElementsContainer"></div>
+            </div>
+            
+            <!-- Pose & Environment Section -->
+            <div class="form-section">
+                <h2>Pose & Environment</h2>
+                
+                <div class="toggle-section" id="poseToggle">Add Pose/Environment</div>
+                <div class="entry-block" id="poseOptions">
+                    <label>Select Pose/Environment Type</label>
+                    <select id="poseType">
+                        <option value="">Select...</option>
+                        <option value="expression">Facial Expression</option>
+                        <option value="gesture">Hand Gesture</option>
+                        <option value="activity">Activity</option>
+                        <option value="background">Background</option>
+                    </select>
+                    
+                    <div id="expressionOptions" class="hidden">
+                        <label for="expressionItems">Facial Expression</label>
+                        <input type="text" id="expressionItems" placeholder="e.g. Elevating eyebrows, Smirking, Frowning, Squinting, Widening eyes, etc">
+                    </div>
+                    
+                    <div id="gestureOptions" class="hidden">
+                        <label for="gestureItems">Hand Gesture</label>
+                        <input type="text" id="gestureItems" placeholder="e.g. Peace Sign, Thumbs up, Stop Sign, Ok Sign, Finger point, etc">
+                    </div>
+                    
+                    <div id="activityOptions" class="hidden">
+                        <label for="activityItems">Activity</label>
+                        <input type="text" id="activityItems" placeholder="e.g. walking, dancing, fighting, eating, drinking, etc">
+                    </div>
+                    
+                    <div id="backgroundOptions" class="hidden">
+                        <label for="backgroundItems">Background</label>
+                        <input type="text" id="backgroundItems" placeholder="e.g. white, colorful, laundry, in the garden, etc">
+                    </div>
+                    
+                    <button type="button" id="savePoseBtn" class="info">Save Pose/Environment</button>
+                </div>
+                
+                <div class="item-container" id="poseContainer"></div>
             </div>
             
             <!-- Clothing & Accessories Section -->
@@ -681,21 +702,19 @@
                         <label for="upperItems">Upper Body</label>
                         <select id="upperItems">
                             <option value="">Select or type...</option>
-                            <option value='tshirt'>T-shirt</option>
-<option value='coat'>Coat</option>
-<option value='dress'>Dress</option>
-<option value='cloak'>Cloak</option>
-<option value='frump'>Frump</option>
-<option value='polka dots'>Polka dots</option>
-<option value='hoodies'>Hoodies</option>
-<option value='suit'>Suit</option>
-<option value='leather jacket'>Leather jacket</option>
-<option value='swimsuit'>Swimsuit</option>
-<option value='sweat shirt'>Sweat shirt</option>
-<option value='blouse'>Blouse</option>
-<option value='gown'>Gown</option>
-<option value='vest'>Vest</option>
-<option value='blazer'>Blazer</option>
+                            <option value="coat">Coat</option>
+                            <option value="dress">Dress</option>
+                            <option value="cloak">Cloak</option>
+                            <option value="frump">Frump</option>
+                            <option value="polka dots">Polka dots</option>
+                            <option value="hoodies">Hoodies</option>
+                            <option value="suit">Suit</option>
+                            <option value="swimsuit">Swimsuit</option>
+                            <option value="sweat shirt">Sweat shirt</option>
+                            <option value="blouse">Blouse</option>
+                            <option value="gown">Gown</option>
+                            <option value="vest">Vest</option>
+                            <option value="blazer">Blazer</option>
                         </select>
                     </div>
                     
@@ -703,18 +722,16 @@
                         <label for="lowerItems">Lower Body</label>
                         <select id="lowerItems">
                             <option value="">Select or type...</option>
-                            <option value='pant'>Pant</option>
-<option value='pantyhose'>Pantyhose</option>
-<option value='skirt'>Skirt</option>
-<option value='thights'>Thights</option>
-<option value='jean'>Jean</option>
-<option value='lacesleeves'>Lacesleeves</option>
-<option value='shorts'>Shorts</option>
-<option value='half pant'>Half pant</option>
-<option value='night pant'>Night pant</option>
-<option value='joggers'>Joggers</option>
-<option value='briefs'>Briefs</option>
-<option value='cargo pant'>Cargo pant</option>
+                            <option value="pantyhose">Pantyhose</option>
+                            <option value="skirt">Skirt</option>
+                            <option value="thights">Tights</option>
+                            <option value="laceleeves">Laceleeves</option>
+                            <option value="shorts">Shorts</option>
+                            <option value="half pant">Half pant</option>
+                            <option value="night pant">Night pant</option>
+                            <option value="joggers">Joggers</option>
+                            <option value="briefs">Briefs</option>
+                            <option value="cargo pant">Cargo pant</option>
                         </select>
                     </div>
                     
@@ -739,31 +756,6 @@
                 
                 <label for="customProperty">Custom Clothing/Accessories</label>
                 <textarea id="customProperty" placeholder="Describe any custom clothing or accessories"></textarea>
-            </div>
-            
-            <!-- Pose & Environment Section -->
-            <div class="form-section">
-                <h2>Pose & Environment</h2>
-                
-                <div class="toggle-section" data-target="expressionBlock">Facial Expression</div>
-                <div id="expressionBlock" class="entry-block">
-                    <textarea id="expressionText" placeholder="Elevating eyebrows, Smirking, Frowning, Squinting, Widening eyes, Grimacing, Blinking rapidly, Rolling eyes, Narrowing eyes, Open mouth surprise, Raised eyebrow, Wrinkled nose, Bitting lip, Flared nostrils, Half smile, Winking, Clenched teeth, Raised cheeks, Tensed forehead, Furrowed brow, Twitchig eye, Open-mouthed laugh, Brow flash, Asymetrical smile, One-eyed squint, Nose wrinkle, Lip corner pull-down, Pensive look, Sneer, Quizzical expression, Half-lidded eyes, Cocky smirk, Raised uper lip, Skeptical eyebrow raise, Eyes closed in concentration, Mouth open in exertion, Fist clenched in Determination, Head tilted back in power, Arms spread wide in acceptance, Scream of fear, Scream of anger, Scream of excitement, Scream of despair, Scream of triump"></textarea>
-                </div>
-                
-                <div class="toggle-section" data-target="gestureBlock">Hand Gesture</div>
-                <div id="gestureBlock" class="entry-block">
-                    <textarea id="gestureText" placeholder="Peace Sign, Thumbs up, Stop Sign, Ok Sign, Finger point, Crossed finger, High five, Fist bump, Shaka Sign, Heart Sign, Clapping, Salute, Facepalm, Thumbs down, Jazz hands, Finger gun, Rock on Sign, Beckoning gesture, Hands on hips, Crossed arms, Waving hands dismissively, Head in hands, Finger pointing, Rubbing the temple, Pulling at his collar, Bitting nails, Covering the mouth with a hand, Grip reflex, Snatch grab, Clutching, Swooping catch, Pincer movemement"></textarea>
-                </div>
-                
-                <div class="toggle-section" data-target="activityBlock">Activity</div>
-                <div id="activityBlock" class="entry-block">
-                    <textarea id="activityText" placeholder="walking, dancing, fighting, eating, drinking, posing, sleeping, running, sitting, standing, looking at camera, riding a bicycle, etc"></textarea>
-                </div>
-                
-                <div class="toggle-section" data-target="backgroundBlock">Background</div>
-                <div id="backgroundBlock" class="entry-block">
-                    <textarea id="backgroundText" placeholder="white, colorful, laundry, in the garden, in the swamp, on top of mountain, etc"></textarea>
-                </div>
             </div>
             
             <div class="button-group">
@@ -933,6 +925,162 @@
             });
             document.getElementById('humanIdentityOptions').style.display = 'none';
             document.getElementById('humanIdentityToggle').classList.remove('active');
+        });
+        
+        // Special Elements Section Functionality
+        document.getElementById('specialElementsType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('animation') || el.id.includes('cartoon') || 
+                    el.id.includes('animal') || el.id.includes('fantasy')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('saveSpecialElementsBtn').addEventListener('click', function() {
+            const specialElementsType = document.getElementById('specialElementsType').value;
+            if (!specialElementsType) {
+                alert('Please select an element type first');
+                return;
+            }
+            
+            let specialElementsItem = '';
+            let specialElementsName = '';
+            
+            switch(specialElementsType) {
+                case 'animation':
+                    specialElementsItem = document.getElementById('animationItems').value;
+                    specialElementsName = 'Animation Style';
+                    break;
+                case 'cartoon':
+                    specialElementsItem = document.getElementById('cartoonItems').value;
+                    specialElementsName = 'Cartoon/Film Character';
+                    break;
+                case 'animal':
+                    specialElementsItem = document.getElementById('animalItems').value;
+                    specialElementsName = 'Animal Characteristics';
+                    break;
+                case 'fantasy':
+                    specialElementsItem = document.getElementById('fantasyItems').value;
+                    specialElementsName = 'Fantasy Role';
+                    break;
+            }
+            
+            if (!specialElementsItem) {
+                alert('Please provide a value');
+                return;
+            }
+            
+            const specialElementsDiv = document.createElement('div');
+            specialElementsDiv.className = 'item';
+            specialElementsDiv.innerHTML = `
+                <span><strong>${specialElementsName}:</strong> ${specialElementsItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="special-elements-type" value="${specialElementsType}">
+                <input type="hidden" name="special-elements-item" value="${specialElementsItem}">
+            `;
+            
+            document.getElementById('specialElementsContainer').appendChild(specialElementsDiv);
+            
+            // Reset form
+            document.getElementById('specialElementsType').value = '';
+            document.getElementById('animationItems').value = '';
+            document.getElementById('cartoonItems').value = '';
+            document.getElementById('animalItems').value = '';
+            document.getElementById('fantasyItems').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('animation') || el.id.includes('cartoon') || 
+                    el.id.includes('animal') || el.id.includes('fantasy')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('specialElementsOptions').style.display = 'none';
+            document.getElementById('specialElementsToggle').classList.remove('active');
+        });
+        
+        // Pose Section Functionality
+        document.getElementById('poseType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('expression') || el.id.includes('gesture') || 
+                    el.id.includes('activity') || el.id.includes('background')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('savePoseBtn').addEventListener('click', function() {
+            const poseType = document.getElementById('poseType').value;
+            if (!poseType) {
+                alert('Please select a pose/environment type first');
+                return;
+            }
+            
+            let poseItem = '';
+            let poseName = '';
+            
+            switch(poseType) {
+                case 'expression':
+                    poseItem = document.getElementById('expressionItems').value;
+                    poseName = 'Facial Expression';
+                    break;
+                case 'gesture':
+                    poseItem = document.getElementById('gestureItems').value;
+                    poseName = 'Hand Gesture';
+                    break;
+                case 'activity':
+                    poseItem = document.getElementById('activityItems').value;
+                    poseName = 'Activity';
+                    break;
+                case 'background':
+                    poseItem = document.getElementById('backgroundItems').value;
+                    poseName = 'Background';
+                    break;
+            }
+            
+            if (!poseItem) {
+                alert('Please provide a value');
+                return;
+            }
+            
+            const poseDiv = document.createElement('div');
+            poseDiv.className = 'item';
+            poseDiv.innerHTML = `
+                <span><strong>${poseName}:</strong> ${poseItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="pose-type" value="${poseType}">
+                <input type="hidden" name="pose-item" value="${poseItem}">
+            `;
+            
+            document.getElementById('poseContainer').appendChild(poseDiv);
+            
+            // Reset form
+            document.getElementById('poseType').value = '';
+            document.getElementById('expressionItems').value = '';
+            document.getElementById('gestureItems').value = '';
+            document.getElementById('activityItems').value = '';
+            document.getElementById('backgroundItems').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('expression') || el.id.includes('gesture') || 
+                    el.id.includes('activity') || el.id.includes('background')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('poseOptions').style.display = 'none';
+            document.getElementById('poseToggle').classList.remove('active');
         });
         
         // Property Section Functionality
@@ -1165,6 +1313,36 @@
                 hasContent = true;
             }
             
+            // Special Elements
+            const specialElementsItems = document.querySelectorAll('#specialElementsContainer .item');
+            if (specialElementsItems.length > 0) {
+                prompt += 'appearing as ';
+                specialElementsItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="special-elements-type"]').value;
+                    const element = item.querySelector('[name="special-elements-item"]').value;
+                    
+                    if (index > 0) prompt += ' ';
+                    prompt += element;
+                });
+                prompt += ', ';
+                hasContent = true;
+            }
+            
+            // Pose/Environment
+            const poseItems = document.querySelectorAll('#poseContainer .item');
+            if (poseItems.length > 0) {
+                prompt += 'with ';
+                poseItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="pose-type"]').value;
+                    const pose = item.querySelector('[name="pose-item"]').value;
+                    
+                    if (index > 0) prompt += ' and ';
+                    prompt += pose;
+                });
+                prompt += ', ';
+                hasContent = true;
+            }
+            
             // Properties
             const propertyItems = document.querySelectorAll('#propertiesContainer .item');
             if (propertyItems.length > 0) {
@@ -1196,39 +1374,6 @@
             if (specialIdentification) {
                 prompt += `with ${specialIdentification}, `;
                 hasContent = true;
-            }
-            
-            // Animation/Fantasy Elements
-            const animationStyle = document.getElementById('animationStyle').value;
-            const cartoonCharacter = document.getElementById('cartoonCharacter').value;
-            const animalCharacteristics = document.getElementById('animalCharacteristics').value;
-            const fantasyRole = document.getElementById('fantasyRole').value;
-            const subjectificationText = document.getElementById('subjectificationText').value;
-            
-            if (animationStyle || cartoonCharacter || animalCharacteristics || fantasyRole || subjectificationText) {
-                prompt += 'appearing as ';
-                hasContent = true;
-                if (animationStyle) prompt += `${animationStyle} `;
-                if (cartoonCharacter) prompt += `${cartoonCharacter} `;
-                if (animalCharacteristics) prompt += `${animalCharacteristics} `;
-                if (fantasyRole) prompt += `${fantasyRole} `;
-                if (subjectificationText) prompt += `${subjectificationText} `;
-                prompt += 'character, ';
-            }
-            
-            // Activity
-            const expressionText = document.getElementById('expressionText').value;
-            const gestureText = document.getElementById('gestureText').value;
-            const activityText = document.getElementById('activityText').value;
-            const backgroundText = document.getElementById('backgroundText').value;
-            
-            if (expressionText || gestureText || activityText || backgroundText) {
-                prompt += 'with ';
-                hasContent = true;
-                if (expressionText) prompt += `${expressionText} expression, `;
-                if (gestureText) prompt += `${gestureText} gesture, `;
-                if (activityText) prompt += `${activityText}, `;
-                if (backgroundText) prompt += `${backgroundText} background, `;
             }
             
             // Custom Description
@@ -1267,6 +1412,7 @@
                         properties: []
                     },
                     elements: {},
+                    pose: {},
                     activity: {}
                 }
             };
@@ -1341,6 +1487,32 @@
                 hasContent = true;
             }
             
+            // Special Elements
+            const specialElementsItems = document.querySelectorAll('#specialElementsContainer .item');
+            specialElementsItems.forEach(item => {
+                const type = item.querySelector('[name="special-elements-type"]').value;
+                const value = item.querySelector('[name="special-elements-item"]').value;
+                
+                data.visual.elements[type] = value;
+                hasContent = true;
+            });
+            
+            // Pose/Environment
+            const poseItems = document.querySelectorAll('#poseContainer .item');
+            poseItems.forEach(item => {
+                const type = item.querySelector('[name="pose-type"]').value;
+                const value = item.querySelector('[name="pose-item"]').value;
+                
+                if (type === 'activity') {
+                    data.visual.activity.action = value;
+                } else if (type === 'background') {
+                    data.visual.activity.background = value;
+                } else {
+                    data.visual.pose[type] = value;
+                }
+                hasContent = true;
+            });
+            
             // Properties
             const propertyItems = document.querySelectorAll('#propertiesContainer .item');
             propertyItems.forEach(item => {
@@ -1359,62 +1531,6 @@
                     type: 'custom',
                     description: customProperty
                 });
-                hasContent = true;
-            }
-            
-            // Animation/Fantasy Elements
-            const animationStyle = document.getElementById('animationStyle').value;
-            if (animationStyle) {
-                data.visual.elements.animation = animationStyle;
-                hasContent = true;
-            }
-            
-            const cartoonCharacter = document.getElementById('cartoonCharacter').value;
-            if (cartoonCharacter) {
-                data.visual.elements.cartoon = cartoonCharacter;
-                hasContent = true;
-            }
-            
-            const animalCharacteristics = document.getElementById('animalCharacteristics').value;
-            if (animalCharacteristics) {
-                data.visual.elements.animal = animalCharacteristics;
-                hasContent = true;
-            }
-            
-            const fantasyRole = document.getElementById('fantasyRole').value;
-            if (fantasyRole) {
-                data.visual.elements.fantasy = fantasyRole;
-                hasContent = true;
-            }
-            
-            const subjectificationText = document.getElementById('subjectificationText').value;
-            if (subjectificationText) {
-                data.visual.elements.subjectification = subjectificationText;
-                hasContent = true;
-            }
-            
-            // Activity
-            const expressionText = document.getElementById('expressionText').value;
-            if (expressionText) {
-                data.visual.activity.expression = expressionText;
-                hasContent = true;
-            }
-            
-            const gestureText = document.getElementById('gestureText').value;
-            if (gestureText) {
-                data.visual.activity.gesture = gestureText;
-                hasContent = true;
-            }
-            
-            const activityText = document.getElementById('activityText').value;
-            if (activityText) {
-                data.visual.activity.action = activityText;
-                hasContent = true;
-            }
-            
-            const backgroundText = document.getElementById('backgroundText').value;
-            if (backgroundText) {
-                data.visual.activity.background = backgroundText;
                 hasContent = true;
             }
             
