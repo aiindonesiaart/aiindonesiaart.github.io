@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character AI Image Generator</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background: #f9f9f9;
+          padding: 20px;
+          color: #333;
+        }
+        .container {
+          max-width: 700px;
+          margin: auto;
+          background: white;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+          text-align: center;
+          color: #5c4d7d;
+          margin-bottom: 25px;
+        }
+        h2 {
+          color: #5c4d7d;
+          margin-top: 25px;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 8px;
+        }
+        label {
+          display: block;
+          margin-top: 15px;
+          font-weight: bold;
+        }
+        input, button, textarea, select {
+          width: 100%;
+          padding: 10px;
+          margin-top: 8px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 16px;
+        }
+        button {
+          background: #5c4d7d;
+          color: white;
+          cursor: pointer;
+          margin-top: 15px;
+          border: none;
+          transition: background 0.3s;
+        }
+        button:hover {
+          background: #483c64;
+        }
+        button.secondary {
+          background: #6c757d;
+        }
+        button.secondary:hover {
+          background: #5a6268;
+        }
+        button.success {
+          background: #28a745;
+        }
+        button.success:hover {
+          background: #218838;
+        }
+        button.info {
+          background: #17a2b8;
+        }
+        button.info:hover {
+          background: #138496;
+        }
+        button.danger {
+          background: #dc3545;
+        }
+        button.danger:hover {
+          background: #c82333;
+        }
+        textarea {
+          min-height: 100px;
+          resize: vertical;
+        }
+        .form-section {
+          margin-bottom: 20px;
+          padding: 15px;
+          background: #f9f9f9;
+          border-radius: 12px;
+        }
+        .form-row {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 15px;
+        }
+        .form-row > div {
+          flex: 1;
+        }
+        .toggle-section {
+          cursor: pointer;
+          padding: 10px;
+          background: #e9e9e9;
+          border-radius: 8px;
+          margin-top: 15px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .toggle-section:hover {
+          background: #e0e0e0;
+        }
+        .toggle-section::after {
+          content: "+";
+          font-size: 20px;
+        }
+        .toggle-section.active::after {
+          content: "-";
+        }
+        .entry-block {
+          margin-top: 10px;
+          padding: 15px;
+          background: #f1f1f1;
+          border-radius: 8px;
+          display: none;
+        }
+        .result-section {
+          margin-top: 20px;
+          padding: 15px;
+          background: #f8f9fa;
+          border-radius: 8px;
+          border: 1px solid #dee2e6;
+          display: none;
+        }
+        .result-title {
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #5c4d7d;
+        }
+        .result-content {
+          white-space: pre-wrap;
+          background: white;
+          padding: 15px;
+          border-radius: 8px;
+          border: 1px solid #ddd;
+          max-height: 400px;
+          overflow-y: auto;
+        }
+        .button-group {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        .button-group button {
+          flex: 1;
+        }
+        .item-container {
+          margin-top: 15px;
+        }
+        .item {
+          background: #e9ecef;
+          padding: 12px;
+          border-radius: 8px;
+          margin-bottom: 10px;
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+        .item span {
+          flex: 1;
+        }
+        .remove-btn {
+          background: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          margin-left: 10px;
+        }
+        .empty-message {
+          color: #6c757d;
+          font-style: italic;
+          text-align: center;
+          padding: 20px;
+        }
+        .hidden {
+          display: none;
+        }
+        @media (max-width: 600px) {
+          .form-row, .button-group {
+            flex-direction: column;
+            gap: 10px;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Character AI Image Generator</h1>
+        
+        <form id="characterForm">
+            <!-- View Angle Section -->
+            <div class="form-section">
+                <h2>View Angle</h2>
+                <select id="angleView">
+                    <option value="">Select or type...</option>
+                    <option value="front view">Front view</option>
+                    <option value="side view">Side view</option>
+                    <option value="over the shoulder">Over the shoulder</option>
+                    <option value="from behind view">From behind view</option>
+                    <option value="dutch angle">Dutch angle</option>
+                    <option value="wide angle view">Wide angle view</option>
+                    <option value="low angle view">Low angle view</option>
+                    <option value="drone view">Drone view</option>
+                    <option value="from above view">From above view</option>
+                    <option value="top view">Top view</option>
+                    <option value="bird's eye view">Bird's eye view</option>
+                    <option value="from below view">From below view</option>
+                    <option value="worm eye view">Worm eye view</option>
+                    <option value="close up">Close up</option>
+                    <option value="extreme close up">Extreme close up</option>
+                </select>
+            </div>
+            
+            <!-- Human Characteristics Section -->
+            <div class="form-section">
+                <h2>Human Characteristics</h2>
+                
+                <label for="characterName">Character Name</label>
+                <input type="text" id="characterName" placeholder="Enter character name">
+                
+                <!-- Race Section -->
+                <div class="toggle-section" id="raceToggle">Add Race</div>
+                <div class="entry-block" id="raceOptions">
+                    <label>Select Race Type</label>
+                    <select id="raceType">
+                        <option value="">Select...</option>
+                        <option value="continent">Continent</option>
+                        <option value="nationality">Nationality</option>
+                        <option value="ethnicity">Ethnicity</option>
+                    </select>
+                    
+                    <div id="continentOptions" class="hidden">
+                        <label for="continentItems">Continent</label>
+                        <select id="continentItems">
+                            <option value="">Select or type...</option>
+                            <option value="asian">Asian</option>
+                            <option value="southeast asian">Southeast Asian</option>
+                            <option value="african">African</option>
+                            <option value="south african">South African</option>
+                            <option value="european">European</option>
+                            <option value="american">American</option>
+                            <option value="central american">Central American</option>
+                            <option value="south american">South American</option>
+                            <option value="middle eastern">Middle Eastern</option>
+                            <option value="australian">Australian</option>
+                            <option value="caucasian">Caucasian</option>
+                            <option value="mongoloid">Mongoloid</option>
+                            <option value="negroid">Negroid</option>
+                        </select>
+                    </div>
+                    
+                    <div id="nationalityOptions" class="hidden">
+                        <label for="nationalityItems">Nationality</label>
+                        <select id="nationalityItems">
+                            <option value="">Select or type...</option>
+                            <option value="indonesian">Indonesian</option>
+                            <option value="malaysian">Malaysian</option>
+                            <option value="singaporean">Singaporean</option>
+                            <option value="philippine">Philippine</option>
+                            <option value="vietnamese">Vietnamese</option>
+                            <option value="cambodian">Cambodian</option>
+                            <option value="thai">Thai</option>
+                            <option value="chinese">Chinese</option>
+                            <option value="afghan">Afghan</option>
+                            <option value="algerian">Algerian</option>
+                            <option value="american">American</option>
+                            <option value="angolan">Angolan</option>
+                            <option value="argentine">Argentine</option>
+                            <option value="austrian">Austrian</option>
+                            <option value="australian">Australian</option>
+                            <option value="bangladeshi">Bangladeshi</option>
+                            <option value="belarusian">Belarusian</option>
+                            <option value="belgian">Belgian</option>
+                            <option value="bolivian">Bolivian</option>
+                            <option value="bosnian">Bosnian</option>
+                            <option value="brazilian">Brazilian</option>
+                            <option value="british">British</option>
+                            <option value="bulgarian">Bulgarian</option>
+                            <option value="cameroonian">Cameroonian</option>
+                            <option value="central african">Central African</option>
+                            <option value="chadian">Chadian</option>
+                            <option value="colombian">Colombian</option>
+                            <option value="costa rican">Costa Rican</option>
+                            <option value="croatian">Croatian</option>
+                            <option value="czech">Czech</option>
+                            <option value="congolese">Congolese</option>
+                            <option value="danish">Danish</option>
+                            <option value="egyptian">Egyptian</option>
+                            <option value="salvadoran">Salvadoran</option>
+                            <option value="estonian">Estonian</option>
+                            <option value="ethiopian">Ethiopian</option>
+                            <option value="finnish">Finnish</option>
+                            <option value="french">French</option>
+                            <option value="german">German</option>
+                            <option value="ghanaian">Ghanaian</option>
+                            <option value="greek">Greek</option>
+                            <option value="guatemalan">Guatemalan</option>
+                            <option value="dutch">Dutch</option>
+                            <option value="honduran">Honduran</option>
+                            <option value="hungarian">Hungarian</option>
+                            <option value="icelandic">Icelandic</option>
+                            <option value="indian">Indian</option>
+                            <option value="iranian">Iranian</option>
+                            <option value="iraqi">Iraqi</option>
+                            <option value="irish">Irish</option>
+                            <option value="israeli">Israeli</option>
+                            <option value="italian">Italian</option>
+                            <option value="ivorian">Ivorian</option>
+                            <option value="jamaican">Jamaican</option>
+                            <option value="japanese">Japanese</option>
+                            <option value="jordanian">Jordanian</option>
+                            <option value="kazakh">Kazakh</option>
+                            <option value="kenyan">Kenyan</option>
+                            <option value="lao">Lao</option>
+                            <option value="latvian">Latvian</option>
+                            <option value="libyan">Libyan</option>
+                            <option value="lithuanian">Lithuanian</option>
+                            <option value="malagasy">Malagasy</option>
+                            <option value="malian">Malian</option>
+                            <option value="mauritanian">Mauritanian</option>
+                            <option value="mexican">Mexican</option>
+                            <option value="moroccan">Moroccan</option>
+                            <option value="namibian">Namibian</option>
+                            <option value="new zealand">New Zealand</option>
+                            <option value="nicaraguan">Nicaraguan</option>
+                            <option value="nigerien">Nigerien</option>
+                            <option value="nigerian">Nigerian</option>
+                            <option value="norwegian">Norwegian</option>
+                            <option value="omani">Omani</option>
+                            <option value="pakistani">Pakistani</option>
+                            <option value="palestine">Palestine</option>
+                            <option value="panamanian">Panamanian</option>
+                            <option value="paraguayan">Paraguayan</option>
+                            <option value="peruvian">Peruvian</option>
+                            <option value="polish">Polish</option>
+                            <option value="portuguese">Portuguese</option>
+                            <option value="romanian">Romanian</option>
+                            <option value="russian">Russian</option>
+                            <option value="saudi arabian">Saudi Arabian</option>
+                            <option value="scottish">Scottish</option>
+                            <option value="senegalese">Senegalese</option>
+                            <option value="serbian">Serbian</option>
+                            <option value="slovak">Slovak</option>
+                            <option value="somalian">Somalian</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="sudanese">Sudanese</option>
+                            <option value="swiss">Swiss</option>
+                            <option value="syrian">Syrian</option>
+                            <option value="tunisian">Tunisian</option>
+                            <option value="turkish">Turkish</option>
+                            <option value="turkmen">Turkmen</option>
+                            <option value="ukranian">Ukranian</option>
+                            <option value="emirati">Emirati</option>
+                            <option value="uruguayan">Uruguayan</option>
+                            <option value="welsh">Welsh</option>
+                            <option value="zambian">Zambian</option>
+                            <option value="zimbabwean">Zimbabwean</option>
+                        </select>
+                    </div>
+                    
+                    <div id="ethnicityOptions" class="hidden">
+                        <label for="ethnicityItems">Ethnicity</label>
+                        <select id="ethnicityItems">
+                            <option value="">Select or type...</option>
+                            <option value="javanese">Javanese</option>
+                            <option value="sundanese">Sundanese</option>
+                            <option value="madurese">Madurese</option>
+                            <option value="acehnese">Acehnese</option>
+                            <option value="gayonese">Gayonese</option>
+                            <option value="batak">Batak</option>
+                            <option value="malay">Malay</option>
+                            <option value="minangkabau">Minangkabau</option>
+                            <option value="lampungese">Lampungese</option>
+                            <option value="mentaweian">Mentaweian</option>
+                            <option value="engganese">Engganese</option>
+                            <option value="dayak">Dayak</option>
+                            <option value="banjarese">Banjarese</option>
+                            <option value="makassarese">Makassarese</option>
+                            <option value="buginese">Buginese</option>
+                            <option value="mandarese">Mandarese</option>
+                            <option value="minahasan">Minahasan</option>
+                            <option value="torajan">Torajan</option>
+                            <option value="gorontaloan">Gorontaloan</option>
+                            <option value="balinese">Balinese</option>
+                            <option value="sumbawan">Sumbawan</option>
+                            <option value="bimanese">Bimanese</option>
+                            <option value="tetunian">Tetunian</option>
+                            <option value="sumban">Sumban</option>
+                            <option value="alorese">Alorese</option>
+                            <option value="ambonese">Ambonese</option>
+                            <option value="tanimbarese">Tanimbarese</option>
+                            <option value="asmat">Asmat</option>
+                            <option value="papuan">Papuan</option>
+                            <option value="moluccan">Moluccan</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="saveRaceBtn" class="info">Save Race</button>
+                </div>
+                
+                <div class="item-container" id="raceContainer"></div>
+                
+                <!-- Human Identity Section -->
+                <div class="toggle-section" id="humanIdentityToggle">Add Human Identity</div>
+                <div class="entry-block" id="humanIdentityOptions">
+                    <label>Select Identity Type</label>
+                    <select id="humanIdentityType">
+                        <option value="">Select...</option>
+                        <option value="age">Age</option>
+                        <option value="gender">Gender</option>
+                        <option value="personality">Personality</option>
+                    </select>
+                    
+                    <div id="ageOptions" class="hidden">
+                        <label for="ageInput">Age</label>
+                        <input type="number" id="ageInput" placeholder="Enter age in years">
+                    </div>
+                    
+                    <div id="genderOptions" class="hidden">
+                        <label for="genderItems">Gender</label>
+                        <select id="genderItems">
+                            <option value="">Select or type...</option>
+                            <option value="man">Man</option>
+                            <option value="woman">Woman</option>
+                            <option value="boy">Boy</option>
+                            <option value="girl">Girl</option>
+                            <option value="non-binary">Non-binary</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div id="personalityOptions" class="hidden">
+                        <label for="personalityItems">Personality</label>
+                        <select id="personalityItems">
+                            <option value="">Select or type...</option>
+                            <option value="confident">Confident</option>
+                            <option value="cheerful">Cheerful</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="elegant">Elegant</option>
+                            <option value="glamorous">Glamorous</option>
+                            <option value="handsome">Handsome</option>
+                            <option value="radiant">Radiant</option>
+                            <option value="smart">Smart</option>
+                            <option value="sincere">Sincere</option>
+                            <option value="attractive">Attractive</option>
+                            <option value="good-looking">Good-looking</option>
+                            <option value="beautiful">Beautiful</option>
+                            <option value="lovely">Lovely</option>
+                            <option value="pretty">Pretty</option>
+                            <option value="cute">Cute</option>
+                            <option value="nice">Nice</option>
+                            <option value="plain">Plain</option>
+                            <option value="homely">Homely</option>
+                            <option value="unattractive">Unattractive</option>
+                            <option value="ugly">Ugly</option>
+                            <option value="fashionable">Fashionable</option>
+                            <option value="neat">Neat</option>
+                            <option value="clean">Clean</option>
+                            <option value="tidy">Tidy</option>
+                            <option value="untidy">Untidy</option>
+                            <option value="dirty">Dirty</option>
+                            <option value="filthy">Filthy</option>
+                            <option value="angry">Angry</option>
+                            <option value="agressive">Agressive</option>
+                            <option value="arrogant">Arrogant</option>
+                            <option value="boring">Boring</option>
+                            <option value="cruel">Cruel</option>
+                            <option value="deceitful">Deceitful</option>
+                            <option value="dumb">Dumb</option>
+                            <option value="evil">Evil</option>
+                            <option value="grumpy">Grumpy</option>
+                            <option value="mean">Mean</option>
+                            <option value="rude">Rude</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="saveHumanIdentityBtn" class="info">Save Identity</button>
+                </div>
+                
+                <div class="item-container" id="humanIdentityContainer"></div>
+                
+                <!-- Physical Characteristics -->
+                <div class="form-row">
+                    <div>
+                        <label for="hairStyle">Hair Style</label>
+                        <select id="hairStyle">
+                            <option value="">Select or type...</option>
+                            <option value='afro'>Afro</option>
+<option value='bob cut'>Bob cut</option>
+<option value='pixie cut'>Pixie cut</option>
+<option value='Pixie bob'>Pixie bob</option>
+<option value='long layer'>Long layer</option>
+<option value='beach waves'>Beach waves</option>
+<option value='bangs'>Bangs</option>
+<option value='braids'>Braids</option>
+<option value='top knot'>Top knot</option>
+<option value='undercut'>Undercut</option>
+<option value='shag cut'>Shag cut</option>
+<option value='layered bob'>Layered bob</option>
+<option value='curly'>Curly hair</option>
+<option value='sleek straight'>Sleek straight</option>
+<option value='side swept bang'>Side swept bang</option>
+<option value='balerina bun'>Balerina bun</option>
+<option value='mehawk'>Mehawk</option>
+<option value='ombre'>Ombre</option>
+<option value='box braids'>Box braids</option>
+<option value='half up half down'>Half up half down</option>
+<option value='high ponytail'>High ponytail</option>
+<option value='messy bun'>Messy bun</option>
+<option value='fishtail braid'>Fishtail braid</option>
+<option value='waterfall braid'>Waterfall braid</option>
+<option value='dreadlocks'>Dreadlocks</option>
+<option value='cornrows'>Cornrows</option>
+<option value='bold shiny'>Spacebun</option>
+<option value='afro'>Bold shiny</option>
+<option value='buzz cut'>Buzz cut</option>
+<option value='crew cut'>Crew cut</option>
+<option value='pompadour'>Pompadour</option>
+<option value='long'>Long</option>
+<option value='flow'>Flow</option>
+<option value='messy'>Messy</option>
+<option value='morissey'>Morissey</option>
+<option value='side parted'>Side parted</option>
+<option value='comma'>Comma</option>
+<option value='shaggy'>Shaggy</option>
+<option value='french'>French</option>
+<option value='comb'>Comb</option>
+<option value='man bun'>Man bun</option>
+<option value='spiky'>Spiky</option>
+<option value='two blocks'>Two blocks</option>
+<option value='quiff'>Quiff</option>
+<option value='fringe'>Fringe</option>
+<option value='crop cut'>Crop cut</option>
+<option value='induction curl'>Induction curl</option>
+<option value='hight and tight cut'>Hight and tight cut</option>
+<option value='curtain haircut'>Curtain haircut</option>
+<option value='slick back'>Slick back</option>
+<option value='medium'>Medium</option>
+<option value='bowl'>Bowl</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="skinTone">Skin Tone</label>
+                        <select id="skinTone">
+                            <option value="">Select or type...</option>
+                            <option value="white">White</option>
+                            <option value="black">Black</option>
+                            <option value="melanin">Melanin</option>
+                            <option value="light">Light</option>
+                            <option value="olive">Olive</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="brown">Brown</option>
+                            <option value="dark brown">Dark brown</option>
+                            <option value="light brown">Light brown</option>
+                            <option value="red brown">Red brown</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label for="bodyType">Body Type</label>
+                        <select id="bodyType">
+                            <option value="">Select or type...</option>
+                            <option value="pretty">Pretty</option>
+                            <option value="chubby">Chubby</option>
+                            <option value="midweight">Midweight</option>
+                            <option value="overweight">Overweight</option>
+                            <option value="flat">Flat</option>
+                            <option value="flabby">Flabby</option>
+                            <option value="buxom">Buxom</option>
+                            <option value="voluptous">Voluptous</option>
+                            <option value="hefty">Hefty</option>
+                            <option value="pudgy">Pudgy</option>
+                            <option value="plumb">Plumb</option>
+                            <option value="obese">Obese</option>
+                            <option value="mordbidly obese">Morbidly obese</option>
+                            <option value="stout">Stout</option>
+                            <option value="rotund">Rotund</option>
+                            <option value="thick-bodied">Thick-bodied</option>
+                            <option value="thicc">Thicc</option>
+                            <option value="thick">Thick</option>
+                            <option value="beefy">Beefy</option>
+                            <option value="portly">Portly</option>
+                            <option value="tubby">Tubby</option>
+                            <option value="slightly overweight">Slightly overweight</option>
+                            <option value="buff">Buff</option>
+                            <option value="burl">Burl</option>
+                            <option value="fit">Fit</option>
+                            <option value="well-endowed">Well-endowed</option>
+                            <option value="muscular">Muscular</option>
+                            <option value="stocky">Stocky</option>
+                            <option value="big-boned">Big-boned</option>
+                            <option value="curvy">Curvy</option>
+                            <option value="flyweight">Flyweight</option>
+                            <option value="skinny">Skinny</option>
+                            <option value="too skinny">Too skinny</option>
+                            <option value="anorexic">Anorexic</option>
+                            <option value="not skinny">Not skinny</option>
+                            <option value="slender">Slender</option>
+                            <option value="lanky">Lanky</option>
+                            <option value="slim">Slim</option>
+                            <option value="slight">Slight</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <label for="specialIdentification">Special Identification</label>
+                <textarea id="specialIdentification" placeholder="tattoo, dimples, thick eyelash, small moustache, etc"></textarea>
+                
+                <label for="customDescription">Custom Description</label>
+                <textarea id="customDescription" placeholder="Describe your character in detail"></textarea>
+            </div>
+            
+            <!-- Animal & Fantasy Section -->
+            <div class="form-section">
+                <h2>Special Elements</h2>
+                
+                <label for="animationStyle">Animation Style</label>
+                <input type="text" id="animationStyle" placeholder="e.g. anime, Disney-style, Pixar, stop-motion, cel-shaded, looklike, humanoid, anthropomorphic, robotic, sculpture, elf, dwarf, daemon, goblin, gremlin, kobold, orc">
+                
+                <label for="cartoonCharacter">Cartoon/Film Character</label>
+                <input type="text" id="cartoonCharacter" placeholder="e.g. Superman, Spiderman, Batman, Micky mouse, Donald duck, Garfield, Pinocchio, Cinderella, Peter Pan, Robin hood, Aladdin, Hercules, Tarzan, Dinosaur, Bolt, Winnie the pooh, Toy story, Finding Nemo, Cars, Wall-e, Super Mario, Shrek, Woody, Homer Simpson, Bugs Bunny, Pink Panther, Tom Cat, Snoopy, Mr Krabs, Squidward, Maui, Grumpy, Patrick Star, Mrs Krabs, Spongebob, Plankton, Gary, Fred Flinstone, Captain Hook, Carl Fredricksen, Daffy Duck, Woody, Baloo, Genie, Buzz Lightyear, Jezzica rabbit, Jack Skellington, Maleficent, Lilo Pelekai, Donkey, Mirabel Madrigal, Elsa, Roger Rabit, Thumper, Fiver, Katie Mitchel, Puss in boots, Lumiere, Chihiro Ogino, Master Shifu">
+                
+                <label for="animalCharacteristics">Animal</label>
+                <input type="text" id="animalCharacteristics" placeholder="e.g. Bird, Cat, Dog, Duck, Dragon, Eagle, Frog, Horse, Donkey, Tiger, Lion, Panther, Leopard, Cheetah, Bear, Elephant, Bear, Turtle, Tortoise, Crocodile, Rabbit, Porcupine, Hare, Hen, Pigeon, Dolphine, Whale, Alligator, Eagle, Squirrel, Ostrich, Fox, Goat, Jackal, Emu, Armadillo, Eel, Goose, Wolf, Beagle, Gorilla, Chimpanzee, Monkey, Beaver, Orangutan, Antelope, Bat, Badger, Giraffe, Hermit crab, Panda, Hamster, Cobra, Shark, Camel, Hawk, Deer, Chameleon, Hippopotamus, Jaguar, Chihuahua, Ibex, Lizard, Koala, Kangaroo, Iguana, Llama, Chinchilas, Dodo, Jellyfish, Rhinoceros, Hedgehog, Zebra, Possum, Bison, Bull, Buffalo, Sheep, Meerkat, Vulture, Mouse, Flamingo, Sloth, Racoon, Mole, Swan, Lynx, Elk, Boar, Lemur, Mule, Baboon, Mammoth, Rat, Snake, Peacock">
+                
+                <label for="fantasyRole">Fantasy Role</label>
+                <input type="text" id="fantasyRole" placeholder="e.g. wizard, elf warrior, cyberpunk rogue, steampunk inventor,Alchemist, Assassin, Barbarian, Druid, Hunter, Knight, Mage, Priest, Thief, Warrior, Witch, Wizard, Worker">
+                
+                <div class="toggle-section" data-target="subjectificationBlock">Subjectification</div>
+                <div id="subjectificationBlock" class="entry-block">
+                    <textarea id="subjectificationText" placeholder="Made of glass, Shape of a cat, Created by a dragon fractal, Drawn in the sand, Composed from broken glass, Made up of small brightly colored dots, etc"></textarea>
+                </div>
+            </div>
+            
+            <!-- Clothing & Accessories Section -->
+            <div class="form-section">
+                <h2>Clothing & Accessories</h2>
+                
+                <div class="toggle-section" data-target="propertyBlock">Add Clothing/Accessory</div>
+                <div id="propertyBlock" class="entry-block">
+                    <label>Select Category</label>
+                    <select id="propertyType">
+                        <option value="">Select...</option>
+                        <option value="headwear">Headwear</option>
+                        <option value="upper">Upper Body</option>
+                        <option value="lower">Lower Body</option>
+                        <option value="footwear">Footwear</option>
+                    </select>
+                    
+                    <div id="headwearOptions" class="hidden">
+                        <label for="headwearItems">Headwear</label>
+                        <select id="headwearItems">
+                            <option value="">Select or type...</option>
+                            <option value="kupiah">Kupiah</option>
+                            <option value="hijab">Hijab</option>
+                            <option value="crown">Crown</option>
+                            <option value="helmet">Helmet</option>
+                            <option value="scarf">Scarf</option>
+                            <option value="tie">Tie</option>
+                        </select>
+                    </div>
+                    
+                    <div id="upperOptions" class="hidden">
+                        <label for="upperItems">Upper Body</label>
+                        <select id="upperItems">
+                            <option value="">Select or type...</option>
+                            <option value="coat">Coat</option>
+                            <option value="dress">Dress</option>
+                            <option value="cloak">Cloak</option>
+                            <option value="frump">Frump</option>
+                            <option value="polka dots">Polka dots</option>
+                            <option value="hoodies">Hoodies</option>
+                            <option value="suit">Suit</option>
+                            <option value="swimsuit">Swimsuit</option>
+                            <option value="sweat shirt">Sweat shirt</option>
+                            <option value="blouse">Blouse</option>
+                            <option value="gown">Gown</option>
+                            <option value="vest">Vest</option>
+                            <option value="blazer">Blazer</option>
+                        </select>
+                    </div>
+                    
+                    <div id="lowerOptions" class="hidden">
+                        <label for="lowerItems">Lower Body</label>
+                        <select id="lowerItems">
+                            <option value="">Select or type...</option>
+                            <option value="pant">Pant</option>
+                            <option value="skirt">Skirt</option>
+                            <option value="thights">Tights</option>
+                            <option value="laceleeves">Laceleeves</option>
+                            <option value="shorts">Shorts</option>
+                            <option value="half pant">Half pant</option>
+                            <option value="night pant">Night pant</option>
+                            <option value="joggers">Joggers</option>
+                            <option value="briefs">Briefs</option>
+                            <option value="cargo pant">Cargo pant</option>
+                        </select>
+                    </div>
+                    
+                    <div id="footwearOptions" class="hidden">
+                        <label for="footwearItems">Footwear</label>
+                        <select id="footwearItems">
+                            <option value="">Select or type...</option>
+                            <option value="flipflops">Flipflops</option>
+                            <option value="shoes">Shoes</option>
+                            <option value="nike shoes">Nike shoes</option>
+                            <option value="converse">Converse</option>
+                        </select>
+                    </div>
+                    
+                    <label for="propertyColor">Color</label>
+                    <input type="text" id="propertyColor" placeholder="black, red, white, blue, etc">
+                    
+                    <button type="button" id="addPropertyBtn" class="info">Add Item</button>
+                </div>
+                
+                <div class="item-container" id="propertiesContainer"></div>
+                
+                <label for="customProperty">Custom Clothing/Accessories</label>
+                <textarea id="customProperty" placeholder="Describe any custom clothing or accessories"></textarea>
+            </div>
+            
+            <!-- Pose & Environment Section -->
+            <div class="form-section">
+                <h2>Pose & Environment</h2>
+                
+                <div class="toggle-section" data-target="expressionBlock">Facial Expression</div>
+                <div id="expressionBlock" class="entry-block">
+                    <textarea id="expressionText" placeholder="Elevating eyebrows, Smirking, Frowning, Squinting, Widening eyes, Grimacing, Blinking rapidly, Rolling eyes, Narrowing eyes, Open mouth surprise, Raised eyebrow, Wrinkled nose, Bitting lip, Flared nostrils, Half smile, Winking, Clenched teeth, Raised cheeks, Tensed forehead, Furrowed brow, Twitchig eye, Open-mouthed laugh, Brow flash, Asymetrical smile, One-eyed squint, Nose wrinkle, Lip corner pull-down, Pensive look, Sneer, Quizzical expression, Half-lidded eyes, Cocky smirk, Raised uper lip, Skeptical eyebrow raise, Eyes closed in concentration, Mouth open in exertion, Fist clenched in Determination, Head tilted back in power, Arms spread wide in acceptance, Scream of fear, Scream of anger, Scream of excitement, Scream of despair, Scream of triump"></textarea>
+                </div>
+                
+                <div class="toggle-section" data-target="gestureBlock">Hand Gesture</div>
+                <div id="gestureBlock" class="entry-block">
+                    <textarea id="gestureText" placeholder="Peace Sign, Thumbs up, Stop Sign, Ok Sign, Finger point, Crossed finger, High five, Fist bump, Shaka Sign, Heart Sign, Clapping, Salute, Facepalm, Thumbs down, Jazz hands, Finger gun, Rock on Sign, Beckoning gesture, Hands on hips, Crossed arms, Waving hands dismissively, Head in hands, Finger pointing, Rubbing the temple, Pulling at his collar, Bitting nails, Covering the mouth with a hand, Grip reflex, Snatch grab, Clutching, Swooping catch, Pincer movemement"></textarea>
+                </div>
+                
+                <div class="toggle-section" data-target="activityBlock">Activity</div>
+                <div id="activityBlock" class="entry-block">
+                    <textarea id="activityText" placeholder="walking, dancing, fighting, eating, drinking, posing, sleeping, running, sitting, standing, looking at camera, riding a bicycle, etc"></textarea>
+                </div>
+                
+                <div class="toggle-section" data-target="backgroundBlock">Background</div>
+                <div id="backgroundBlock" class="entry-block">
+                    <textarea id="backgroundText" placeholder="white, colorful, laundry, in the garden, in the swamp, on top of mountain, etc"></textarea>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" id="generatePromptBtn" class="success">Generate Prompt</button>
+                <button type="button" id="generateJsonBtn" class="secondary">Generate JSON</button>
+            </div>
+            
+            <!-- Result Sections -->
+            <div id="promptResult" class="result-section">
+                <div class="result-title">Generated Prompt</div>
+                <div class="result-content" id="promptContent"></div>
+                <div id="emptyPrompt" class="empty-message">No data entered to generate prompt</div>
+                <button type="button" id="copyPromptBtn" class="secondary hidden">Copy Prompt</button>
+            </div>
+            
+            <div id="jsonResult" class="result-section">
+                <div class="result-title">Generated JSON</div>
+                <div class="result-content" id="jsonContent"></div>
+                <div id="emptyJson" class="empty-message">No data entered to generate JSON</div>
+                <button type="button" id="copyJsonBtn" class="secondary hidden">Copy JSON</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Toggle sections
+        document.querySelectorAll('.toggle-section').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const targetId = this.getAttribute('data-target') || this.id.replace('Toggle', 'Options');
+                const targetBlock = document.getElementById(targetId);
+                targetBlock.style.display = targetBlock.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+        
+        // Race Section Functionality
+        document.getElementById('raceType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('continent') || el.id.includes('nationality') || el.id.includes('ethnicity')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('saveRaceBtn').addEventListener('click', function() {
+            const raceType = document.getElementById('raceType').value;
+            if (!raceType) {
+                alert('Please select a race type first');
+                return;
+            }
+            
+            let raceItem = '';
+            let raceName = '';
+            
+            switch(raceType) {
+                case 'continent':
+                    raceItem = document.getElementById('continentItems').value;
+                    raceName = 'Continent';
+                    break;
+                case 'nationality':
+                    raceItem = document.getElementById('nationalityItems').value;
+                    raceName = 'Nationality';
+                    break;
+                case 'ethnicity':
+                    raceItem = document.getElementById('ethnicityItems').value;
+                    raceName = 'Ethnicity';
+                    break;
+            }
+            
+            if (!raceItem) {
+                alert('Please select an item');
+                return;
+            }
+            
+            const raceDiv = document.createElement('div');
+            raceDiv.className = 'item';
+            raceDiv.innerHTML = `
+                <span><strong>${raceName}:</strong> ${raceItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="race-type" value="${raceType}">
+                <input type="hidden" name="race-item" value="${raceItem}">
+            `;
+            
+            document.getElementById('raceContainer').appendChild(raceDiv);
+            
+            // Reset form
+            document.getElementById('raceType').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('continent') || el.id.includes('nationality') || el.id.includes('ethnicity')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('raceOptions').style.display = 'none';
+            document.getElementById('raceToggle').classList.remove('active');
+        });
+        
+        // Human Identity Section Functionality
+        document.getElementById('humanIdentityType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('age') || el.id.includes('gender') || el.id.includes('personality')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('saveHumanIdentityBtn').addEventListener('click', function() {
+            const humanIdentityType = document.getElementById('humanIdentityType').value;
+            if (!humanIdentityType) {
+                alert('Please select an identity type first');
+                return;
+            }
+            
+            let humanIdentityItem = '';
+            let humanIdentityName = '';
+            
+            switch(humanIdentityType) {
+                case 'age':
+                    humanIdentityItem = document.getElementById('ageInput').value;
+                    humanIdentityName = 'Age';
+                    break;
+                case 'gender':
+                    humanIdentityItem = document.getElementById('genderItems').value;
+                    humanIdentityName = 'Gender';
+                    break;
+                case 'personality':
+                    humanIdentityItem = document.getElementById('personalityItems').value;
+                    humanIdentityName = 'Personality';
+                    break;
+            }
+            
+            if (!humanIdentityItem) {
+                alert('Please provide a value');
+                return;
+            }
+            
+            const humanIdentityDiv = document.createElement('div');
+            humanIdentityDiv.className = 'item';
+            humanIdentityDiv.innerHTML = `
+                <span><strong>${humanIdentityName}:</strong> ${humanIdentityItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="human-identity-type" value="${humanIdentityType}">
+                <input type="hidden" name="human-identity-item" value="${humanIdentityItem}">
+            `;
+            
+            document.getElementById('humanIdentityContainer').appendChild(humanIdentityDiv);
+            
+            // Reset form
+            document.getElementById('humanIdentityType').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('age') || el.id.includes('gender') || el.id.includes('personality')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('humanIdentityOptions').style.display = 'none';
+            document.getElementById('humanIdentityToggle').classList.remove('active');
+        });
+        
+        // Property Section Functionality
+        document.getElementById('propertyType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('headwear') || el.id.includes('upper') || el.id.includes('lower') || el.id.includes('footwear')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('addPropertyBtn').addEventListener('click', function() {
+            const propertyType = document.getElementById('propertyType').value;
+            if (!propertyType) {
+                alert('Please select a property type first');
+                return;
+            }
+            
+            let propertyItem = '';
+            let propertyName = '';
+            
+            switch(propertyType) {
+                case 'headwear':
+                    propertyItem = document.getElementById('headwearItems').value;
+                    propertyName = 'Headwear';
+                    break;
+                case 'upper':
+                    propertyItem = document.getElementById('upperItems').value;
+                    propertyName = 'Upper Body';
+                    break;
+                case 'lower':
+                    propertyItem = document.getElementById('lowerItems').value;
+                    propertyName = 'Lower Body';
+                    break;
+                case 'footwear':
+                    propertyItem = document.getElementById('footwearItems').value;
+                    propertyName = 'Footwear';
+                    break;
+            }
+            
+            if (!propertyItem) {
+                alert('Please select an item');
+                return;
+            }
+            
+            const propertyColor = document.getElementById('propertyColor').value;
+            
+            const propertyDiv = document.createElement('div');
+            propertyDiv.className = 'item';
+            propertyDiv.innerHTML = `
+                <span><strong>${propertyName}:</strong> ${propertyItem}${propertyColor ? ` (${propertyColor})` : ''}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="property-type" value="${propertyType}">
+                <input type="hidden" name="property-item" value="${propertyItem}">
+                <input type="hidden" name="property-color" value="${propertyColor || ''}">
+            `;
+            
+            document.getElementById('propertiesContainer').appendChild(propertyDiv);
+            
+            // Reset form
+            document.getElementById('propertyType').value = '';
+            document.getElementById('propertyColor').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('headwear') || el.id.includes('upper') || el.id.includes('lower') || el.id.includes('footwear')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('propertyBlock').style.display = 'none';
+            document.querySelector('[data-target="propertyBlock"]').classList.remove('active');
+        });
+        
+        // Remove item handlers (delegated)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-btn')) {
+                e.target.closest('.item').remove();
+            }
+        });
+        
+        // Generate Prompt button click handler
+        document.getElementById('generatePromptBtn').addEventListener('click', function() {
+            const prompt = generatePrompt();
+            const promptResult = document.getElementById('promptResult');
+            const promptContent = document.getElementById('promptContent');
+            const emptyPrompt = document.getElementById('emptyPrompt');
+            const copyBtn = document.getElementById('copyPromptBtn');
+            
+            promptResult.style.display = 'block';
+            
+            if (prompt.trim() === 'Create image.') {
+                promptContent.classList.add('hidden');
+                emptyPrompt.style.display = 'block';
+                copyBtn.classList.add('hidden');
+            } else {
+                promptContent.textContent = prompt;
+                promptContent.classList.remove('hidden');
+                emptyPrompt.style.display = 'none';
+                copyBtn.classList.remove('hidden');
+            }
+            
+            // Hide JSON result if it's showing
+            document.getElementById('jsonResult').style.display = 'none';
+            document.getElementById('copyJsonBtn').classList.add('hidden');
+        });
+        
+        // Generate JSON button click handler
+        document.getElementById('generateJsonBtn').addEventListener('click', function() {
+            const jsonData = generateJson();
+            const jsonResult = document.getElementById('jsonResult');
+            const jsonContent = document.getElementById('jsonContent');
+            const emptyJson = document.getElementById('emptyJson');
+            const copyBtn = document.getElementById('copyJsonBtn');
+            
+            jsonResult.style.display = 'block';
+            
+            if (jsonData === '{"visual":{}}') {
+                jsonContent.classList.add('hidden');
+                emptyJson.style.display = 'block';
+                copyBtn.classList.add('hidden');
+            } else {
+                jsonContent.textContent = jsonData;
+                jsonContent.classList.remove('hidden');
+                emptyJson.style.display = 'none';
+                copyBtn.classList.remove('hidden');
+            }
+            
+            // Hide prompt result if it's showing
+            document.getElementById('promptResult').style.display = 'none';
+            document.getElementById('copyPromptBtn').classList.add('hidden');
+        });
+        
+        // Copy Prompt button click handler
+        document.getElementById('copyPromptBtn').addEventListener('click', function() {
+            const promptText = document.getElementById('promptContent').textContent;
+            copyToClipboard(promptText);
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy Prompt';
+            }, 2000);
+        });
+        
+        // Copy JSON button click handler
+        document.getElementById('copyJsonBtn').addEventListener('click', function() {
+            const jsonText = document.getElementById('jsonContent').textContent;
+            copyToClipboard(jsonText);
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy JSON';
+            }, 2000);
+        });
+        
+        // Function to generate the prompt text in natural language
+        function generatePrompt() {
+            let prompt = 'Create image. ';
+            let hasContent = false;
+            
+            // Angle View
+            const angleView = document.getElementById('angleView').value;
+            if (angleView) {
+                prompt += `${angleView}, `;
+                hasContent = true;
+            }
+            
+            // Character Basics
+            const characterName = document.getElementById('characterName').value;
+            if (characterName) {
+                prompt += `character name ${characterName} `;
+                hasContent = true;
+            }
+            
+            // Race
+            const raceItems = document.querySelectorAll('#raceContainer .item');
+            if (raceItems.length > 0) {
+                prompt += 'from ';
+                raceItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="race-type"]').value;
+                    const race = item.querySelector('[name="race-item"]').value;
+                    
+                    if (index > 0) prompt += '/';
+                    prompt += race;
+                });
+                prompt += ' ';
+                hasContent = true;
+            }
+            
+            // Human Identity
+            const ageItems = document.querySelectorAll('#humanIdentityContainer .item [name="human-identity-type"][value="age"]');
+            if (ageItems.length > 0) {
+                const age = ageItems[0].nextElementSibling.value;
+                prompt += `${age} years old `;
+                hasContent = true;
+            }
+            
+            const genderItems = document.querySelectorAll('#humanIdentityContainer .item [name="human-identity-type"][value="gender"]');
+            if (genderItems.length > 0) {
+                const gender = genderItems[0].nextElementSibling.value;
+                prompt += `${gender} `;
+                hasContent = true;
+            }
+            
+            const personalityItems = document.querySelectorAll('#humanIdentityContainer .item [name="human-identity-type"][value="personality"]');
+            if (personalityItems.length > 0) {
+                const personality = personalityItems[0].nextElementSibling.value;
+                prompt += `with ${personality} personality `;
+                hasContent = true;
+            }
+            
+            // Physical Characteristics
+            const hairStyle = document.getElementById('hairStyle').value;
+            if (hairStyle) {
+                prompt += `with ${hairStyle} hair, `;
+                hasContent = true;
+            }
+            
+            const skinTone = document.getElementById('skinTone').value;
+            if (skinTone) {
+                prompt += `${skinTone} skin, `;
+                hasContent = true;
+            }
+            
+            const bodyType = document.getElementById('bodyType').value;
+            if (bodyType) {
+                prompt += `${bodyType} body type, `;
+                hasContent = true;
+            }
+            
+            // Properties
+            const propertyItems = document.querySelectorAll('#propertiesContainer .item');
+            if (propertyItems.length > 0) {
+                prompt += 'wearing ';
+                propertyItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="property-type"]').value;
+                    const property = item.querySelector('[name="property-item"]').value;
+                    const color = item.querySelector('[name="property-color"]').value;
+                    
+                    if (index > 0) prompt += 'and ';
+                    if (color) prompt += `${color} `;
+                    prompt += `${property}`;
+                    
+                    if (index < propertyItems.length - 1) prompt += ', ';
+                });
+                prompt += ', ';
+                hasContent = true;
+            }
+            
+            // Custom Property
+            const customProperty = document.getElementById('customProperty').value;
+            if (customProperty) {
+                prompt += `${customProperty}, `;
+                hasContent = true;
+            }
+            
+            // Special Identification
+            const specialIdentification = document.getElementById('specialIdentification').value;
+            if (specialIdentification) {
+                prompt += `with ${specialIdentification}, `;
+                hasContent = true;
+            }
+            
+            // Animation/Fantasy Elements
+            const animationStyle = document.getElementById('animationStyle').value;
+            const cartoonCharacter = document.getElementById('cartoonCharacter').value;
+            const animalCharacteristics = document.getElementById('animalCharacteristics').value;
+            const fantasyRole = document.getElementById('fantasyRole').value;
+            const subjectificationText = document.getElementById('subjectificationText').value;
+            
+            if (animationStyle || cartoonCharacter || animalCharacteristics || fantasyRole || subjectificationText) {
+                prompt += 'appearing as ';
+                hasContent = true;
+                if (animationStyle) prompt += `${animationStyle} `;
+                if (cartoonCharacter) prompt += `${cartoonCharacter} `;
+                if (animalCharacteristics) prompt += `${animalCharacteristics} `;
+                if (fantasyRole) prompt += `${fantasyRole} `;
+                if (subjectificationText) prompt += `${subjectificationText} `;
+                prompt += 'character, ';
+            }
+            
+            // Activity
+            const expressionText = document.getElementById('expressionText').value;
+            const gestureText = document.getElementById('gestureText').value;
+            const activityText = document.getElementById('activityText').value;
+            const backgroundText = document.getElementById('backgroundText').value;
+            
+            if (expressionText || gestureText || activityText || backgroundText) {
+                prompt += 'with ';
+                hasContent = true;
+                if (expressionText) prompt += `${expressionText} expression, `;
+                if (gestureText) prompt += `${gestureText} gesture, `;
+                if (activityText) prompt += `${activityText}, `;
+                if (backgroundText) prompt += `${backgroundText} background, `;
+            }
+            
+            // Custom Description
+            const customDescription = document.getElementById('customDescription').value;
+            if (customDescription) {
+                prompt += `${customDescription}, `;
+                hasContent = true;
+            }
+            
+            // If no content was added beyond "Create image. "
+            if (!hasContent) {
+                return 'Create image.';
+            }
+            
+            // Remove trailing comma and space if exists
+            if (prompt.endsWith(', ')) {
+                prompt = prompt.slice(0, -2);
+            }
+            
+            // Add period at the end
+            prompt += '.';
+            
+            return prompt;
+        }
+        
+        // Function to generate the JSON data with "visual" root
+        function generateJson() {
+            const data = {
+                visual: {
+                    view: {},
+                    character: {
+                        name: "",
+                        race: [],
+                        identity: {},
+                        physical: {},
+                        properties: []
+                    },
+                    elements: {},
+                    activity: {}
+                }
+            };
+            
+            let hasContent = false;
+            
+            // Angle View
+            const angleView = document.getElementById('angleView').value;
+            if (angleView) {
+                data.visual.view.angle = angleView;
+                hasContent = true;
+            }
+            
+            // Character Name
+            const characterName = document.getElementById('characterName').value;
+            if (characterName) {
+                data.visual.character.name = characterName;
+                hasContent = true;
+            }
+            
+            // Race
+            const raceItems = document.querySelectorAll('#raceContainer .item');
+            raceItems.forEach(item => {
+                const race = {
+                    type: item.querySelector('[name="race-type"]').value,
+                    value: item.querySelector('[name="race-item"]').value
+                };
+                data.visual.character.race.push(race);
+                hasContent = true;
+            });
+            
+            // Human Identity
+            const humanIdentityItems = document.querySelectorAll('#humanIdentityContainer .item');
+            humanIdentityItems.forEach(item => {
+                const type = item.querySelector('[name="human-identity-type"]').value;
+                const value = item.querySelector('[name="human-identity-item"]').value;
+                
+                data.visual.character.identity[type] = {
+                    value: value
+                };
+                hasContent = true;
+            });
+            
+            // Physical Characteristics
+            const hairStyle = document.getElementById('hairStyle').value;
+            if (hairStyle) {
+                data.visual.character.physical.hairStyle = hairStyle;
+                hasContent = true;
+            }
+            
+            const skinTone = document.getElementById('skinTone').value;
+            if (skinTone) {
+                data.visual.character.physical.skinTone = skinTone;
+                hasContent = true;
+            }
+            
+            const bodyType = document.getElementById('bodyType').value;
+            if (bodyType) {
+                data.visual.character.physical.bodyType = bodyType;
+                hasContent = true;
+            }
+            
+            const specialIdentification = document.getElementById('specialIdentification').value;
+            if (specialIdentification) {
+                data.visual.character.physical.specialFeatures = specialIdentification;
+                hasContent = true;
+            }
+            
+            const customDescription = document.getElementById('customDescription').value;
+            if (customDescription) {
+                data.visual.character.physical.description = customDescription;
+                hasContent = true;
+            }
+            
+            // Properties
+            const propertyItems = document.querySelectorAll('#propertiesContainer .item');
+            propertyItems.forEach(item => {
+                const property = {
+                    type: item.querySelector('[name="property-type"]').value,
+                    item: item.querySelector('[name="property-item"]').value,
+                    color: item.querySelector('[name="property-color"]').value || undefined
+                };
+                data.visual.character.properties.push(property);
+                hasContent = true;
+            });
+            
+            const customProperty = document.getElementById('customProperty').value;
+            if (customProperty) {
+                data.visual.character.properties.push({
+                    type: 'custom',
+                    description: customProperty
+                });
+                hasContent = true;
+            }
+            
+            // Animation/Fantasy Elements
+            const animationStyle = document.getElementById('animationStyle').value;
+            if (animationStyle) {
+                data.visual.elements.animation = animationStyle;
+                hasContent = true;
+            }
+            
+            const cartoonCharacter = document.getElementById('cartoonCharacter').value;
+            if (cartoonCharacter) {
+                data.visual.elements.cartoon = cartoonCharacter;
+                hasContent = true;
+            }
+            
+            const animalCharacteristics = document.getElementById('animalCharacteristics').value;
+            if (animalCharacteristics) {
+                data.visual.elements.animal = animalCharacteristics;
+                hasContent = true;
+            }
+            
+            const fantasyRole = document.getElementById('fantasyRole').value;
+            if (fantasyRole) {
+                data.visual.elements.fantasy = fantasyRole;
+                hasContent = true;
+            }
+            
+            const subjectificationText = document.getElementById('subjectificationText').value;
+            if (subjectificationText) {
+                data.visual.elements.subjectification = subjectificationText;
+                hasContent = true;
+            }
+            
+            // Activity
+            const expressionText = document.getElementById('expressionText').value;
+            if (expressionText) {
+                data.visual.activity.expression = expressionText;
+                hasContent = true;
+            }
+            
+            const gestureText = document.getElementById('gestureText').value;
+            if (gestureText) {
+                data.visual.activity.gesture = gestureText;
+                hasContent = true;
+            }
+            
+            const activityText = document.getElementById('activityText').value;
+            if (activityText) {
+                data.visual.activity.action = activityText;
+                hasContent = true;
+            }
+            
+            const backgroundText = document.getElementById('backgroundText').value;
+            if (backgroundText) {
+                data.visual.activity.background = backgroundText;
+                hasContent = true;
+            }
+            
+            // If no content was added, return empty visual object
+            if (!hasContent) {
+                return '{"visual":{}}';
+            }
+            
+            return JSON.stringify(data, null, 2);
+        }
+        
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
