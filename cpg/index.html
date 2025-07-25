@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character AI Image Generator</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background: #f9f9f9;
+          padding: 20px;
+          color: #333;
+        }
+        .container {
+          max-width: 700px;
+          margin: auto;
+          background: white;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+          text-align: center;
+          color: #5c4d7d;
+          margin-bottom: 25px;
+        }
+        h2 {
+          color: #5c4d7d;
+          margin-top: 25px;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 8px;
+        }
+        label {
+          display: block;
+          margin-top: 15px;
+          font-weight: bold;
+        }
+        input, button, textarea, select {
+          width: 100%;
+          padding: 10px;
+          margin-top: 8px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 16px;
+        }
+        button {
+          background: #5c4d7d;
+          color: white;
+          cursor: pointer;
+          margin-top: 15px;
+          border: none;
+          transition: background 0.3s;
+        }
+        button:hover {
+          background: #483c64;
+        }
+        button.secondary {
+          background: #6c757d;
+        }
+        button.secondary:hover {
+          background: #5a6268;
+        }
+        button.success {
+          background: #28a745;
+        }
+        button.success:hover {
+          background: #218838;
+        }
+        button.info {
+          background: #17a2b8;
+        }
+        button.info:hover {
+          background: #138496;
+        }
+        button.danger {
+          background: #dc3545;
+        }
+        button.danger:hover {
+          background: #c82333;
+        }
+        textarea {
+          min-height: 100px;
+          resize: vertical;
+        }
+        .form-section {
+          margin-bottom: 20px;
+          padding: 15px;
+          background: #f9f9f9;
+          border-radius: 12px;
+        }
+        .form-row {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 15px;
+        }
+        .form-row > div {
+          flex: 1;
+        }
+        .toggle-section {
+          cursor: pointer;
+          padding: 10px;
+          background: #e9e9e9;
+          border-radius: 8px;
+          margin-top: 15px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .toggle-section:hover {
+          background: #e0e0e0;
+        }
+        .toggle-section::after {
+          content: "+";
+          font-size: 20px;
+        }
+        .toggle-section.active::after {
+          content: "-";
+        }
+        .entry-block {
+          margin-top: 10px;
+          padding: 15px;
+          background: #f1f1f1;
+          border-radius: 8px;
+          display: none;
+        }
+        .result-section {
+          margin-top: 20px;
+          padding: 15px;
+          background: #f8f9fa;
+          border-radius: 8px;
+          border: 1px solid #dee2e6;
+          display: none;
+        }
+        .result-title {
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #5c4d7d;
+        }
+        .result-content {
+          white-space: pre-wrap;
+          background: white;
+          padding: 15px;
+          border-radius: 8px;
+          border: 1px solid #ddd;
+          max-height: 400px;
+          overflow-y: auto;
+        }
+        .button-group {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        .button-group button {
+          flex: 1;
+        }
+        .item-container {
+          margin-top: 15px;
+        }
+        .item {
+          background: #e9ecef;
+          padding: 12px;
+          border-radius: 8px;
+          margin-bottom: 10px;
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+        .item span {
+          flex: 1;
+        }
+        .remove-btn {
+          background: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          margin-left: 10px;
+        }
+        .empty-message {
+          color: #6c757d;
+          font-style: italic;
+          text-align: center;
+          padding: 20px;
+        }
+        .hidden {
+          display: none;
+        }
+        @media (max-width: 600px) {
+          .form-row, .button-group {
+            flex-direction: column;
+            gap: 10px;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Character AI Image Prompt Generator</h1>
+        
+        <form id="characterForm">
+            <!-- View Angle Section -->
+            <div class="form-section">
+                <h2>View Angle</h2>
+                <select id="angleView">
+                    <option value="">Select or type...</option>
+                    <option value="front view">Front view</option>
+                    <option value="side view">Side view</option>
+                    <option value="over the shoulder">Over the shoulder</option>
+                    <option value="from behind view">From behind view</option>
+                    <option value="dutch angle">Dutch angle</option>
+                    <option value="wide angle view">Wide angle view</option>
+                    <option value="low angle view">Low angle view</option>
+                    <option value="drone view">Drone view</option>
+                    <option value="from above view">From above view</option>
+                    <option value="top view">Top view</option>
+                    <option value="bird's eye view">Bird's eye view</option>
+                    <option value="from below view">From below view</option>
+                    <option value="worm eye view">Worm eye view</option>
+                    <option value="close up">Close up</option>
+                    <option value="extreme close up">Extreme close up</option>
+                </select>
+            </div>
+            
+            <!-- Human Characteristics Section -->
+            <div class="form-section">
+                <h2>Human Characteristics</h2>
+                
+                <label for="characterName">Character Name</label>
+                <input type="text" id="characterName" placeholder="Enter character name">
+                
+                <!-- Race Section -->
+                <div class="toggle-section" id="raceToggle">Add Race</div>
+                <div class="entry-block" id="raceOptions">
+                    <label>Select Race Type</label>
+                    <select id="raceType">
+                        <option value="">Select...</option>
+                        <option value="continent">Continent</option>
+                        <option value="nationality">Nationality</option>
+                        <option value="ethnicity">Ethnicity</option>
+                    </select>
+                    
+                    <div id="continentOptions" class="hidden">
+                        <label for="continentItems">Continent</label>
+                        <select id="continentItems">
+                            <option value="">Select or type...</option>
+                            <option value="asian">Asian</option>
+                            <option value="southeast asian">Southeast Asian</option>
+                            <option value="african">African</option>
+                            <option value="south african">South African</option>
+                            <option value="european">European</option>
+                            <option value="american">American</option>
+                            <option value="central american">Central American</option>
+                            <option value="south american">South American</option>
+                            <option value="middle eastern">Middle Eastern</option>
+                            <option value="australian">Australian</option>
+                            <option value="caucasian">Caucasian</option>
+                            <option value="mongoloid">Mongoloid</option>
+                            <option value="negroid">Negroid</option>
+                        </select>
+                    </div>
+                    
+                    <div id="nationalityOptions" class="hidden">
+                        <label for="nationalityItems">Nationality</label>
+                        <select id="nationalityItems">
+                            <option value="">Select or type...</option>
+                            <option value="indonesian">Indonesian</option>
+                            <option value="malaysian">Malaysian</option>
+                            <option value="singaporean">Singaporean</option>
+                            <option value="philippine">Philippine</option>
+                            <option value="vietnamese">Vietnamese</option>
+                            <option value="cambodian">Cambodian</option>
+                            <option value="thai">Thai</option>
+                            <option value="chinese">Chinese</option>
+                            <option value="afghan">Afghan</option>
+                            <option value="algerian">Algerian</option>
+                            <option value="american">American</option>
+                            <option value="angolan">Angolan</option>
+                            <option value="argentine">Argentine</option>
+                            <option value="austrian">Austrian</option>
+                            <option value="australian">Australian</option>
+                            <option value="bangladeshi">Bangladeshi</option>
+                            <option value="belarusian">Belarusian</option>
+                            <option value="belgian">Belgian</option>
+                            <option value="bolivian">Bolivian</option>
+                            <option value="bosnian">Bosnian</option>
+                            <option value="brazilian">Brazilian</option>
+                            <option value="british">British</option>
+                            <option value="bulgarian">Bulgarian</option>
+                            <option value="cameroonian">Cameroonian</option>
+                            <option value="central african">Central African</option>
+                            <option value="chadian">Chadian</option>
+                            <option value="colombian">Colombian</option>
+                            <option value="costa rican">Costa Rican</option>
+                            <option value="croatian">Croatian</option>
+                            <option value="czech">Czech</option>
+                            <option value="congolese">Congolese</option>
+                            <option value="danish">Danish</option>
+                            <option value="egyptian">Egyptian</option>
+                            <option value="salvadoran">Salvadoran</option>
+                            <option value="estonian">Estonian</option>
+                            <option value="ethiopian">Ethiopian</option>
+                            <option value="finnish">Finnish</option>
+                            <option value="french">French</option>
+                            <option value="german">German</option>
+                            <option value="ghanaian">Ghanaian</option>
+                            <option value="greek">Greek</option>
+                            <option value="guatemalan">Guatemalan</option>
+                            <option value="dutch">Dutch</option>
+                            <option value="honduran">Honduran</option>
+                            <option value="hungarian">Hungarian</option>
+                            <option value="icelandic">Icelandic</option>
+                            <option value="indian">Indian</option>
+                            <option value="iranian">Iranian</option>
+                            <option value="iraqi">Iraqi</option>
+                            <option value="irish">Irish</option>
+                            <option value="israeli">Israeli</option>
+                            <option value="italian">Italian</option>
+                            <option value="ivorian">Ivorian</option>
+                            <option value="jamaican">Jamaican</option>
+                            <option value="japanese">Japanese</option>
+                            <option value="jordanian">Jordanian</option>
+                            <option value="kazakh">Kazakh</option>
+                            <option value="kenyan">Kenyan</option>
+                            <option value="lao">Lao</option>
+                            <option value="latvian">Latvian</option>
+                            <option value="libyan">Libyan</option>
+                            <option value="lithuanian">Lithuanian</option>
+                            <option value="malagasy">Malagasy</option>
+                            <option value="malian">Malian</option>
+                            <option value="mauritanian">Mauritanian</option>
+                            <option value="mexican">Mexican</option>
+                            <option value="moroccan">Moroccan</option>
+                            <option value="namibian">Namibian</option>
+                            <option value="new zealand">New Zealand</option>
+                            <option value="nicaraguan">Nicaraguan</option>
+                            <option value="nigerien">Nigerien</option>
+                            <option value="nigerian">Nigerian</option>
+                            <option value="norwegian">Norwegian</option>
+                            <option value="omani">Omani</option>
+                            <option value="pakistani">Pakistani</option>
+                            <option value="palestine">Palestine</option>
+                            <option value="panamanian">Panamanian</option>
+                            <option value="paraguayan">Paraguayan</option>
+                            <option value="peruvian">Peruvian</option>
+                            <option value="polish">Polish</option>
+                            <option value="portuguese">Portuguese</option>
+                            <option value="romanian">Romanian</option>
+                            <option value="russian">Russian</option>
+                            <option value="saudi arabian">Saudi Arabian</option>
+                            <option value="scottish">Scottish</option>
+                            <option value="senegalese">Senegalese</option>
+                            <option value="serbian">Serbian</option>
+                            <option value="slovak">Slovak</option>
+                            <option value="somalian">Somalian</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="sudanese">Sudanese</option>
+                            <option value="swiss">Swiss</option>
+                            <option value="syrian">Syrian</option>
+                            <option value="tunisian">Tunisian</option>
+                            <option value="turkish">Turkish</option>
+                            <option value="turkmen">Turkmen</option>
+                            <option value="ukranian">Ukranian</option>
+                            <option value="emirati">Emirati</option>
+                            <option value="uruguayan">Uruguayan</option>
+                            <option value="welsh">Welsh</option>
+                            <option value="zambian">Zambian</option>
+                            <option value="zimbabwean">Zimbabwean</option>
+                        </select>
+                    </div>
+                    
+                    <div id="ethnicityOptions" class="hidden">
+                        <label for="ethnicityItems">Ethnicity</label>
+                        <select id="ethnicityItems">
+                            <option value="">Select or type...</option>
+                            <option value="javanese">Javanese</option>
+                            <option value="sundanese">Sundanese</option>
+                            <option value="madurese">Madurese</option>
+                            <option value="acehnese">Acehnese</option>
+                            <option value="gayonese">Gayonese</option>
+                            <option value="batak">Batak</option>
+                            <option value="malay">Malay</option>
+                            <option value="minangkabau">Minangkabau</option>
+                            <option value="lampungese">Lampungese</option>
+                            <option value="mentaweian">Mentaweian</option>
+                            <option value="engganese">Engganese</option>
+                            <option value="dayak">Dayak</option>
+                            <option value="banjarese">Banjarese</option>
+                            <option value="makassarese">Makassarese</option>
+                            <option value="buginese">Buginese</option>
+                            <option value="mandarese">Mandarese</option>
+                            <option value="minahasan">Minahasan</option>
+                            <option value="torajan">Torajan</option>
+                            <option value="gorontaloan">Gorontaloan</option>
+                            <option value="balinese">Balinese</option>
+                            <option value="sumbawan">Sumbawan</option>
+                            <option value="bimanese">Bimanese</option>
+                            <option value="tetunian">Tetunian</option>
+                            <option value="sumban">Sumban</option>
+                            <option value="alorese">Alorese</option>
+                            <option value="ambonese">Ambonese</option>
+                            <option value="tanimbarese">Tanimbarese</option>
+                            <option value="asmat">Asmat</option>
+                            <option value="papuan">Papuan</option>
+                            <option value="moluccan">Moluccan</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="saveRaceBtn" class="info">Save Race</button>
+                </div>
+                
+                <div class="item-container" id="raceContainer"></div>
+                
+                <!-- Human Identity Section -->
+                <div class="toggle-section" id="humanIdentityToggle">Add Human Identity</div>
+                <div class="entry-block" id="humanIdentityOptions">
+                    <label>Select Identity Type</label>
+                    <select id="humanIdentityType">
+                        <option value="">Select...</option>
+                        <option value="age">Age</option>
+                        <option value="gender">Gender</option>
+                        <option value="personality">Personality</option>
+                    </select>
+                    
+                    <div id="ageOptions" class="hidden">
+                        <label for="ageInput">Age</label>
+                        <input type="number" id="ageInput" placeholder="Enter age in years">
+                    </div>
+                    
+                    <div id="genderOptions" class="hidden">
+                        <label for="genderItems">Gender</label>
+                        <select id="genderItems">
+                            <option value="">Select or type...</option>
+                            <option value="man">Man</option>
+                            <option value="woman">Woman</option>
+                            <option value="boy">Boy</option>
+                            <option value="girl">Girl</option>
+                            <option value="non-binary">Non-binary</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div id="personalityOptions" class="hidden">
+                        <label for="personalityItems">Personality</label>
+                        <select id="personalityItems">
+                            <option value="">Select or type...</option>
+                            <option value="confident">Confident</option>
+                            <option value="cheerful">Cheerful</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="elegant">Elegant</option>
+                            <option value="glamorous">Glamorous</option>
+                            <option value="handsome">Handsome</option>
+                            <option value="radiant">Radiant</option>
+                            <option value="smart">Smart</option>
+                            <option value="sincere">Sincere</option>
+                            <option value="attractive">Attractive</option>
+                            <option value="good-looking">Good-looking</option>
+                            <option value="beautiful">Beautiful</option>
+                            <option value="lovely">Lovely</option>
+                            <option value="pretty">Pretty</option>
+                            <option value="cute">Cute</option>
+                            <option value="nice">Nice</option>
+                            <option value="plain">Plain</option>
+                            <option value="homely">Homely</option>
+                            <option value="unattractive">Unattractive</option>
+                            <option value="ugly">Ugly</option>
+                            <option value="fashionable">Fashionable</option>
+                            <option value="neat">Neat</option>
+                            <option value="clean">Clean</option>
+                            <option value="tidy">Tidy</option>
+                            <option value="untidy">Untidy</option>
+                            <option value="dirty">Dirty</option>
+                            <option value="filthy">Filthy</option>
+                            <option value="angry">Angry</option>
+                            <option value="agressive">Agressive</option>
+                            <option value="arrogant">Arrogant</option>
+                            <option value="boring">Boring</option>
+                            <option value="cruel">Cruel</option>
+                            <option value="deceitful">Deceitful</option>
+                            <option value="dumb">Dumb</option>
+                            <option value="evil">Evil</option>
+                            <option value="grumpy">Grumpy</option>
+                            <option value="mean">Mean</option>
+                            <option value="rude">Rude</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="saveHumanIdentityBtn" class="info">Save Identity</button>
+                </div>
+                
+                <div class="item-container" id="humanIdentityContainer"></div>
+                
+                <!-- Physical Characteristics -->
+                <div class="form-row">
+                    <div>
+                        <label for="hairStyle">Hair Style</label>
+                        <select id="hairStyle">
+                            <option value="">Select or type...</option>
+                            <option value='afro'>Afro</option>
+<option value='bob cut'>Bob cut</option>
+<option value='pixie cut'>Pixie cut</option>
+<option value='Pixie bob'>Pixie bob</option>
+<option value='long layer'>Long layer</option>
+<option value='beach waves'>Beach waves</option>
+<option value='bangs'>Bangs</option>
+<option value='braids'>Braids</option>
+<option value='top knot'>Top knot</option>
+<option value='undercut'>Undercut</option>
+<option value='shag cut'>Shag cut</option>
+<option value='layered bob'>Layered bob</option>
+<option value='curly'>Curly hair</option>
+<option value='sleek straight'>Sleek straight</option>
+<option value='side swept bang'>Side swept bang</option>
+<option value='balerina bun'>Balerina bun</option>
+<option value='mehawk'>Mehawk</option>
+<option value='ombre'>Ombre</option>
+<option value='box braids'>Box braids</option>
+<option value='half up half down'>Half up half down</option>
+<option value='high ponytail'>High ponytail</option>
+<option value='messy bun'>Messy bun</option>
+<option value='fishtail braid'>Fishtail braid</option>
+<option value='waterfall braid'>Waterfall braid</option>
+<option value='dreadlocks'>Dreadlocks</option>
+<option value='cornrows'>Cornrows</option>
+<option value='bold shiny'>Spacebun</option>
+<option value='afro'>Bold shiny</option>
+<option value='buzz cut'>Buzz cut</option>
+<option value='crew cut'>Crew cut</option>
+<option value='pompadour'>Pompadour</option>
+<option value='long'>Long</option>
+<option value='flow'>Flow</option>
+<option value='messy'>Messy</option>
+<option value='morissey'>Morissey</option>
+<option value='side parted'>Side parted</option>
+<option value='comma'>Comma</option>
+<option value='shaggy'>Shaggy</option>
+<option value='french'>French</option>
+<option value='comb'>Comb</option>
+<option value='man bun'>Man bun</option>
+<option value='spiky'>Spiky</option>
+<option value='two blocks'>Two blocks</option>
+<option value='quiff'>Quiff</option>
+<option value='fringe'>Fringe</option>
+<option value='crop cut'>Crop cut</option>
+<option value='induction curl'>Induction curl</option>
+<option value='hight and tight cut'>Hight and tight cut</option>
+<option value='curtain haircut'>Curtain haircut</option>
+<option value='slick back'>Slick back</option>
+<option value='medium'>Medium</option>
+<option value='bowl'>Bowl</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="skinTone">Skin Tone</label>
+                        <select id="skinTone">
+                            <option value="">Select or type...</option>
+                            <option value="white">White</option>
+                            <option value="black">Black</option>
+                            <option value="melanin">Melanin</option>
+                            <option value="light">Light</option>
+                            <option value="olive">Olive</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="brown">Brown</option>
+                            <option value="dark brown">Dark brown</option>
+                            <option value="light brown">Light brown</option>
+                            <option value="red brown">Red brown</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label for="bodyType">Body Type</label>
+                        <select id="bodyType">
+                            <option value="">Select or type...</option>
+                            <option value="pretty">Pretty</option>
+                            <option value="chubby">Chubby</option>
+                            <option value="midweight">Midweight</option>
+                            <option value="overweight">Overweight</option>
+                            <option value="flat">Flat</option>
+                            <option value="flabby">Flabby</option>
+                            <option value="buxom">Buxom</option>
+                            <option value="voluptous">Voluptous</option>
+                            <option value="hefty">Hefty</option>
+                            <option value="pudgy">Pudgy</option>
+                            <option value="plumb">Plumb</option>
+                            <option value="obese">Obese</option>
+                            <option value="mordbidly obese">Morbidly obese</option>
+                            <option value="stout">Stout</option>
+                            <option value="rotund">Rotund</option>
+                            <option value="thick-bodied">Thick-bodied</option>
+                            <option value="thicc">Thicc</option>
+                            <option value="thick">Thick</option>
+                            <option value="beefy">Beefy</option>
+                            <option value="portly">Portly</option>
+                            <option value="tubby">Tubby</option>
+                            <option value="slightly overweight">Slightly overweight</option>
+                            <option value="buff">Buff</option>
+                            <option value="burl">Burl</option>
+                            <option value="fit">Fit</option>
+                            <option value="well-endowed">Well-endowed</option>
+                            <option value="muscular">Muscular</option>
+                            <option value="stocky">Stocky</option>
+                            <option value="big-boned">Big-boned</option>
+                            <option value="curvy">Curvy</option>
+                            <option value="flyweight">Flyweight</option>
+                            <option value="skinny">Skinny</option>
+                            <option value="too skinny">Too skinny</option>
+                            <option value="anorexic">Anorexic</option>
+                            <option value="not skinny">Not skinny</option>
+                            <option value="slender">Slender</option>
+                            <option value="lanky">Lanky</option>
+                            <option value="slim">Slim</option>
+                            <option value="slight">Slight</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <label for="specialIdentification">Special Identification</label>
+                <textarea id="specialIdentification" placeholder="tattoo, dimples, thick eyelash, small moustache, etc"></textarea>
+                
+                <label for="customDescription">Custom Description</label>
+                <textarea id="customDescription" placeholder="Describe your character in detail"></textarea>
+            </div>
+            
+            <!-- Special Elements Section -->
+            <div class="form-section">
+                <h2>Special Elements</h2>
+                
+                <div class="toggle-section" id="specialElementsToggle">Add Special Elements</div>
+                <div class="entry-block" id="specialElementsOptions">
+                    <label>Select Element Type</label>
+                    <select id="specialElementsType">
+                        <option value="">Select...</option>
+                        <option value="animation">Animation Style</option>
+                        <option value="cartoon">Cartoon/Film Character</option>
+                        <option value="animal">Animal Characteristics</option>
+                        <option value="fantasy">Fantasy Role</option>
+                    </select>
+                    
+                    <div id="animationOptions" class="hidden">
+                        <label for="animationItems">Animation Style</label>
+                        <select id="animationItems">
+                            <option value="">Select or type...</option>
+                            <option value="looklike">Looklike</option>
+                            <option value="humanoid">Humanoid</option>
+                            <option value="anthropomorphic">Anthropomorphic</option>
+                            <option value="robotic">Robotic</option>
+                            <option value="sculpture">Sculpture</option>
+                            <option value="elf">Elf</option>
+                            <option value="dwarf">Dwarf</option>
+                            <option value="daemon">Daemon</option>
+                            <option value="goblin">Goblin</option>
+                            <option value="gremlin">Gremlin</option>
+                            <option value="kobold">Kobold</option>
+                            <option value="orc">Orc</option>
+                        </select>
+                    </div>
+                    
+                    <div id="cartoonOptions" class="hidden">
+                        <label for="cartoonItems">Cartoon/Film Character</label>
+                        <select id="cartoonItems">
+                            <option value="">Select or type...</option>
+                            <option value="Superman">Superman</option>
+                            <option value="Spiderman">Spiderman</option>
+                            <option value="Batman">Batman</option>
+                            <option value="micky mouse">Micky mouse</option>
+                            <option value="Donald duck">Donald duck</option>
+                            <option value="Garfield">Garfield</option>
+                            <option value="Pinocchio">Pinocchio</option>
+                            <option value="Cinderella">Cinderella</option>
+                            <option value="Peter Pan">Peter Pan</option>
+                            <option value="Robin hood">Robin hood</option>
+                            <option value="Aladdin">Aladdin</option>
+                            <option value="Hercules">Hercules</option>
+                            <option value="Tarzan">Tarzan</option>
+                            <option value="Dinosaur">Dinosaur</option>
+                            <option value="Bolt">Bolt</option>
+                            <option value="Winnie the pooh">Winnie the pooh</option>
+                            <option value="Toy story">Toy story</option>
+                            <option value="Finding Nemo">Finding Nemo</option>
+                            <option value="Cars">Cars</option>
+                            <option value="Wall-e">Wall-e</option>
+                            <option value="Super Mario">Super Mario</option>
+                            <option value="Shrek">Shrek</option>
+                            <option value="Woody">Woody</option>
+                            <option value="Homer Simpson">Homer Simpson</option>
+                            <option value="Bugs Bunny">Bugs Bunny</option>
+                            <option value="Pink Panther">Pink Panther</option>
+                            <option value="Tom Cat">Tom Cat</option>
+                            <option value="Snoopy">Snoopy</option>
+                            <option value="Mr Krabs">Mr Krabs</option>
+                            <option value="Squidward">Squidward</option>
+                            <option value="Maui">Maui</option>
+                            <option value="Grumpy">Grumpy</option>
+                            <option value="Patrick Star">Patrick Star</option>
+                            <option value="Mrs Krabs">Mrs Krabs</option>
+                            <option value="Spongebob">Spongebob</option>
+                            <option value="Plankton">Plankton</option>
+                            <option value="Gary">Gary</option>
+                            <option value="Fred Flinstone">Fred Flinstone</option>
+                            <option value="Captain Hook">Captain Hook</option>
+                            <option value="Carl Fredricksen">Carl Fredricksen</option>
+                            <option value="Daffy Duck">Daffy Duck</option>
+                            <option value="Woody">Woody</option>
+                            <option value="Baloo">Baloo</option>
+                            <option value="Genie">Genie</option>
+                            <option value="Buzz Lightyear">Buzz Lightyear</option>
+                            <option value="Jezzica rabbit">Jezzica rabbit</option>
+                            <option value="Jack Skellington">Jack Skellington</option>
+                            <option value="Maleficent">Maleficent</option>
+                            <option value="Lilo Pelekai">Lilo Pelekai</option>
+                            <option value="Donkey">Donkey</option>
+                            <option value="Mirabel Madrigal">Mirabel Madrigal</option>
+                            <option value="Elsa">Elsa</option>
+                            <option value="Roger Rabit">Roger Rabit</option>
+                            <option value="Thumper">Thumper</option>
+                            <option value="Fiver">Fiver</option>
+                            <option value="Katie Mitchel">Katie Mitchel</option>
+                            <option value="Puss in boots">Puss in boots</option>
+                            <option value="Lumiere">Lumiere</option>
+                            <option value="Chihiro Ogino">Chihiro Ogino</option>
+                            <option value="Master Shifu">Master Shifu</option>
+                        </select>
+                    </div>
+                    
+                    <div id="animalOptions" class="hidden">
+                        <label for="animalItems">Animal Characteristics</label>
+                        <select id="animalItems">
+                            <option value="">Select or type...</option>
+                            <option value="bird">Bird</option>
+                            <option value="cat">Cat</option>
+                            <option value="dog">Dog</option>
+                            <option value="duck">Duck</option>
+                            <option value="dragon">Dragon</option>
+                            <option value="eagle">Eagle</option>
+                            <option value="frog">Frog</option>
+                            <option value="horse">Horse</option>
+                            <option value="donkey">Donkey</option>
+                            <option value="tiger">Tiger</option>
+                            <option value="lion">Lion</option>
+                            <option value="panther">Panther</option>
+                            <option value="leopard">Leopard</option>
+                            <option value="cheetah">Cheetah</option>
+                            <option value="bear">Bear</option>
+                            <option value="elephant">Elephant</option>
+                            <option value="bear">Bear</option>
+                            <option value="turtle">Turtle</option>
+                            <option value="tortoise">Tortoise</option>
+                            <option value="crocodile">Crocodile</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="porcupine">Porcupine</option>
+                            <option value="hare">Hare</option>
+                            <option value="hen">Hen</option>
+                            <option value="pigeon">Pigeon</option>
+                            <option value="dolphine">Dolphine</option>
+                            <option value="whale">Whale</option>
+                            <option value="alligator">Alligator</option>
+                            <option value="eagle">Eagle</option>
+                            <option value="squirrel">Squirrel</option>
+                            <option value="ostrich">Ostrich</option>
+                            <option value="fox">Fox</option>
+                            <option value="goat">Goat</option>
+                            <option value="jackal">Jackal</option>
+                            <option value="emu">Emu</option>
+                            <option value="armadillo">Armadillo</option>
+                            <option value="eel">Eel</option>
+                            <option value="goose">Goose</option>
+                            <option value="wolf">Wolf</option>
+                            <option value="beagle">Beagle</option>
+                            <option value="gorilla">Gorilla</option>
+                            <option value="chimpanzee">Chimpanzee</option>
+                            <option value="monkey">Monkey</option>
+                            <option value="beaver">Beaver</option>
+                            <option value="orangutan">Orangutan</option>
+                            <option value="antelope">Antelope</option>
+                            <option value="bat">Bat</option>
+                            <option value="badger">Badger</option>
+                            <option value="giraffe">Giraffe</option>
+                            <option value="hermit crab">Hermit crab</option>
+                            <option value="panda">Panda</option>
+                            <option value="hamster">Hamster</option>
+                            <option value="cobra">Cobra</option>
+                            <option value="shark">Shark</option>
+                            <option value="camel">Camel</option>
+                            <option value="hawk">Hawk</option>
+                            <option value="deer">Deer</option>
+                            <option value="chameleon">Chameleon</option>
+                            <option value="hippopotamus">Hippopotamus</option>
+                            <option value="jaguar">Jaguar</option>
+                            <option value="chihuahua">Chihuahua</option>
+                            <option value="ibex">Ibex</option>
+                            <option value="lizard">Lizard</option>
+                            <option value="koala">Koala</option>
+                            <option value="kangaroo">Kangaroo</option>
+                            <option value="iguana">Iguana</option>
+                            <option value="llama">Llama</option>
+                            <option value="chinchilas">Chinchilas</option>
+                            <option value="dodo">Dodo</option>
+                            <option value="jellyfish">Jellyfish</option>
+                            <option value="rhinoceros">Rhinoceros</option>
+                            <option value="hedgehog">Hedgehog</option>
+                            <option value="zebra">Zebra</option>
+                            <option value="possum">Possum</option>
+                            <option value="bison">Bison</option>
+                            <option value="bull">Bull</option>
+                            <option value="buffalo">Buffalo</option>
+                            <option value="sheep">Sheep</option>
+                            <option value="meerkat">Meerkat</option>
+                            <option value="vulture">Vulture</option>
+                            <option value="Mouse">Mouse</option>
+                            <option value="flamingo">Flamingo</option>
+                            <option value="sloth">Sloth</option>
+                            <option value="racoon">Racoon</option>
+                            <option value="mole">Mole</option>
+                            <option value="swan">Swan</option>
+                            <option value="lynx">Lynx</option>
+                            <option value="lizard">Lizard</option>
+                            <option value="elk">Elk</option>
+                            <option value="boar">Boar</option>
+                            <option value="lemur">Lemur</option>
+                            <option value="mule">Mule</option>
+                            <option value="baboon">Baboon</option>
+                            <option value="mammoth">Mammoth</option>
+                            <option value="rat">Rat</option>
+                            <option value="snake">Snake</option>
+                            <option value="peacock">Peacock</option>
+                        </select>
+                    </div>
+                    
+                    <div id="fantasyOptions" class="hidden">
+                        <label for="fantasyItems">Fantasy Role</label>
+                        <select id="fantasyItems">
+                            <option value="">Select or type...</option>
+                            <option value="alchemist">Alchemist</option>
+                            <option value="assassin">Assassin</option>
+                            <option value="barbarian">Barbarian</option>
+                            <option value="druid">Druid</option>
+                            <option value="hunter">Hunter</option>
+                            <option value="knight">Knight</option>
+                            <option value="mage">Mage</option>
+                            <option value="priest">Priest</option>
+                            <option value="thief">Thief</option>
+                            <option value="warrior">Warrior</option>
+                            <option value="witch">Witch</option>
+                            <option value="wizard">Wizard</option>
+                            <option value="worker">Worker</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="saveSpecialElementsBtn" class="info">Save Element</button>
+                </div>
+                
+                <div class="item-container" id="specialElementsContainer"></div>
+                
+                <label for="customSpecialElements">Custom Special Elements</label>
+                <textarea id="customSpecialElements" placeholder="Describe any custom special elements"></textarea>
+            </div>
+            
+            <!-- Pose & Environment Section -->
+            <div class="form-section">
+                <h2>Pose & Environment</h2>
+                
+                <div class="toggle-section" id="poseToggle">Add Pose/Environment</div>
+                <div class="entry-block" id="poseOptions">
+                    <label>Select Pose/Environment Type</label>
+                    <select id="poseType">
+                        <option value="">Select...</option>
+                        <option value="expression">Facial Expression</option>
+                        <option value="gesture">Hand Gesture</option>
+                        <option value="activity">Activity</option>
+                        <option value="background">Background</option>
+                    </select>
+                    
+                    <div id="expressionOptions" class="hidden">
+                        <label for="expressionItems">Facial Expression</label>
+                        <select id="expressionItems">
+                            <option value="">Select or type...</option>
+                            <option value="elevating eyebrows">Elevating eyebrows</option>
+                            <option value="smirking">Smirking</option>
+                            <option value="frowning">Frowning</option>
+                            <option value="squinting">Squinting</option>
+                            <option value="widening eyes">Widening eyes</option>
+                            <option value="grimacing">Grimacing</option>
+                            <option value="blinking rapidly">Blinking rapidly</option>
+                            <option value="rolling eyes">Rolling eyes</option>
+                            <option value="narrowing eyes">Narrowing eyes</option>
+                            <option value="open mouth surprise">Open mouth surprise</option>
+                            <option value="raised eyebrow">Raised eyebrow</option>
+                            <option value="wrinkled nose">Wrinkled nose</option>
+                            <option value="bitting lip">Bitting lip</option>
+                            <option value="flared nostrils">Flared nostrils</option>
+                            <option value="half smile">Half smile</option>
+                            <option value="winking">Winking</option>
+                            <option value="clenched teeth">Clenched teeth</option>
+                            <option value="raised cheeks">Raised cheeks</option>
+                            <option value="tensed forehead">Tensed forehead</option>
+                            <option value="furrowed brow">Furrowed brow</option>
+                            <option value="twitchig eye">Twitchig eye</option>
+                            <option value="open-mouthed laugh">Open-mouthed laugh</option>
+                            <option value="brow flash">Brow flash</option>
+                            <option value="asymetrical smile">Asymetrical smile</option>
+                            <option value="one-eyed squint">One-eyed squint</option>
+                            <option value="nose wrinkle">Nose wrinkle</option>
+                            <option value="lip corner pull-down">Lip corner pull-down</option>
+                            <option value="pensive look">Pensive look</option>
+                            <option value="sneer">Sneer</option>
+                            <option value="quizzical expression">Quizzical expression</option>
+                            <option value="half-lidded eyes">Half-lidded eyes</option>
+                            <option value="cocky smirk">Cocky smirk</option>
+                            <option value="raised uper lip">Raised uper lip</option>
+                            <option value="skeptical eyebrow raise">Skeptical eyebrow raise</option>
+                            <option value="eyes closed in concentration">Eyes closed in concentration</option>
+                            <option value="mouth open in exertion">Mouth open in exertion</option>
+                            <option value="fist clenched in determination">Fist clenched in Determination</option>
+                            <option value="head tilted back in power">Head tilted back in power</option>
+                            <option value="arms spread wide in acceptance">Arms spread wide in acceptance</option>
+                            <option value="scream of fear">Scream of fear</option>
+                            <option value="scream of anger">Scream of anger</option>
+                            <option value="scream of excitement">Scream of excitement</option>
+                            <option value="scream of despair">Scream of despair</option>
+                            <option value="scream of triump">Scream of triump</option>
+                        </select>
+                    </div>
+                    
+                    <div id="gestureOptions" class="hidden">
+                        <label for="gestureItems">Hand Gesture</label>
+                        <select id="gestureItems">
+                            <option value="">Select or type...</option>
+                            <option value="peace sign">Peace Sign</option>
+                            <option value="thumbs up">Thumbs up</option>
+                            <option value="stop sign">Stop Sign</option>
+                            <option value="ok sign">Ok Sign</option>
+                            <option value="finger point">Finger point</option>
+                            <option value="crossed finger">Crossed finger</option>
+                            <option value="high five">High five</option>
+                            <option value="fist bump">Fist bump</option>
+                            <option value="shaka sign">Shaka Sign</option>
+                            <option value="heart sign">Heart Sign</option>
+                            <option value="clapping">Clapping</option>
+                            <option value="salute">Salute</option>
+                            <option value="facepalm">Facepalm</option>
+                            <option value="thumbs down">Thumbs down</option>
+                            <option value="jazz hands">Jazz hands</option>
+                            <option value="finger gun">Finger gun</option>
+                            <option value="rock on sign">Rock on Sign</option>
+                            <option value="beckoning gesture">Beckoning gesture</option>
+                            <option value="hands on hips">Hands on hips</option>
+                            <option value="crossed arms">Crossed arms</option>
+                            <option value="waving hands dismissively">Waving hands dismissively</option>
+                            <option value="head in hands">Head in hands</option>
+                            <option value="finger pointing">Finger pointing</option>
+                            <option value="rubbing the temple">Rubbing the temple</option>
+                            <option value="pulling at his collar">Pulling at his collar</option>
+                            <option value="bitting nails">Bitting nails</option>
+                            <option value="covering the mouth with a hand">Covering the mouth with a hand</option>
+                            <option value="grip reflex">Grip reflex</option>
+                            <option value="snatch grab">Snatch grab</option>
+                            <option value="clutching">Clutching</option>
+                            <option value="swooping catch">Swooping catch</option>
+                            <option value="pincer movemement">Pincer movemement</option>
+                        </select>
+                    </div>
+                    
+                    <div id="activityOptions" class="hidden">
+                        <label for="activityItems">Activity</label>
+                        <select id="activityItems">
+                            <option value="">Select or type...</option>
+                            <option value="walking">Walking</option>
+                            <option value="dancing">Dancing</option>
+                            <option value="fighting">Fighting</option>
+                            <option value="eating">Eating</option>
+                            <option value="drinking">Drinking</option>
+                            <option value="posing">Posing</option>
+                            <option value="sleeping">Sleeping</option>
+                            <option value="running">Running</option>
+                            <option value="sitting">Sitting</option>
+                            <option value="standing">Standing</option>
+                            <option value="swimming">Swimming</option>
+                            <option value="looking at camera">Looking at camera</option>
+                            <option value="riding a bicycle">Riding A Bicycle</option>
+                        </select>
+                    </div>
+                    
+                    <div id="backgroundOptions" class="hidden">
+                        <label for="backgroundItems">Background</label>
+                        <select id="backgroundItems">
+                            <option value="">Select or type...</option>
+                            <option value="white background">White</option>
+                            <option value="colourful background">Colourful</option>
+                            <option value="laundry background">Laundry</option>
+                            <option value="in the garden">In the garden</option>
+                            <option value="in the swamp">In the swamp</option>
+                            <option value="in the room">In the room</option>
+                            <option value="in the pub">In the pub</option>
+                            <option value="in the battlefield">In the battlefield</option>
+                            <option value="in the alley">In the alley</option>
+                            <option value="in the castle">In the castle</option>
+                            <option value="in the cave">In the cave</option>
+                            <option value="in the forest">In the forest</option>
+                            <option value="in the ship">In the ship</option>
+                            <option value="on top of mountain">On top of mountain</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="savePoseBtn" class="info">Save Pose/Environment</button>
+                </div>
+                
+                <div class="item-container" id="poseContainer"></div>
+                
+                <label for="customPoseEnvironment">Custom Pose & Environment</label>
+                <textarea id="customPoseEnvironment" placeholder="Describe any custom pose and environment"></textarea>
+            </div>
+            
+            <!-- Clothing & Accessories Section -->
+            <div class="form-section">
+                <h2>Clothing & Accessories</h2>
+                
+                <div class="toggle-section" data-target="propertyBlock">Add Clothing/Accessory</div>
+                <div id="propertyBlock" class="entry-block">
+                    <label>Select Category</label>
+                    <select id="propertyType">
+                        <option value="">Select...</option>
+                        <option value="headwear">Headwear</option>
+                        <option value="upper">Upper Body</option>
+                        <option value="lower">Lower Body</option>
+                        <option value="footwear">Footwear</option>
+                    </select>
+                    
+                    <div id="headwearOptions" class="hidden">
+                        <label for="headwearItems">Headwear</label>
+                        <select id="headwearItems">
+                            <option value="">Select or type...</option>
+                            <option value="kupiah">Kupiah</option>
+                            <option value="hijab">Hijab</option>
+                            <option value="crown">Crown</option>
+                            <option value="helmet">Helmet</option>
+                            <option value="scarf">Scarf</option>
+                            <option value="tie">Tie</option>
+                        </select>
+                    </div>
+                    
+                    <div id="upperOptions" class="hidden">
+                        <label for="upperItems">Upper Body</label>
+                        <select id="upperItems">
+                            <option value="">Select or type...</option>
+                            <option value='tshirt'>T-shirt</option>
+<option value='coat'>Coat</option>
+<option value='dress'>Dress</option>
+<option value='cloak'>Cloak</option>
+<option value='frump'>Frump</option>
+<option value='polka dots'>Polka dots</option>
+<option value='hoodies'>Hoodies</option>
+<option value='suit'>Suit</option>
+<option value='leather jacket'>Leather jacket</option>
+<option value='swimsuit'>Swimsuit</option>
+<option value='sweat shirt'>Sweat shirt</option>
+<option value='blouse'>Blouse</option>
+<option value='gown'>Gown</option>
+<option value='vest'>Vest</option>
+<option value='blazer'>Blazer</option>
+                        </select>
+                    </div>
+                    
+                    <div id="lowerOptions" class="hidden">
+                        <label for="lowerItems">Lower Body</label>
+                        <select id="lowerItems">
+                            <option value="">Select or type...</option>
+                            <option value="pantyhose">Pantyhose</option>
+                            <option value="skirt">Skirt</option>
+                            <option value="tights">Tights</option>
+                            <option value="laceleeves">Laceleeves</option>
+                            <option value="shorts">Shorts</option>
+                            <option value="half pant">Half pant</option>
+                            <option value="night pant">Night pant</option>
+                            <option value="joggers">Joggers</option>
+                            <option value="briefs">Briefs</option>
+                            <option value="cargo pant">Cargo pant</option>
+                        </select>
+                    </div>
+                    
+                    <div id="footwearOptions" class="hidden">
+                        <label for="footwearItems">Footwear</label>
+                        <select id="footwearItems">
+                            <option value="">Select or type...</option>
+                            <option value="flipflops">Flipflops</option>
+                            <option value="shoes">Shoes</option>
+                            <option value="nike shoes">Nike shoes</option>
+                            <option value="converse">Converse</option>
+                        </select>
+                    </div>
+                    
+                    <label for="propertyColor">Color</label>
+                    <input type="text" id="propertyColor" placeholder="black, red, white, blue, etc">
+                    
+                    <button type="button" id="addPropertyBtn" class="info">Add Item</button>
+                </div>
+                
+                <div class="item-container" id="propertiesContainer"></div>
+                
+                <label for="customProperty">Custom Clothing/Accessories</label>
+                <textarea id="customProperty" placeholder="Describe any custom clothing or accessories"></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" id="generatePromptBtn" class="success">Generate Prompt</button>
+                <button type="button" id="generateJsonBtn" class="secondary">Generate JSON</button>
+            </div>
+            
+            <!-- Result Sections -->
+            <div id="promptResult" class="result-section">
+                <div class="result-title">Generated Prompt</div>
+                <div class="result-content" id="promptContent"></div>
+                <div id="emptyPrompt" class="empty-message">No data entered to generate prompt</div>
+                <button type="button" id="copyPromptBtn" class="secondary hidden">Copy Prompt</button>
+            </div>
+            
+            <div id="jsonResult" class="result-section">
+                <div class="result-title">Generated JSON</div>
+                <div class="result-content" id="jsonContent"></div>
+                <div id="emptyJson" class="empty-message">No data entered to generate JSON</div>
+                <button type="button" id="copyJsonBtn" class="secondary hidden">Copy JSON</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Toggle sections
+        document.querySelectorAll('.toggle-section').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const targetId = this.getAttribute('data-target') || this.id.replace('Toggle', 'Options');
+                const targetBlock = document.getElementById(targetId);
+                targetBlock.style.display = targetBlock.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+        
+        // Race Section Functionality
+        document.getElementById('raceType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('continent') || el.id.includes('nationality') || el.id.includes('ethnicity')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('saveRaceBtn').addEventListener('click', function() {
+            const raceType = document.getElementById('raceType').value;
+            if (!raceType) {
+                alert('Please select a race type first');
+                return;
+            }
+            
+            let raceItem = '';
+            let raceName = '';
+            
+            switch(raceType) {
+                case 'continent':
+                    raceItem = document.getElementById('continentItems').value;
+                    raceName = 'Continent';
+                    break;
+                case 'nationality':
+                    raceItem = document.getElementById('nationalityItems').value;
+                    raceName = 'Nationality';
+                    break;
+                case 'ethnicity':
+                    raceItem = document.getElementById('ethnicityItems').value;
+                    raceName = 'Ethnicity';
+                    break;
+            }
+            
+            if (!raceItem) {
+                alert('Please select an item');
+                return;
+            }
+            
+            const raceDiv = document.createElement('div');
+            raceDiv.className = 'item';
+            raceDiv.innerHTML = `
+                <span><strong>${raceName}:</strong> ${raceItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="race-type" value="${raceType}">
+                <input type="hidden" name="race-item" value="${raceItem}">
+            `;
+            
+            document.getElementById('raceContainer').appendChild(raceDiv);
+            
+            // Reset form
+            document.getElementById('raceType').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('continent') || el.id.includes('nationality') || el.id.includes('ethnicity')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('raceOptions').style.display = 'none';
+            document.getElementById('raceToggle').classList.remove('active');
+        });
+        
+        // Human Identity Section Functionality
+        document.getElementById('humanIdentityType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('age') || el.id.includes('gender') || el.id.includes('personality')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('saveHumanIdentityBtn').addEventListener('click', function() {
+            const humanIdentityType = document.getElementById('humanIdentityType').value;
+            if (!humanIdentityType) {
+                alert('Please select an identity type first');
+                return;
+            }
+            
+            let humanIdentityItem = '';
+            let humanIdentityName = '';
+            
+            switch(humanIdentityType) {
+                case 'age':
+                    humanIdentityItem = document.getElementById('ageInput').value;
+                    humanIdentityName = 'Age';
+                    break;
+                case 'gender':
+                    humanIdentityItem = document.getElementById('genderItems').value;
+                    humanIdentityName = 'Gender';
+                    break;
+                case 'personality':
+                    humanIdentityItem = document.getElementById('personalityItems').value;
+                    humanIdentityName = 'Personality';
+                    break;
+            }
+            
+            if (!humanIdentityItem) {
+                alert('Please provide a value');
+                return;
+            }
+            
+            const humanIdentityDiv = document.createElement('div');
+            humanIdentityDiv.className = 'item';
+            humanIdentityDiv.innerHTML = `
+                <span><strong>${humanIdentityName}:</strong> ${humanIdentityItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="human-identity-type" value="${humanIdentityType}">
+                <input type="hidden" name="human-identity-item" value="${humanIdentityItem}">
+            `;
+            
+            document.getElementById('humanIdentityContainer').appendChild(humanIdentityDiv);
+            
+            // Reset form
+            document.getElementById('humanIdentityType').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('age') || el.id.includes('gender') || el.id.includes('personality')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('humanIdentityOptions').style.display = 'none';
+            document.getElementById('humanIdentityToggle').classList.remove('active');
+        });
+        
+        // Special Elements Section Functionality
+        document.getElementById('specialElementsType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('animation') || el.id.includes('cartoon') || 
+                    el.id.includes('animal') || el.id.includes('fantasy')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('saveSpecialElementsBtn').addEventListener('click', function() {
+            const specialElementsType = document.getElementById('specialElementsType').value;
+            if (!specialElementsType) {
+                alert('Please select an element type first');
+                return;
+            }
+            
+            let specialElementsItem = '';
+            let specialElementsName = '';
+            
+            switch(specialElementsType) {
+                case 'animation':
+                    specialElementsItem = document.getElementById('animationItems').value;
+                    specialElementsName = 'Animation Style';
+                    break;
+                case 'cartoon':
+                    specialElementsItem = document.getElementById('cartoonItems').value;
+                    specialElementsName = 'Cartoon/Film Character';
+                    break;
+                case 'animal':
+                    specialElementsItem = document.getElementById('animalItems').value;
+                    specialElementsName = 'Animal Characteristics';
+                    break;
+                case 'fantasy':
+                    specialElementsItem = document.getElementById('fantasyItems').value;
+                    specialElementsName = 'Fantasy Role';
+                    break;
+            }
+            
+            if (!specialElementsItem) {
+                alert('Please provide a value');
+                return;
+            }
+            
+            const specialElementsDiv = document.createElement('div');
+            specialElementsDiv.className = 'item';
+            specialElementsDiv.innerHTML = `
+                <span><strong>${specialElementsName}:</strong> ${specialElementsItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="special-elements-type" value="${specialElementsType}">
+                <input type="hidden" name="special-elements-item" value="${specialElementsItem}">
+            `;
+            
+            document.getElementById('specialElementsContainer').appendChild(specialElementsDiv);
+            
+            // Reset form
+            document.getElementById('specialElementsType').value = '';
+            document.getElementById('animationItems').value = '';
+            document.getElementById('cartoonItems').value = '';
+            document.getElementById('animalItems').value = '';
+            document.getElementById('fantasyItems').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('animation') || el.id.includes('cartoon') || 
+                    el.id.includes('animal') || el.id.includes('fantasy')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('specialElementsOptions').style.display = 'none';
+            document.getElementById('specialElementsToggle').classList.remove('active');
+        });
+        
+        // Pose Section Functionality
+        document.getElementById('poseType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('expression') || el.id.includes('gesture') || 
+                    el.id.includes('activity') || el.id.includes('background')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('savePoseBtn').addEventListener('click', function() {
+            const poseType = document.getElementById('poseType').value;
+            if (!poseType) {
+                alert('Please select a pose/environment type first');
+                return;
+            }
+            
+            let poseItem = '';
+            let poseName = '';
+            
+            switch(poseType) {
+                case 'expression':
+                    poseItem = document.getElementById('expressionItems').value;
+                    poseName = 'Facial Expression';
+                    break;
+                case 'gesture':
+                    poseItem = document.getElementById('gestureItems').value;
+                    poseName = 'Hand Gesture';
+                    break;
+                case 'activity':
+                    poseItem = document.getElementById('activityItems').value;
+                    poseName = 'Activity';
+                    break;
+                case 'background':
+                    poseItem = document.getElementById('backgroundItems').value;
+                    poseName = 'Background';
+                    break;
+            }
+            
+            if (!poseItem) {
+                alert('Please provide a value');
+                return;
+            }
+            
+            const poseDiv = document.createElement('div');
+            poseDiv.className = 'item';
+            poseDiv.innerHTML = `
+                <span><strong>${poseName}:</strong> ${poseItem}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="pose-type" value="${poseType}">
+                <input type="hidden" name="pose-item" value="${poseItem}">
+            `;
+            
+            document.getElementById('poseContainer').appendChild(poseDiv);
+            
+            // Reset form
+            document.getElementById('poseType').value = '';
+            document.getElementById('expressionItems').value = '';
+            document.getElementById('gestureItems').value = '';
+            document.getElementById('activityItems').value = '';
+            document.getElementById('backgroundItems').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('expression') || el.id.includes('gesture') || 
+                    el.id.includes('activity') || el.id.includes('background')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('poseOptions').style.display = 'none';
+            document.getElementById('poseToggle').classList.remove('active');
+        });
+        
+        // Property Section Functionality
+        document.getElementById('propertyType').addEventListener('change', function() {
+            // Hide all options first
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('headwear') || el.id.includes('upper') || el.id.includes('lower') || el.id.includes('footwear')) {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            // Show selected option
+            const selectedOption = this.value;
+            if (selectedOption) {
+                document.getElementById(`${selectedOption}Options`).classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('addPropertyBtn').addEventListener('click', function() {
+            const propertyType = document.getElementById('propertyType').value;
+            if (!propertyType) {
+                alert('Please select a property type first');
+                return;
+            }
+            
+            let propertyItem = '';
+            let propertyName = '';
+            
+            switch(propertyType) {
+                case 'headwear':
+                    propertyItem = document.getElementById('headwearItems').value;
+                    propertyName = 'Headwear';
+                    break;
+                case 'upper':
+                    propertyItem = document.getElementById('upperItems').value;
+                    propertyName = 'Upper Body';
+                    break;
+                case 'lower':
+                    propertyItem = document.getElementById('lowerItems').value;
+                    propertyName = 'Lower Body';
+                    break;
+                case 'footwear':
+                    propertyItem = document.getElementById('footwearItems').value;
+                    propertyName = 'Footwear';
+                    break;
+            }
+            
+            if (!propertyItem) {
+                alert('Please select an item');
+                return;
+            }
+            
+            const propertyColor = document.getElementById('propertyColor').value;
+            
+            const propertyDiv = document.createElement('div');
+            propertyDiv.className = 'item';
+            propertyDiv.innerHTML = `
+                <span><strong>${propertyName}:</strong> ${propertyItem}${propertyColor ? ` (${propertyColor})` : ''}</span>
+                <button class="remove-btn">×</button>
+                <input type="hidden" name="property-type" value="${propertyType}">
+                <input type="hidden" name="property-item" value="${propertyItem}">
+                <input type="hidden" name="property-color" value="${propertyColor || ''}">
+            `;
+            
+            document.getElementById('propertiesContainer').appendChild(propertyDiv);
+            
+            // Reset form
+            document.getElementById('propertyType').value = '';
+            document.getElementById('propertyColor').value = '';
+            document.querySelectorAll('[id$="Options"]').forEach(el => {
+                if (el.id.includes('headwear') || el.id.includes('upper') || el.id.includes('lower') || el.id.includes('footwear')) {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('propertyBlock').style.display = 'none';
+            document.querySelector('[data-target="propertyBlock"]').classList.remove('active');
+        });
+        
+        // Remove item handlers (delegated)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-btn')) {
+                e.target.closest('.item').remove();
+            }
+        });
+        
+        // Generate Prompt button click handler
+        document.getElementById('generatePromptBtn').addEventListener('click', function() {
+            const prompt = generatePrompt();
+            const promptResult = document.getElementById('promptResult');
+            const promptContent = document.getElementById('promptContent');
+            const emptyPrompt = document.getElementById('emptyPrompt');
+            const copyBtn = document.getElementById('copyPromptBtn');
+            
+            promptResult.style.display = 'block';
+            
+            if (prompt.trim() === 'Create image.') {
+                promptContent.classList.add('hidden');
+                emptyPrompt.style.display = 'block';
+                copyBtn.classList.add('hidden');
+            } else {
+                promptContent.textContent = prompt;
+                promptContent.classList.remove('hidden');
+                emptyPrompt.style.display = 'none';
+                copyBtn.classList.remove('hidden');
+            }
+            
+            // Hide JSON result if it's showing
+            document.getElementById('jsonResult').style.display = 'none';
+            document.getElementById('copyJsonBtn').classList.add('hidden');
+        });
+        
+        // Generate JSON button click handler
+        document.getElementById('generateJsonBtn').addEventListener('click', function() {
+            const jsonData = generateJson();
+            const jsonResult = document.getElementById('jsonResult');
+            const jsonContent = document.getElementById('jsonContent');
+            const emptyJson = document.getElementById('emptyJson');
+            const copyBtn = document.getElementById('copyJsonBtn');
+            
+            jsonResult.style.display = 'block';
+            
+            if (jsonData === '{"visual":{}}') {
+                jsonContent.classList.add('hidden');
+                emptyJson.style.display = 'block';
+                copyBtn.classList.add('hidden');
+            } else {
+                jsonContent.textContent = jsonData;
+                jsonContent.classList.remove('hidden');
+                emptyJson.style.display = 'none';
+                copyBtn.classList.remove('hidden');
+            }
+            
+            // Hide prompt result if it's showing
+            document.getElementById('promptResult').style.display = 'none';
+            document.getElementById('copyPromptBtn').classList.add('hidden');
+        });
+        
+        // Copy Prompt button click handler
+        document.getElementById('copyPromptBtn').addEventListener('click', function() {
+            const promptText = document.getElementById('promptContent').textContent;
+            copyToClipboard(promptText);
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy Prompt';
+            }, 2000);
+        });
+        
+        // Copy JSON button click handler
+        document.getElementById('copyJsonBtn').addEventListener('click', function() {
+            const jsonText = document.getElementById('jsonContent').textContent;
+            copyToClipboard(jsonText);
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy JSON';
+            }, 2000);
+        });
+        
+        // Function to generate the prompt text in natural language
+        function generatePrompt() {
+            let prompt = 'Create image. ';
+            let hasContent = false;
+            
+            // Angle View
+            const angleView = document.getElementById('angleView').value;
+            if (angleView) {
+                prompt += `${angleView}, `;
+                hasContent = true;
+            }
+            
+            // Character Basics
+            const characterName = document.getElementById('characterName').value;
+            if (characterName) {
+                prompt += `character name ${characterName} `;
+                hasContent = true;
+            }
+            
+            // Race
+            const raceItems = document.querySelectorAll('#raceContainer .item');
+            if (raceItems.length > 0) {
+                prompt += 'from ';
+                raceItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="race-type"]').value;
+                    const race = item.querySelector('[name="race-item"]').value;
+                    
+                    if (index > 0) prompt += '/';
+                    prompt += race;
+                });
+                prompt += ' ';
+                hasContent = true;
+            }
+            
+            // Human Identity
+            const ageItems = document.querySelectorAll('#humanIdentityContainer .item [name="human-identity-type"][value="age"]');
+            if (ageItems.length > 0) {
+                const age = ageItems[0].nextElementSibling.value;
+                prompt += `${age} years old `;
+                hasContent = true;
+            }
+            
+            const genderItems = document.querySelectorAll('#humanIdentityContainer .item [name="human-identity-type"][value="gender"]');
+            if (genderItems.length > 0) {
+                const gender = genderItems[0].nextElementSibling.value;
+                prompt += `${gender} `;
+                hasContent = true;
+            }
+            
+            const personalityItems = document.querySelectorAll('#humanIdentityContainer .item [name="human-identity-type"][value="personality"]');
+            if (personalityItems.length > 0) {
+                const personality = personalityItems[0].nextElementSibling.value;
+                prompt += `with ${personality} personality `;
+                hasContent = true;
+            }
+            
+            // Physical Characteristics
+            const hairStyle = document.getElementById('hairStyle').value;
+            if (hairStyle) {
+                prompt += `with ${hairStyle} hair, `;
+                hasContent = true;
+            }
+            
+            const skinTone = document.getElementById('skinTone').value;
+            if (skinTone) {
+                prompt += `${skinTone} skin, `;
+                hasContent = true;
+            }
+            
+            const bodyType = document.getElementById('bodyType').value;
+            if (bodyType) {
+                prompt += `${bodyType} body type, `;
+                hasContent = true;
+            }
+            
+            // Special Elements
+            const specialElementsItems = document.querySelectorAll('#specialElementsContainer .item');
+            if (specialElementsItems.length > 0) {
+                prompt += 'appearing as ';
+                specialElementsItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="special-elements-type"]').value;
+                    const element = item.querySelector('[name="special-elements-item"]').value;
+                    
+                    if (index > 0) prompt += ' ';
+                    prompt += element;
+                });
+                prompt += ', ';
+                hasContent = true;
+            }
+            
+            // Custom Special Elements
+            const customSpecialElements = document.getElementById('customSpecialElements').value;
+            if (customSpecialElements) {
+                prompt += `${customSpecialElements}, `;
+                hasContent = true;
+            }
+            
+            // Pose/Environment
+            const poseItems = document.querySelectorAll('#poseContainer .item');
+            if (poseItems.length > 0) {
+                prompt += 'with ';
+                poseItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="pose-type"]').value;
+                    const pose = item.querySelector('[name="pose-item"]').value;
+                    
+                    if (index > 0) prompt += ' and ';
+                    prompt += pose;
+                });
+                prompt += ', ';
+                hasContent = true;
+            }
+            
+            // Custom Pose & Environment
+            const customPoseEnvironment = document.getElementById('customPoseEnvironment').value;
+            if (customPoseEnvironment) {
+                prompt += `${customPoseEnvironment}, `;
+                hasContent = true;
+            }
+            
+            // Properties
+            const propertyItems = document.querySelectorAll('#propertiesContainer .item');
+            if (propertyItems.length > 0) {
+                prompt += 'wearing ';
+                propertyItems.forEach((item, index) => {
+                    const type = item.querySelector('[name="property-type"]').value;
+                    const property = item.querySelector('[name="property-item"]').value;
+                    const color = item.querySelector('[name="property-color"]').value;
+                    
+                    if (index > 0) prompt += 'and ';
+                    if (color) prompt += `${color} `;
+                    prompt += `${property}`;
+                    
+                    if (index < propertyItems.length - 1) prompt += ', ';
+                });
+                prompt += ', ';
+                hasContent = true;
+            }
+            
+            // Custom Property
+            const customProperty = document.getElementById('customProperty').value;
+            if (customProperty) {
+                prompt += `${customProperty}, `;
+                hasContent = true;
+            }
+            
+            // Special Identification
+            const specialIdentification = document.getElementById('specialIdentification').value;
+            if (specialIdentification) {
+                prompt += `with ${specialIdentification}, `;
+                hasContent = true;
+            }
+            
+            // Custom Description
+            const customDescription = document.getElementById('customDescription').value;
+            if (customDescription) {
+                prompt += `${customDescription}, `;
+                hasContent = true;
+            }
+            
+            // If no content was added beyond "Create image. "
+            if (!hasContent) {
+                return 'Create image.';
+            }
+            
+            // Remove trailing comma and space if exists
+            if (prompt.endsWith(', ')) {
+                prompt = prompt.slice(0, -2);
+            }
+            
+            // Add period at the end
+            prompt += '.';
+            
+            return prompt;
+        }
+        
+        // Function to generate the JSON data with "visual" root
+        function generateJson() {
+            const data = {
+                visual: {
+                    view: {},
+                    character: {
+                        name: "",
+                        race: [],
+                        identity: {},
+                        physical: {},
+                        properties: []
+                    },
+                    elements: {},
+                    pose: {},
+                    activity: {}
+                }
+            };
+            
+            let hasContent = false;
+            
+            // Angle View
+            const angleView = document.getElementById('angleView').value;
+            if (angleView) {
+                data.visual.view.angle = angleView;
+                hasContent = true;
+            }
+            
+            // Character Name
+            const characterName = document.getElementById('characterName').value;
+            if (characterName) {
+                data.visual.character.name = characterName;
+                hasContent = true;
+            }
+            
+            // Race
+            const raceItems = document.querySelectorAll('#raceContainer .item');
+            raceItems.forEach(item => {
+                const race = {
+                    type: item.querySelector('[name="race-type"]').value,
+                    value: item.querySelector('[name="race-item"]').value
+                };
+                data.visual.character.race.push(race);
+                hasContent = true;
+            });
+            
+            // Human Identity
+            const humanIdentityItems = document.querySelectorAll('#humanIdentityContainer .item');
+            humanIdentityItems.forEach(item => {
+                const type = item.querySelector('[name="human-identity-type"]').value;
+                const value = item.querySelector('[name="human-identity-item"]').value;
+                
+                data.visual.character.identity[type] = {
+                    value: value
+                };
+                hasContent = true;
+            });
+            
+            // Physical Characteristics
+            const hairStyle = document.getElementById('hairStyle').value;
+            if (hairStyle) {
+                data.visual.character.physical.hairStyle = hairStyle;
+                hasContent = true;
+            }
+            
+            const skinTone = document.getElementById('skinTone').value;
+            if (skinTone) {
+                data.visual.character.physical.skinTone = skinTone;
+                hasContent = true;
+            }
+            
+            const bodyType = document.getElementById('bodyType').value;
+            if (bodyType) {
+                data.visual.character.physical.bodyType = bodyType;
+                hasContent = true;
+            }
+            
+            const specialIdentification = document.getElementById('specialIdentification').value;
+            if (specialIdentification) {
+                data.visual.character.physical.specialFeatures = specialIdentification;
+                hasContent = true;
+            }
+            
+            const customDescription = document.getElementById('customDescription').value;
+            if (customDescription) {
+                data.visual.character.physical.description = customDescription;
+                hasContent = true;
+            }
+            
+            // Special Elements
+            const specialElementsItems = document.querySelectorAll('#specialElementsContainer .item');
+            specialElementsItems.forEach(item => {
+                const type = item.querySelector('[name="special-elements-type"]').value;
+                const value = item.querySelector('[name="special-elements-item"]').value;
+                
+                data.visual.elements[type] = value;
+                hasContent = true;
+            });
+            
+            // Custom Special Elements
+            const customSpecialElements = document.getElementById('customSpecialElements').value;
+            if (customSpecialElements) {
+                data.visual.elements.custom = customSpecialElements;
+                hasContent = true;
+            }
+            
+            // Pose/Environment
+            const poseItems = document.querySelectorAll('#poseContainer .item');
+            poseItems.forEach(item => {
+                const type = item.querySelector('[name="pose-type"]').value;
+                const value = item.querySelector('[name="pose-item"]').value;
+                
+                if (type === 'activity') {
+                    data.visual.activity.action = value;
+                } else if (type === 'background') {
+                    data.visual.activity.background = value;
+                } else {
+                    data.visual.pose[type] = value;
+                }
+                hasContent = true;
+            });
+            
+            // Custom Pose & Environment
+            const customPoseEnvironment = document.getElementById('customPoseEnvironment').value;
+            if (customPoseEnvironment) {
+                data.visual.pose.custom = customPoseEnvironment;
+                hasContent = true;
+            }
+            
+            // Properties
+            const propertyItems = document.querySelectorAll('#propertiesContainer .item');
+            propertyItems.forEach(item => {
+                const property = {
+                    type: item.querySelector('[name="property-type"]').value,
+                    item: item.querySelector('[name="property-item"]').value,
+                    color: item.querySelector('[name="property-color"]').value || undefined
+                };
+                data.visual.character.properties.push(property);
+                hasContent = true;
+            });
+            
+            const customProperty = document.getElementById('customProperty').value;
+            if (customProperty) {
+                data.visual.character.properties.push({
+                    type: 'custom',
+                    description: customProperty
+                });
+                hasContent = true;
+            }
+            
+            // If no content was added, return empty visual object
+            if (!hasContent) {
+                return '{"visual":{}}';
+            }
+            
+            return JSON.stringify(data, null, 2);
+        }
+        
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
